@@ -1,0 +1,527 @@
+{
+  "regions": {
+    "syria": {
+      "name": "Syria",
+      "terrain": {
+        "primary": "desert",
+        "secondary": ["mountains", "coastal_plains"],
+        "elevation": {
+          "min": 0,
+          "max": 2814,
+          "average": 514
+        },
+        "difficulty": "moderate",
+        "description": "Mostly desert with mountain ranges in the west and coastal plains along the Mediterranean"
+      },
+      "weather": {
+        "climate": "mediterranean",
+        "temperature": {
+          "summer": {"min": 20, "max": 40},
+          "winter": {"min": 5, "max": 15}
+        },
+        "precipitation": {
+          "annual": "low",
+          "season": "winter",
+          "mm_per_year": 252
+        },
+        "visibility_impact": "moderate",
+        "mobility_impact": "high"
+      },
+      "strategic_features": {
+        "ports": ["Latakia", "Tartus"],
+        "airports": ["Damascus", "Aleppo", "Latakia"],
+        "mountain_passes": ["Golan Heights"],
+        "rivers": ["Euphrates", "Orontes"],
+        "oil_fields": ["Deir ez-Zor", "Homs"],
+        "urban_centers": ["Damascus", "Aleppo", "Homs", "Hama"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["mountainous_west", "desert_cover"],
+        "terrain_disadvantages": ["limited_water", "extreme_heat"],
+        "logistics_challenges": ["water_supply", "fuel_consumption"],
+        "defensive_positions": ["Golan Heights", "coastal_mountains"],
+        "offensive_routes": ["Euphrates Valley", "coastal_highway"]
+      }
+    },
+    "iraq": {
+      "name": "Iraq",
+      "terrain": {
+        "primary": "desert",
+        "secondary": ["marshes", "mountains"],
+        "elevation": {
+          "min": 0,
+          "max": 3607,
+          "average": 312
+        },
+        "difficulty": "moderate",
+        "description": "Desert plains with marshlands in the south and mountains in the north"
+      },
+      "weather": {
+        "climate": "desert",
+        "temperature": {
+          "summer": {"min": 25, "max": 45},
+          "winter": {"min": 0, "max": 20}
+        },
+        "precipitation": {
+          "annual": "very_low",
+          "season": "winter",
+          "mm_per_year": 216
+        },
+        "visibility_impact": "high",
+        "mobility_impact": "moderate"
+      },
+      "strategic_features": {
+        "ports": ["Basra", "Umm Qasr"],
+        "airports": ["Baghdad", "Basra", "Mosul", "Erbil"],
+        "mountain_passes": ["Zagros Mountains"],
+        "rivers": ["Tigris", "Euphrates"],
+        "oil_fields": ["Rumaila", "Kirkuk", "West Qurna"],
+        "urban_centers": ["Baghdad", "Basra", "Mosul", "Erbil"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["river_networks", "oil_wealth"],
+        "terrain_disadvantages": ["marshlands", "sandstorms"],
+        "logistics_challenges": ["river_crossings", "marsh_navigation"],
+        "defensive_positions": ["Tigris-Euphrates", "Zagros Mountains"],
+        "offensive_routes": ["Tigris Valley", "Euphrates Valley"]
+      }
+    },
+    "iran": {
+      "name": "Iran",
+      "terrain": {
+        "primary": "mountains",
+        "secondary": ["desert", "plateau"],
+        "elevation": {
+          "min": -28,
+          "max": 5671,
+          "average": 1648
+        },
+        "difficulty": "high",
+        "description": "Mountainous with central plateau and coastal plains"
+      },
+      "weather": {
+        "climate": "continental",
+        "temperature": {
+          "summer": {"min": 15, "max": 35},
+          "winter": {"min": -10, "max": 15}
+        },
+        "precipitation": {
+          "annual": "moderate",
+          "season": "winter",
+          "mm_per_year": 228
+        },
+        "visibility_impact": "moderate",
+        "mobility_impact": "high"
+      },
+      "strategic_features": {
+        "ports": ["Bandar Abbas", "Chabahar"],
+        "airports": ["Tehran", "Isfahan", "Shiraz", "Tabriz"],
+        "mountain_passes": ["Zagros", "Alborz"],
+        "rivers": ["Karun", "Sefid Rud"],
+        "oil_fields": ["Ahvaz", "Gachsaran", "Marun"],
+        "urban_centers": ["Tehran", "Isfahan", "Shiraz", "Tabriz"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["mountainous_defense", "strategic_depth"],
+        "terrain_disadvantages": ["mountainous_offense", "cold_winters"],
+        "logistics_challenges": ["mountain_roads", "winter_conditions"],
+        "defensive_positions": ["Zagros Mountains", "Alborz Mountains"],
+        "offensive_routes": ["Persian Gulf coast", "Caspian coast"]
+      }
+    },
+    "israel": {
+      "name": "Israel",
+      "terrain": {
+        "primary": "coastal_plain",
+        "secondary": ["mountains", "desert"],
+        "elevation": {
+          "min": -408,
+          "max": 1208,
+          "average": 508
+        },
+        "difficulty": "moderate",
+        "description": "Narrow coastal plain with central mountains and southern desert"
+      },
+      "weather": {
+        "climate": "mediterranean",
+        "temperature": {
+          "summer": {"min": 20, "max": 35},
+          "winter": {"min": 10, "max": 20}
+        },
+        "precipitation": {
+          "annual": "moderate",
+          "season": "winter",
+          "mm_per_year": 435
+        },
+        "visibility_impact": "low",
+        "mobility_impact": "moderate"
+      },
+      "strategic_features": {
+        "ports": ["Haifa", "Ashdod", "Eilat"],
+        "airports": ["Ben Gurion", "Haifa", "Eilat"],
+        "mountain_passes": ["Golan Heights"],
+        "rivers": ["Jordan", "Yarkon"],
+        "oil_fields": ["Heletz", "Tamar"],
+        "urban_centers": ["Tel Aviv", "Jerusalem", "Haifa", "Beer Sheva"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["narrow_front", "technological_edge"],
+        "terrain_disadvantages": ["lack_of_depth", "vulnerable_borders"],
+        "logistics_challenges": ["small_territory", "dense_population"],
+        "defensive_positions": ["Golan Heights", "Jordan Valley"],
+        "offensive_routes": ["coastal_plain", "Jordan Valley"]
+      }
+    },
+    "lebanon": {
+      "name": "Lebanon",
+      "terrain": {
+        "primary": "mountains",
+        "secondary": ["coastal_plain", "valley"],
+        "elevation": {
+          "min": 0,
+          "max": 3088,
+          "average": 1250
+        },
+        "difficulty": "high",
+        "description": "Mountainous with narrow coastal plain and Bekaa Valley"
+      },
+      "weather": {
+        "climate": "mediterranean",
+        "temperature": {
+          "summer": {"min": 20, "max": 30},
+          "winter": {"min": 5, "max": 15}
+        },
+        "precipitation": {
+          "annual": "high",
+          "season": "winter",
+          "mm_per_year": 661
+        },
+        "visibility_impact": "moderate",
+        "mobility_impact": "high"
+      },
+      "strategic_features": {
+        "ports": ["Beirut", "Tripoli", "Sidon"],
+        "airports": ["Beirut", "Tripoli"],
+        "mountain_passes": ["Mount Lebanon"],
+        "rivers": ["Litani", "Orontes"],
+        "oil_fields": [],
+        "urban_centers": ["Beirut", "Tripoli", "Sidon", "Zahle"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["mountainous_defense", "narrow_fronts"],
+        "terrain_disadvantages": ["mountainous_offense", "limited_maneuver"],
+        "logistics_challenges": ["mountain_roads", "winter_snow"],
+        "defensive_positions": ["Mount Lebanon", "Bekaa Valley"],
+        "offensive_routes": ["coastal_highway", "Bekaa Valley"]
+      }
+    },
+    "jordan": {
+      "name": "Jordan",
+      "terrain": {
+        "primary": "desert",
+        "secondary": ["mountains", "valley"],
+        "elevation": {
+          "min": -408,
+          "max": 1854,
+          "average": 812
+        },
+        "difficulty": "moderate",
+        "description": "Desert plateau with Jordan Valley and mountain ranges"
+      },
+      "weather": {
+        "climate": "desert",
+        "temperature": {
+          "summer": {"min": 20, "max": 40},
+          "winter": {"min": 5, "max": 20}
+        },
+        "precipitation": {
+          "annual": "low",
+          "season": "winter",
+          "mm_per_year": 111
+        },
+        "visibility_impact": "high",
+        "mobility_impact": "moderate"
+      },
+      "strategic_features": {
+        "ports": ["Aqaba"],
+        "airports": ["Amman", "Aqaba"],
+        "mountain_passes": ["Wadi Araba"],
+        "rivers": ["Jordan", "Yarmouk"],
+        "oil_fields": [],
+        "urban_centers": ["Amman", "Zarqa", "Irbid", "Aqaba"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["strategic_location", "desert_cover"],
+        "terrain_disadvantages": ["water_scarcity", "limited_resources"],
+        "logistics_challenges": ["water_supply", "fuel_consumption"],
+        "defensive_positions": ["Jordan Valley", "mountain_ranges"],
+        "offensive_routes": ["Desert Highway", "King's Highway"]
+      }
+    },
+    "saudi_arabia": {
+      "name": "Saudi Arabia",
+      "terrain": {
+        "primary": "desert",
+        "secondary": ["mountains", "coastal_plain"],
+        "elevation": {
+          "min": 0,
+          "max": 3133,
+          "average": 665
+        },
+        "difficulty": "high",
+        "description": "Vast desert with mountain ranges and coastal plains"
+      },
+      "weather": {
+        "climate": "desert",
+        "temperature": {
+          "summer": {"min": 25, "max": 50},
+          "winter": {"min": 10, "max": 30}
+        },
+        "precipitation": {
+          "annual": "very_low",
+          "season": "winter",
+          "mm_per_year": 59
+        },
+        "visibility_impact": "very_high",
+        "mobility_impact": "very_high"
+      },
+      "strategic_features": {
+        "ports": ["Jeddah", "Dammam", "Yanbu"],
+        "airports": ["Riyadh", "Jeddah", "Dammam", "Medina"],
+        "mountain_passes": ["Asir Mountains"],
+        "rivers": ["Wadi Hanifa"],
+        "oil_fields": ["Ghawar", "Safaniya", "Khurais"],
+        "urban_centers": ["Riyadh", "Jeddah", "Mecca", "Medina", "Dammam"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["vast_territory", "oil_wealth"],
+        "terrain_disadvantages": ["extreme_heat", "water_scarcity"],
+        "logistics_challenges": ["water_supply", "fuel_consumption", "sandstorms"],
+        "defensive_positions": ["mountain_ranges", "coastal_areas"],
+        "offensive_routes": ["coastal_highways", "desert_roads"]
+      }
+    },
+    "yemen": {
+      "name": "Yemen",
+      "terrain": {
+        "primary": "mountains",
+        "secondary": ["desert", "coastal_plain"],
+        "elevation": {
+          "min": 0,
+          "max": 3666,
+          "average": 999
+        },
+        "difficulty": "very_high",
+        "description": "Mountainous with coastal plains and desert areas"
+      },
+      "weather": {
+        "climate": "desert",
+        "temperature": {
+          "summer": {"min": 20, "max": 40},
+          "winter": {"min": 10, "max": 25}
+        },
+        "precipitation": {
+          "annual": "low",
+          "season": "summer",
+          "mm_per_year": 167
+        },
+        "visibility_impact": "moderate",
+        "mobility_impact": "very_high"
+      },
+      "strategic_features": {
+        "ports": ["Aden", "Hodeidah", "Mukalla"],
+        "airports": ["Sanaa", "Aden", "Taiz"],
+        "mountain_passes": ["Yemeni Highlands"],
+        "rivers": ["Wadi Hadhramaut"],
+        "oil_fields": ["Marib", "Shabwa"],
+        "urban_centers": ["Sanaa", "Aden", "Taiz", "Hodeidah"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["mountainous_defense", "tribal_networks"],
+        "terrain_disadvantages": ["mountainous_offense", "limited_infrastructure"],
+        "logistics_challenges": ["mountain_roads", "tribal_relations"],
+        "defensive_positions": ["Yemeni Highlands", "coastal_areas"],
+        "offensive_routes": ["coastal_highways", "mountain_passes"]
+      }
+    },
+    "egypt": {
+      "name": "Egypt",
+      "terrain": {
+        "primary": "desert",
+        "secondary": ["river_valley", "coastal_plain"],
+        "elevation": {
+          "min": -133,
+          "max": 2629,
+          "average": 321
+        },
+        "difficulty": "moderate",
+        "description": "Desert with Nile Valley and coastal plains"
+      },
+      "weather": {
+        "climate": "desert",
+        "temperature": {
+          "summer": {"min": 20, "max": 40},
+          "winter": {"min": 10, "max": 25}
+        },
+        "precipitation": {
+          "annual": "very_low",
+          "season": "winter",
+          "mm_per_year": 51
+        },
+        "visibility_impact": "high",
+        "mobility_impact": "moderate"
+      },
+      "strategic_features": {
+        "ports": ["Alexandria", "Port Said", "Suez"],
+        "airports": ["Cairo", "Alexandria", "Luxor"],
+        "mountain_passes": ["Sinai Peninsula"],
+        "rivers": ["Nile"],
+        "oil_fields": ["Gulf of Suez", "Western Desert"],
+        "urban_centers": ["Cairo", "Alexandria", "Giza", "Sharm el-Sheikh"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["Suez Canal", "Nile Valley"],
+        "terrain_disadvantages": ["desert_barriers", "water_scarcity"],
+        "logistics_challenges": ["desert_logistics", "canal_operations"],
+        "defensive_positions": ["Sinai Peninsula", "Nile Valley"],
+        "offensive_routes": ["Sinai Peninsula", "coastal_highways"]
+      }
+    },
+    "turkey": {
+      "name": "Turkey",
+      "terrain": {
+        "primary": "mountains",
+        "secondary": ["plateau", "coastal_plain"],
+        "elevation": {
+          "min": 0,
+          "max": 5137,
+          "average": 1132
+        },
+        "difficulty": "high",
+        "description": "Mountainous with central plateau and coastal plains"
+      },
+      "weather": {
+        "climate": "continental",
+        "temperature": {
+          "summer": {"min": 15, "max": 35},
+          "winter": {"min": -10, "max": 15}
+        },
+        "precipitation": {
+          "annual": "moderate",
+          "season": "winter",
+          "mm_per_year": 593
+        },
+        "visibility_impact": "moderate",
+        "mobility_impact": "high"
+      },
+      "strategic_features": {
+        "ports": ["Istanbul", "Izmir", "Mersin"],
+        "airports": ["Istanbul", "Ankara", "Izmir", "Antalya"],
+        "mountain_passes": ["Taurus Mountains", "Pontic Mountains"],
+        "rivers": ["Euphrates", "Tigris", "Kizilirmak"],
+        "oil_fields": ["Southeastern Anatolia"],
+        "urban_centers": ["Istanbul", "Ankara", "Izmir", "Antalya"]
+      },
+      "military_considerations": {
+        "terrain_advantages": ["strategic_location", "mountainous_defense"],
+        "terrain_disadvantages": ["mountainous_offense", "winter_conditions"],
+        "logistics_challenges": ["mountain_roads", "winter_snow"],
+        "defensive_positions": ["Taurus Mountains", "Pontic Mountains"],
+        "offensive_routes": ["coastal_highways", "river_valleys"]
+      }
+    }
+  },
+  "weather_patterns": {
+    "sandstorms": {
+      "frequency": "high",
+      "impact": {
+        "visibility": "severe_reduction",
+        "mobility": "significant_impairment",
+        "equipment": "damage_risk"
+      },
+      "regions": ["saudi_arabia", "iraq", "syria", "jordan"]
+    },
+    "dust_storms": {
+      "frequency": "moderate",
+      "impact": {
+        "visibility": "moderate_reduction",
+        "mobility": "moderate_impairment",
+        "equipment": "maintenance_required"
+      },
+      "regions": ["egypt", "yemen", "saudi_arabia"]
+    },
+    "winter_snow": {
+      "frequency": "low",
+      "impact": {
+        "visibility": "moderate_reduction",
+        "mobility": "severe_impairment",
+        "equipment": "cold_weather_issues"
+      },
+      "regions": ["turkey", "iran", "lebanon"]
+    },
+    "monsoon_rains": {
+      "frequency": "very_low",
+      "impact": {
+        "visibility": "moderate_reduction",
+        "mobility": "moderate_impairment",
+        "equipment": "water_damage_risk"
+      },
+      "regions": ["yemen"]
+    }
+  },
+  "strategic_chokepoints": {
+    "suez_canal": {
+      "location": "egypt",
+      "type": "maritime",
+      "strategic_importance": "critical",
+      "control_implications": "global_trade_control"
+    },
+    "strait_of_hormuz": {
+      "location": "iran_oman",
+      "type": "maritime",
+      "strategic_importance": "critical",
+      "control_implications": "oil_trade_control"
+    },
+    "bab_el_mandeb": {
+      "location": "yemen_djibouti",
+      "type": "maritime",
+      "strategic_importance": "high",
+      "control_implications": "red_sea_access"
+    },
+    "golan_heights": {
+      "location": "syria_israel",
+      "type": "land",
+      "strategic_importance": "high",
+      "control_implications": "regional_dominance"
+    }
+  },
+  "infrastructure": {
+    "major_highways": {
+      "coastal_highway": {
+        "route": "egypt_to_turkey",
+        "terrain": "coastal_plain",
+        "vulnerability": "moderate"
+      },
+      "desert_highway": {
+        "route": "saudi_arabia_crossing",
+        "terrain": "desert",
+        "vulnerability": "high"
+      },
+      "mountain_highway": {
+        "route": "turkey_iran",
+        "terrain": "mountainous",
+        "vulnerability": "moderate"
+      }
+    },
+    "railway_networks": {
+      "coverage": "limited",
+      "vulnerability": "high",
+      "strategic_value": "moderate"
+    },
+    "airports": {
+      "military_capable": ["baghdad", "damascus", "tehran", "tel_aviv"],
+      "civilian_only": ["amman", "beirut", "cairo"],
+      "vulnerability": "high"
+    }
+  }
+}
