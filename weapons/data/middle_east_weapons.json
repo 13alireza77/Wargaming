@@ -1,0 +1,732 @@
+{
+  "weapon_categories": {
+    "individual_weapons": {
+      "name": "Individual Weapons",
+      "description": "Personal firearms and portable weapons for individual use.",
+      "types": {
+        "assault_rifles": {
+          "name": "Assault Rifles",
+          "description": "Automatic rifles for infantry, often with selective fire modes.",
+          "effectiveness": "high",
+          "range": "medium",
+          "accuracy": "high",
+          "mobility": "high",
+          "logistics": "moderate",
+          "cost": "moderate",
+          "models": {
+            "ak_47": {
+              "caliber": "7.62mm",
+              "capacity": 30,
+              "range": "400m",
+              "fire_rate": "600rpm"
+            },
+            "ak_74": {
+              "caliber": "5.45mm",
+              "capacity": 30,
+              "range": "500m",
+              "fire_rate": "650rpm"
+            },
+            "m16": {
+              "caliber": "5.56mm",
+              "capacity": 30,
+              "range": "550m",
+              "fire_rate": "700rpm"
+            },
+            "m4_carbine": {
+              "caliber": "5.56mm",
+              "capacity": 30,
+              "range": "500m",
+              "fire_rate": "700-950rpm"
+            },
+            "g3": {
+              "caliber": "7.62mm",
+              "capacity": 20,
+              "range": "500m",
+              "fire_rate": "500-600rpm"
+            }
+          },
+          "countries": {
+            "syria": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ak_47",
+                "ak_74"
+              ]
+            },
+            "iraq": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ak_47",
+                "m16",
+                "m4_carbine"
+              ]
+            },
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ak_47",
+                "g3"
+              ]
+            },
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m4_carbine",
+                "tavor"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "g3",
+                "hk416",
+                "m4_carbine"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "g3",
+                "m4_carbine"
+              ]
+            },
+            "uae": {
+              "quantity": "extensive",
+              "primary_models": [
+                "car_816",
+                "m4_carbine"
+              ]
+            }
+          }
+        },
+        "sniper_rifles": {
+          "name": "Sniper Rifles",
+          "description": "High-precision rifles for engaging distant targets.",
+          "effectiveness": "very_high",
+          "range": "very_long",
+          "accuracy": "very_high",
+          "mobility": "low",
+          "logistics": "low",
+          "cost": "high",
+          "models": {
+            "dragunov_svd": {
+              "caliber": "7.62mm",
+              "capacity": 10,
+              "range": "800m"
+            },
+            "barrett_m82": {
+              "caliber": ".50_bmg",
+              "capacity": 10,
+              "range": "1800m"
+            },
+            "m107_a1": {
+              "caliber": "12.7mm",
+              "capacity": 10,
+              "range": "2000m"
+            },
+            "psg-1": {
+              "caliber": "7.62mm",
+              "capacity": 5,
+              "range": "800m"
+            }
+          },
+          "countries": {
+            "syria": {
+              "quantity": "moderate",
+              "primary_models": [
+                "dragunov_svd"
+              ]
+            },
+            "iraq": {
+              "quantity": "moderate",
+              "primary_models": [
+                "dragunov_svd",
+                "psg-1"
+              ]
+            },
+            "iran": {
+              "quantity": "moderate",
+              "primary_models": [
+                "dragunov_svd"
+              ]
+            },
+            "israel": {
+              "quantity": "moderate",
+              "primary_models": [
+                "barrett_m82"
+              ]
+            },
+            "uae": {
+              "quantity": "moderate",
+              "primary_models": [
+                "m107_a1",
+                "psg-1"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "collective_weapons": {
+      "name": "Collective Weapons",
+      "description": "Heavy weapons and systems requiring a crew to operate.",
+      "types": {
+        "tanks": {
+          "name": "Tanks",
+          "description": "Armored fighting vehicles with a main gun for direct engagement.",
+          "effectiveness": "very_high",
+          "range": "long",
+          "accuracy": "high",
+          "mobility": "moderate",
+          "logistics": "very_high",
+          "cost": "very_high",
+          "models": {
+            "t72": {
+              "main_gun": "125mm",
+              "armor": "composite",
+              "crew": 3,
+              "speed": "60kmh"
+            },
+            "m1a1_abrams": {
+              "main_gun": "120mm",
+              "armor": "chobham",
+              "crew": 4,
+              "speed": "67kmh"
+            },
+            "merkava": {
+              "main_gun": "120mm",
+              "armor": "modular",
+              "crew": 4,
+              "speed": "64kmh"
+            },
+            "leopard_2a4": {
+              "main_gun": "120mm",
+              "armor": "composite",
+              "crew": 4,
+              "speed": "68kmh"
+            },
+            "leclerc": {
+              "main_gun": "120mm",
+              "armor": "composite",
+              "crew": 3,
+              "speed": "72kmh"
+            },
+            "karrar": {
+              "main_gun": "125mm",
+              "armor": "composite",
+              "crew": 3,
+              "speed": "70kmh"
+            }
+          },
+          "countries": {
+            "syria": {
+              "quantity": "moderate",
+              "primary_models": [
+                "t72"
+              ]
+            },
+            "iraq": {
+              "quantity": "moderate",
+              "primary_models": [
+                "t72",
+                "m1a1_abrams"
+              ]
+            },
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "merkava"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "leopard_2a4",
+                "m60_patton"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m1a1_abrams"
+              ]
+            },
+            "uae": {
+              "quantity": "354",
+              "primary_models": [
+                "leclerc"
+              ]
+            },
+            "iran": {
+              "quantity": "unknown",
+              "primary_models": [
+                "karrar",
+                "t72"
+              ]
+            }
+          }
+        },
+        "fighter_jets": {
+          "name": "Fighter Jets",
+          "description": "Aircraft designed for air-to-air combat and ground attack.",
+          "effectiveness": "very_high",
+          "range": "very_long",
+          "accuracy": "high",
+          "mobility": "very_high",
+          "logistics": "very_high",
+          "cost": "extremely_high",
+          "models": {
+            "f-16_fighting_falcon": {
+              "max_speed": "mach_2",
+              "service_ceiling": "15km",
+              "armament": "missiles, bombs"
+            },
+            "mig-29_fulcrum": {
+              "max_speed": "mach_2.25",
+              "service_ceiling": "18km",
+              "armament": "missiles, bombs"
+            },
+            "su-24_fencer": {
+              "max_speed": "mach_1.35",
+              "service_ceiling": "11km",
+              "armament": "missiles, bombs"
+            },
+            "f-15_eagle": {
+              "max_speed": "mach_2.5",
+              "service_ceiling": "20km",
+              "armament": "missiles, bombs"
+            },
+            "panavia_tornado": {
+              "max_speed": "mach_1.3",
+              "service_ceiling": "15km",
+              "armament": "missiles, bombs"
+            },
+            "eurofighter_typhoon": {
+              "max_speed": "mach_2",
+              "service_ceiling": "19km",
+              "armament": "missiles, bombs"
+            },
+            "mirage_f-1e": {
+              "max_speed": "mach_2.2",
+              "service_ceiling": "20km",
+              "armament": "missiles, bombs"
+            }
+          },
+          "countries": {
+            "syria": {
+              "quantity": "moderate",
+              "primary_models": [
+                "mig-29_fulcrum",
+                "su-24_fencer"
+              ]
+            },
+            "iran": {
+              "quantity": "334",
+              "primary_models": [
+                "mig-29_fulcrum",
+                "su-24_fencer",
+                "mirage_f-1e"
+              ]
+            },
+            "israel": {
+              "quantity": "611",
+              "primary_models": [
+                "f-16_fighting_falcon",
+                "f-35_lightning_ii",
+                "f-15_eagle"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "f-16_fighting_falcon"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "f-15_eagle",
+                "panavia_tornado",
+                "eurofighter_typhoon"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "robotics_ai_weapons": {
+      "name": "Robotics / AI-controlled / Remote-controlled Weapons",
+      "description": "Weapon systems operated without a human on board or with significant AI assistance.",
+      "types": {
+        "drones": {
+          "name": "Drones",
+          "description": "Unmanned aerial vehicles for surveillance, reconnaissance, and combat.",
+          "effectiveness": "high",
+          "range": "long",
+          "accuracy": "very_high",
+          "mobility": "very_high",
+          "logistics": "moderate",
+          "cost": "moderate_to_high",
+          "models": {
+            "mq-1_predator": {
+              "role": "reconnaissance, strike",
+              "range": "740km",
+              "armament": "hellfire_missiles"
+            },
+            "iai_heron": {
+              "role": "surveillance, reconnaissance",
+              "range": "350km",
+              "armament": "optional"
+            },
+            "bayraktar_tb2": {
+              "role": "reconnaissance, strike",
+              "range": "300km",
+              "armament": "bombs, missiles"
+            },
+            "shahed_129": {
+              "role": "multirole",
+              "range": "1700km",
+              "armament": "sadid_glide_bombs"
+            },
+            "mohajer_6": {
+              "role": "multirole",
+              "range": "200-2000km",
+              "armament": "almas_missiles, ghaem_bombs"
+            },
+            "hermes_450": {
+              "role": "surveillance, reconnaissance, assault",
+              "range": "300km",
+              "armament": "hellfire_missiles, rafael_missiles"
+            },
+            "tai_anka": {
+              "role": "surveillance, reconnaissance",
+              "range": "200km",
+              "armament": "optional"
+            },
+            "kizilelma": {
+              "role": "jet-engine_ucav",
+              "range": "n/a",
+              "armament": "n/a"
+            }
+          },
+          "countries": {
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "shahed_129",
+                "mohajer_6",
+                "shahed_136"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "bayraktar_tb2",
+                "akinci",
+                "tai_anka",
+                "kizilelma"
+              ]
+            },
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "iai_heron",
+                "hermes_450"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "moderate",
+              "primary_models": [
+                "wing_loong_ii"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "conventional_weapons": {
+      "name": "Conventional Weapon Systems",
+      "description": "Standard military hardware, excluding WMDs.",
+      "types": {
+        "artillery": {
+          "name": "Artillery",
+          "description": "Crew-served cannons and rockets for long-range indirect fire support.",
+          "effectiveness": "high",
+          "range": "very_long",
+          "accuracy": "moderate",
+          "mobility": "low",
+          "logistics": "high",
+          "cost": "moderate",
+          "models": {
+            "m109_howitzer": {
+              "caliber": "155mm",
+              "range": "24km",
+              "type": "self-propelled"
+            },
+            "bm-21_grad": {
+              "caliber": "122mm",
+              "range": "20km",
+              "type": "multiple_rocket_launcher"
+            },
+            "himars": {
+              "caliber": "227mm",
+              "range": "300km",
+              "type": "multiple_rocket_launcher"
+            },
+            "g6_howitzer": {
+              "caliber": "155mm",
+              "range": "50km",
+              "type": "self-propelled"
+            },
+            "m777_howitzer": {
+              "caliber": "155mm",
+              "range": "40km",
+              "type": "towed"
+            },
+            "d-30_howitzer": {
+              "caliber": "122mm",
+              "range": "15km",
+              "type": "towed"
+            },
+            "astros_ii_mlrs": {
+              "caliber": "127mm",
+              "range": "90km",
+              "type": "multiple_rocket_launcher"
+            }
+          },
+          "countries": {
+            "syria": {
+              "quantity": "extensive",
+              "primary_models": [
+                "bm-21_grad",
+                "d-30_howitzer"
+              ]
+            },
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "bm-21_grad",
+                "m109_howitzer"
+              ]
+            },
+            "iraq": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m109_howitzer",
+                "bm-21_grad",
+                "astros_ii_mlrs"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "firtina_howitzer",
+                "m109_howitzer"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "caesar_spg",
+                "m109_howitzer",
+                "m777_howitzer"
+              ]
+            },
+            "uae": {
+              "quantity": "extensive",
+              "primary_models": [
+                "himars",
+                "g6_howitzer"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "unconventional_weapons": {
+      "name": "Unconventional Weapons",
+      "description": "Weapons not falling under standard military categories, including improvised or highly specific systems.",
+      "types": {
+        "improvised_explosive_devices": {
+          "name": "Improvised Explosive Devices (IEDs)",
+          "description": "Homemade bombs used in guerrilla warfare and terrorism.",
+          "effectiveness": "varied",
+          "range": "point_blank",
+          "accuracy": "low",
+          "mobility": "n/a",
+          "logistics": "low",
+          "cost": "very_low",
+          "models": {
+            "vehicle_borne_ied": {
+              "description": "IED placed in a vehicle."
+            },
+            "personnel_borne_ied": {
+              "description": "IED carried by a person."
+            }
+          },
+          "countries": {
+            "iraq": {
+              "quantity": "extensive",
+              "primary_models": [
+                "vehicle_borne_ied"
+              ]
+            },
+            "syria": {
+              "quantity": "extensive",
+              "primary_models": [
+                "vehicle_borne_ied",
+                "personnel_borne_ied"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "chemical_weapons": {
+      "name": "Chemical Weapons",
+      "description": "Toxic chemicals and their delivery systems designed to cause death or injury.",
+      "types": {
+        "nerve_agents": {
+          "name": "Nerve Agents",
+          "description": "Chemicals that disrupt the nervous system, leading to paralysis and death.",
+          "effectiveness": "very_high",
+          "range": "medium",
+          "delivery_methods": [
+            "missiles",
+            "artillery_shells",
+            "bombs"
+          ],
+          "models": {
+            "sarin_gb": {
+              "description": "Highly toxic nerve agent."
+            },
+            "vx": {
+              "description": "Persistent and extremely toxic nerve agent."
+            },
+            "chlorine": {
+              "description": "A toxic gas used as a choking agent."
+            },
+            "mustard_agent": {
+              "description": "A blister agent that causes severe skin, eye, and respiratory irritation."
+            }
+          },
+          "countries": {
+            "syria": {
+              "quantity": "undisclosed",
+              "status": "confirmed_use_of_sarin_chlorine_mustard_agent"
+            },
+            "iran": {
+              "quantity": "undisclosed",
+              "status": "suspected_of_possession"
+            },
+            "israel": {
+              "quantity": "undisclosed",
+              "status": "believed_to_possess_program_and_production_capability"
+            },
+            "iraq": {
+              "quantity": "undisclosed",
+              "status": "manufactured_and_used"
+            },
+            "egypt": {
+              "quantity": "undisclosed",
+              "status": "manufactured_and_used"
+            }
+          }
+        }
+      }
+    },
+    "biological_weapons": {
+      "name": "Biological Weapons",
+      "description": "Pathogens or toxins used to incapacitate or kill humans, animals, or plants.",
+      "types": {
+        "anthrax": {
+          "name": "Anthrax",
+          "description": "A bacterium that can be weaponized as a powder for inhalation.",
+          "effectiveness": "high",
+          "range": "n/a",
+          "delivery_methods": [
+            "aerosol"
+          ],
+          "models": {
+            "bacillus_anthracis": {
+              "description": "A spore-forming bacterium."
+            }
+          },
+          "countries": {
+            "iraq": {
+              "quantity": "undisclosed",
+              "status": "past_program_acknowledged_by_un"
+            },
+            "syria": {
+              "quantity": "undisclosed",
+              "status": "suspected_of_possession"
+            },
+            "egypt": {
+              "quantity": "undisclosed",
+              "status": "suspected_of_possession"
+            },
+            "iran": {
+              "quantity": "undisclosed",
+              "status": "suspected_of_possession"
+            },
+            "israel": {
+              "quantity": "undisclosed",
+              "status": "suspected_of_possession"
+            }
+          }
+        }
+      }
+    },
+    "nuclear_weapons": {
+      "name": "Nuclear Weapons",
+      "description": "Weapons of mass destruction deriving destructive force from nuclear reactions.",
+      "types": {
+        "fission_weapons": {
+          "name": "Fission Weapons",
+          "description": "Atomic bombs using a chain reaction to release a massive amount of energy.",
+          "effectiveness": "extremely_high",
+          "range": "strategic",
+          "delivery_methods": [
+            "missiles",
+            "bombers"
+          ],
+          "models": {
+            "little_boy_type": {
+              "description": "Uranium gun-type fission bomb."
+            },
+            "fat_man_type": {
+              "description": "Plutonium implosion-type fission bomb."
+            }
+          },
+          "countries": {
+            "israel": {
+              "quantity": "undisclosed",
+              "status": "believed_to_possess_nuclear_weapons"
+            }
+          }
+        },
+        "threshold_state_program": {
+          "name": "Threshold State Program",
+          "description": "A state with the technical capacity to build nuclear weapons but has not made a political decision to do so.",
+          "effectiveness": "potential",
+          "range": "strategic",
+          "delivery_methods": [
+            "undisclosed"
+          ],
+          "models": {
+            "enriched_uranium": {
+              "stockpile_level": "60% purity",
+              "quantity_kg_u_mass": "9247.6"
+            }
+          },
+          "countries": {
+            "iran": {
+              "quantity": "extensive",
+              "status": "threshold_state"
+            }
+          }
+        }
+      }
+    }
+  }
+}
