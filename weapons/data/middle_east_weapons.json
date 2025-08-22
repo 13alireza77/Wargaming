@@ -140,7 +140,8 @@
             "iraq": {
               "quantity": "moderate",
               "primary_models": [
-                "dragunov_svd"
+                "dragunov_svd",
+                "psg-1"
               ]
             },
             "iran": {
