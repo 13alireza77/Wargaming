@@ -106,7 +106,7 @@ class Command(BaseCommand):
                     # Test the custom model with weapons data
                     self.stdout.write('Testing custom weapons model...')
                     test_result = weapons_service.analyze_weapons(
-                        "What are the key factors that determine victory probability in modern warfare?"
+                        "What are key factors for victory probability?"
                     )
 
                     if test_result['success']:
@@ -126,7 +126,7 @@ class Command(BaseCommand):
                     )
                     # Fallback to testing the base model
                     test_result = weapons_service.analyze_weapons(
-                        "What are the key factors that determine victory probability in modern warfare?"
+                        "What are key factors for victory probability?"
                     )
 
                     if test_result['success']:
@@ -149,7 +149,7 @@ class Command(BaseCommand):
             )
             # Fallback to testing the base model
             test_result = weapons_service.analyze_weapons(
-                "What are the key factors that determine victory probability in modern warfare?"
+                "What are key factors for victory probability?"
             )
 
             if test_result['success']:
@@ -163,98 +163,66 @@ class Command(BaseCommand):
                 )
 
     def _create_training_prompt(self, weapons_data):
-        """Create a comprehensive training prompt with weapons data"""
+        """Create a concise training prompt with weapons data"""
         categories = weapons_data.get('weapon_categories', {})
         
-        prompt = "You are a military weapons and equipment expert specializing in Middle Eastern military capabilities analysis.\n\n"
-        prompt += "Available weapon categories and their key characteristics:\n"
+        prompt = "Military weapons expert. Analyze weapons and provide victory probability insights. Be brief and focused.\n\n"
+        prompt += "Weapon categories: "
         
+        category_names = []
         for category_key, category_data in categories.items():
             name = category_data.get('name', category_key)
-            description = category_data.get('description', 'Unknown')
-            prompt += f"- {name}: {description}\n"
-            
-            # Add weapon types within each category
-            types = category_data.get('types', {})
-            for weapon_type, weapon_data in types.items():
-                weapon_name = weapon_data.get('name', weapon_type)
-                effectiveness = weapon_data.get('effectiveness', 'Unknown')
-                range_info = weapon_data.get('range', 'Unknown')
-                prompt += f"  * {weapon_name}: {effectiveness} effectiveness, {range_info} range\n"
+            category_names.append(name)
         
-        prompt += "\nWhen analyzing military scenarios, consider:\n"
-        prompt += "1. Weapon effectiveness and capabilities\n"
-        prompt += "2. Strategic advantages and disadvantages\n"
-        prompt += "3. Impact on victory probability\n"
-        prompt += "4. Logistics and maintenance requirements\n"
-        prompt += "5. Tactical and operational considerations\n"
+        prompt += ", ".join(category_names)
+        prompt += "\n\nFocus on: effectiveness, advantages, tactics."
         
         return prompt
 
     def _create_modelfile(self, base_model, training_prompt, weapons_data):
         """Create a Modelfile for fine-tuning with weapons data"""
         
-        # Create a comprehensive system prompt with weapons data
+        # Create a concise system prompt with weapons data
         enhanced_prompt = self._create_enhanced_system_prompt(training_prompt, weapons_data)
         
         modelfile = f"""FROM {base_model}
 
-# Enhanced system prompt with weapons data
+# Optimized system prompt for fast responses
 SYSTEM \"\"\"
 {enhanced_prompt}
 \"\"\"
 
-# Parameters optimized for weapons analysis
-PARAMETER temperature 0.7
-PARAMETER top_p 0.9
+# Parameters optimized for speed and efficiency
+PARAMETER temperature 0.3
+PARAMETER top_p 0.7
 PARAMETER top_k 40
 PARAMETER repeat_penalty 1.1
-PARAMETER num_ctx 4096
+PARAMETER num_ctx 1024
+PARAMETER num_predict 500
 """
         return modelfile
 
     def _create_enhanced_system_prompt(self, base_prompt, weapons_data):
-        """Create an enhanced system prompt with weapons data embedded"""
+        """Create a concise enhanced system prompt with weapons data"""
         
-        # Extract key weapons information
-        categories_info = []
+        # Extract key weapons information in a very compact format
+        categories_summary = []
         for category_key, category_data in weapons_data.get('weapon_categories', {}).items():
             category_name = category_data.get('name', category_key.title())
-            description = category_data.get('description', 'Unknown')
-            
-            category_info = f"""
-{category_name}:
-- Description: {description}
-- Weapon Types:"""
-            
             types = category_data.get('types', {})
-            for weapon_type, weapon_data in types.items():
-                weapon_name = weapon_data.get('name', weapon_type.title())
-                effectiveness = weapon_data.get('effectiveness', 'Unknown')
-                range_info = weapon_data.get('range', 'Unknown')
-                cost = weapon_data.get('cost', 'Unknown')
-                
-                category_info += f"""
-  * {weapon_name}: {effectiveness} effectiveness, {range_info} range, {cost} cost"""
-                
-                # Add country information
-                countries = weapon_data.get('countries', {})
-                if countries:
-                    country_list = []
-                    for country, data in countries.items():
-                        quantity = data.get('quantity', 'Unknown')
-                        country_list.append(f"{country} ({quantity})")
-                    category_info += f"\n    Countries: {', '.join(country_list)}"
             
-            categories_info.append(category_info)
+            # Get just the first weapon type for each category
+            if types:
+                first_weapon = list(types.keys())[0]
+                weapon_data = types[first_weapon]
+                weapon_name = weapon_data.get('name', first_weapon.title())
+                effectiveness = weapon_data.get('effectiveness', 'Unknown')
+                categories_summary.append(f"{category_name}: {weapon_name}({effectiveness})")
         
         enhanced_prompt = f"""{base_prompt}
 
-DETAILED WEAPONS DATA:
+WEAPONS: {', '.join(categories_summary[:5])}
 
-WEAPON CATEGORIES:
-{chr(10).join(categories_info)}
-
-When analyzing military scenarios, always reference this specific weapons data and provide detailed, data-driven insights based on weapon capabilities, effectiveness, and strategic considerations for each category."""
+Provide brief, focused analysis."""
         
         return enhanced_prompt

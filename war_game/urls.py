@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('geography/', include('geography.urls')),
     path('weapons/', include('weapons.urls')),
+    path('personnel/', include('personnel.urls')),
 ]

@@ -1,41 +1,45 @@
-# War Game Simulation System - Phase 1: Geographical Analysis
+# War Gaming Simulation System
 
-A Django-based war game simulation system that uses local LLMs to analyze geographical data and provide military insights for the Middle East region.
+A comprehensive Django-based war game simulation system that uses local LLMs to analyze military data for the Middle East region. The system provides detailed analysis of geography, personnel, and weapons to support military planning and strategic decision-making.
 
-## Features
+## 🎯 Overview
 
-- **Comprehensive Middle East Geography Dataset**: Detailed JSON dataset covering terrain, weather, strategic features, and military considerations for 10 Middle Eastern countries
-- **Local LLM Integration**: Uses Ollama with Llama 3.2 3B model for local processing (no cloud dependencies)
-- **RESTful API**: Clean API endpoints for geographical analysis
-- **Military Intelligence**: Provides terrain assessment, weather impact, strategic advantages/disadvantages, and tactical recommendations
-- **Easy Data Management**: JSON-based dataset that's easy to edit and update
+This system consists of three main components:
+- **Geography Analysis**: Terrain, weather, and strategic features analysis
+- **Personnel Management**: Military personnel data and organizational structure
+- **Weapons Analysis**: Equipment capabilities and effectiveness assessment
 
-## Supported Regions
+## 🏗️ Architecture
 
-- Syria
-- Iraq
-- Iran
-- Israel
-- Lebanon
-- Jordan
-- Saudi Arabia
-- Yemen
-- Egypt
-- Turkey
+```
+war_game/                 # Main Django project
+├── geography/           # Geography analysis app
+├── personnel/           # Personnel management app
+├── weapons/            # Weapons analysis app
+└── manage.py           # Django management
+```
 
-## Prerequisites
+## 🚀 Features
+
+- **Local LLM Integration**: Uses Ollama with Llama 3.2 3B for local processing
+- **Comprehensive Data**: Detailed datasets covering 10+ Middle Eastern countries
+- **RESTful APIs**: Clean API endpoints for each component
+- **Military Intelligence**: Strategic analysis and tactical recommendations
+- **Modular Design**: Independent apps for different military aspects
+
+## 📋 Prerequisites
 
 - Python 3.8+
 - Django 5.2.5
 - Ollama (for local LLM)
 - Mac M1 Pro (optimized for Apple Silicon)
 
-## Installation
+## 🛠️ Installation
 
 ### 1. Clone the Repository
 ```bash
 git clone <repository-url>
-cd war_gaming
+cd Wargaming
 ```
 
 ### 2. Set Up Virtual Environment
@@ -51,13 +55,11 @@ pip install -r requirements.txt
 
 ### 4. Install Ollama
 ```bash
-# Install Ollama (if not already installed)
 curl -fsSL https://ollama.ai/install.sh | sh
 ```
 
 ### 5. Download the LLM Model
 ```bash
-# Pull the Llama 3.2 3B model
 ollama pull llama3.2:3b
 ```
 
@@ -71,214 +73,123 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## Usage
+## 📚 Documentation
 
-### API Endpoints
+Each app has its own detailed documentation:
 
-#### 1. Analyze Geography
-**POST** `/geography/api/analyze/`
+- [Geography App README](geography/README.md) - Terrain and strategic analysis
+- [Personnel App README](personnel/README.md) - Military personnel management
+- [Weapons App README](weapons/README.md) - Equipment and weapons analysis
 
-Analyze geographical data and get military insights.
+## 🔗 API Endpoints
 
-**Request Body:**
-```json
-{
-    "query": "What are the key terrain features of Syria and how do they affect military operations?",
-    "region": "syria"  // optional
-}
-```
+### Geography Analysis
+- `POST /geography/api/analyze/` - Analyze geographical data
+- `GET /geography/api/regions/` - Get available regions
+- `GET /geography/api/regions/{region}/` - Get region data
+- `GET /geography/api/health/` - Health check
 
-**Response:**
-```json
-{
-    "success": true,
-    "analysis": "Based on the geographical data for Syria...",
-    "region": "Syria",
-    "query": "What are the key terrain features of Syria and how do they affect military operations?"
-}
-```
+### Personnel Management
+- `GET /personnel/api/health/` - Health check
+- `GET /personnel/api/countries/` - Get available countries
+- `GET /personnel/api/countries/{country}/` - Get country personnel
+- `GET /personnel/api/countries/{country}/branches/` - Get branches
+- `GET /personnel/api/countries/{country}/branches/{branch}/` - Get branch personnel
 
-#### 2. Get Available Regions
-**GET** `/geography/api/regions/`
+### Weapons Analysis
+- `POST /weapons/api/analyze/` - Analyze weapons data
+- `GET /weapons/api/categories/` - Get weapon categories
+- `GET /weapons/api/categories/{category}/` - Get category data
+- `GET /weapons/api/health/` - Health check
 
-Get list of all available regions.
+## 🎮 Usage Examples
 
-**Response:**
-```json
-{
-    "success": true,
-    "regions": ["syria", "iraq", "iran", "israel", "lebanon", "jordan", "saudi_arabia", "yemen", "egypt", "turkey"]
-}
-```
-
-#### 3. Get Region Data
-**GET** `/geography/api/regions/{region}/`
-
-Get detailed data for a specific region.
-
-**Response:**
-```json
-{
-    "success": true,
-    "region": "syria",
-    "data": {
-        "name": "Syria",
-        "terrain": {...},
-        "weather": {...},
-        "strategic_features": {...},
-        "military_considerations": {...}
-    }
-}
-```
-
-#### 4. Health Check
-**GET** `/geography/api/health/`
-
-Check system status and LLM availability.
-
-**Response:**
-```json
-{
-    "success": true,
-    "llm_available": true,
-    "model_name": "llama3.2:3b",
-    "available_regions": 10
-}
-```
-
-### Management Commands
-
-#### Retrain LLM Model
+### Geography Analysis
 ```bash
-# Retrain with default model
+curl -X POST http://localhost:8000/geography/api/analyze/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What are the key terrain features of Syria?",
+    "region": "syria"
+  }'
+```
+
+### Personnel Query
+```bash
+curl http://localhost:8000/personnel/api/countries/israel/
+```
+
+### Weapons Analysis
+```bash
+curl -X POST http://localhost:8000/weapons/api/analyze/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Compare tank capabilities in the region",
+    "weapon_category": "armored_vehicles"
+  }'
+```
+
+## 🔧 Management Commands
+
+### Retrain LLM Models
+```bash
+# Geography model
 python manage.py retrain_llm
 
-# Retrain with specific model
-python manage.py retrain_llm --model llama3.2:7b
+# Personnel model
+python manage.py retrain_personnel_llm
 
-# Force retrain even if model exists
-python manage.py retrain_llm --force
+# Weapons model
+python manage.py retrain_weapons_llm
 ```
 
-## Example Queries
+## 🗺️ Supported Regions
 
-### Terrain Analysis
-```json
-{
-    "query": "How does the mountainous terrain of Iran affect offensive military operations?",
-    "region": "iran"
-}
-```
+The system covers military data for:
+- Syria, Iraq, Iran, Israel, Lebanon
+- Jordan, Saudi Arabia, Yemen, Egypt, Turkey
 
-### Weather Impact
-```json
-{
-    "query": "What are the weather challenges for military operations in Saudi Arabia during summer?",
-    "region": "saudi_arabia"
-}
-```
+## 🛡️ Data Sources
 
-### Strategic Assessment
-```json
-{
-    "query": "What are the strategic advantages and disadvantages of defending the Golan Heights?",
-    "region": "syria"
-}
-```
+- **Geography**: Terrain, weather, strategic features, military considerations
+- **Personnel**: Active duty, reserves, ranks, special units, branches
+- **Weapons**: Individual weapons, armored vehicles, artillery, air defense, naval vessels
 
-### Logistics Planning
-```json
-{
-    "query": "What are the main logistics challenges for military operations in Yemen?",
-    "region": "yemen"
-}
-```
+## 🔍 Troubleshooting
 
-## Data Structure
-
-The geographical dataset (`geography/data/middle_east_geography.json`) contains:
-
-### Region Data
-- **Terrain**: Primary/secondary terrain types, elevation data, difficulty rating
-- **Weather**: Climate type, temperature ranges, precipitation, visibility/mobility impact
-- **Strategic Features**: Ports, airports, mountain passes, rivers, oil fields, urban centers
-- **Military Considerations**: Terrain advantages/disadvantages, logistics challenges, defensive/offensive positions
-
-### Weather Patterns
-- Sandstorms, dust storms, winter snow, monsoon rains
-- Frequency and impact on military operations
-
-### Strategic Chokepoints
-- Suez Canal, Strait of Hormuz, Bab el-Mandeb, Golan Heights
-- Strategic importance and control implications
-
-### Infrastructure
-- Major highways, railway networks, airports
-- Vulnerability assessments
-
-## Customization
-
-### Adding New Regions
-1. Edit `geography/data/middle_east_geography.json`
-2. Add new region data following the existing structure
-3. Restart the Django server
-
-### Modifying LLM Model
-1. Change the model in `geography/services/llm_service.py`
-2. Update the `model_name` parameter in the `LLMService` class
-3. Run `python manage.py retrain_llm --model your_model_name`
-
-### Updating Geographical Data
-1. Edit the JSON file directly
-2. The changes take effect immediately (no retraining required)
-3. For major changes, consider retraining the model
-
-## Troubleshooting
-
-### Ollama Not Running
+### Ollama Issues
 ```bash
 # Start Ollama
 ollama serve
 
-# Check if model is available
+# Check model availability
 ollama list
-```
-
-### Model Not Found
-```bash
-# Pull the required model
-ollama pull llama3.2:3b
-
-# Or use a different model
-python manage.py retrain_llm --model llama3.2:7b
 ```
 
 ### API Errors
 - Check Django server logs
 - Verify Ollama is running on `http://localhost:11434`
-- Ensure the geographical data file exists
+- Ensure data files exist in respective app directories
 
-## Performance Considerations
+## 📈 Performance
 
-- **Model Size**: Llama 3.2 3B is optimized for M1 Pro performance
-- **Response Time**: Typical response time is 5-15 seconds
-- **Memory Usage**: Model requires ~4GB RAM
-- **Concurrent Requests**: Limit to 2-3 simultaneous requests for optimal performance
+- **Response Time**: 5-15 seconds for LLM analysis
+- **Memory Usage**: ~4GB RAM for LLM model
+- **Concurrent Requests**: 2-3 simultaneous requests recommended
 
-## Future Enhancements (Phase 2+)
+## 🔮 Future Enhancements
 
-- Weapons and equipment data
-- Army composition and capabilities
-- Historical battle data
 - Real-time weather integration
 - Advanced battle simulation algorithms
 - Multi-region conflict scenarios
+- Historical battle data integration
+- Machine learning model improvements
 
-## License
+## 📄 License
 
 This project is for educational and research purposes.
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -286,9 +197,9 @@ This project is for educational and research purposes.
 4. Test thoroughly
 5. Submit a pull request
 
-## Support
+## 📞 Support
 
 For issues and questions:
 1. Check the troubleshooting section
-2. Review Django and Ollama documentation
+2. Review individual app READMEs
 3. Open an issue on the repository

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'geography',
     'weapons',
+    'personnel',
     'rest_framework',
 ]
 
@@ -123,3 +124,31 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# LLM Configuration
+LLM_CONFIG = {
+    'provider': 'ollama',  # Options: 'ollama', 'citome', 'openai', 'anthropic'
+    'ollama': {
+        'base_url': 'http://localhost:11434',
+        'default_model': 'llama3.2:3b',
+        'timeout': 30,
+    },
+    'citome': {
+        'base_url': 'http://localhost:8000',  # Adjust this to your Citome endpoint
+        'default_model': 'citome-model',  # Adjust this to your model name
+        'timeout': 60,
+        'api_key': None,  # Add your API key if required
+    },
+    'openai': {
+        'base_url': 'https://api.openai.com/v1',
+        'default_model': 'gpt-3.5-turbo',
+        'timeout': 30,
+        'api_key': None,  # Add your OpenAI API key
+    },
+    'anthropic': {
+        'base_url': 'https://api.anthropic.com',
+        'default_model': 'claude-3-sonnet-20240229',
+        'timeout': 30,
+        'api_key': None,  # Add your Anthropic API key
+    }
+}

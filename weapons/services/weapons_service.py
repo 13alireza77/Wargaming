@@ -31,38 +31,14 @@ class WeaponsService:
     
     def _create_system_prompt(self) -> str:
         """Create the system prompt for weapons analysis"""
-        return """You are a military weapons and equipment expert specializing in Middle Eastern military capabilities analysis. 
-Your task is to analyze weapons data and provide strategic military insights about weapon effectiveness and victory probability.
-
-Available weapon categories: Individual Weapons, Collective Weapons, Cold Weapons, Robotics/AI Weapons, Conventional Weapon Systems, Unconventional Weapons, Chemical Weapons, Biological Weapons, Nuclear Weapons, Toxic Weapons
-
-For each analysis, provide:
-1. Weapon effectiveness assessment and capabilities
-2. Strategic advantages and disadvantages
-3. Impact on victory probability
-4. Logistics and maintenance considerations
-5. Tactical and operational recommendations
-
-Base your analysis on the provided weapons data and military considerations."""
+        return """Military weapons expert. Analyze weapons and provide victory probability insights. Be brief and focused."""
 
     def _create_user_prompt(self, query: str, weapon_data: Dict[str, Any] = None, country: str = None) -> str:
         """Create the user prompt with weapons context"""
         if weapon_data and country:
-            context = f"""
-Weapon Category: {weapon_data.get('name', 'Unknown')}
-Country: {country}
-Weapon Type: {weapon_data.get('description', 'Unknown')}
-Effectiveness: {weapon_data.get('effectiveness', 'Unknown')}
-Range: {weapon_data.get('range', 'Unknown')}
-
-Query: {query}
-"""
+            context = f"{country}: {weapon_data.get('name', 'Unknown')} ({weapon_data.get('effectiveness', 'Unknown')}). {query}"
         else:
-            context = f"""
-Available weapons data for Middle East countries including individual weapons, collective weapons, and various weapon categories.
-
-Query: {query}
-"""
+            context = query
         
         return context
 
@@ -79,6 +55,10 @@ Query: {query}
             Dictionary containing analysis results
         """
         try:
+            # Check if this is a simple query that can be answered quickly
+            if self._is_simple_query(query):
+                return self._get_quick_response(query, weapon_category, country)
+            
             # Get weapon data if specified
             weapon_data = None
             if weapon_category and weapon_category.lower() in self.weapons_data.get('weapon_categories', {}):
@@ -88,7 +68,7 @@ Query: {query}
             system_prompt = self._create_system_prompt()
             user_prompt = self._create_user_prompt(query, weapon_data, country)
             
-            # Prepare the request to Ollama
+            # Prepare the request to Ollama with optimized parameters
             payload = {
                 "model": self.model_name,
                 "messages": [
@@ -97,13 +77,15 @@ Query: {query}
                 ],
                 "stream": False,
                 "options": {
-                    "temperature": 0.7,
-                    "top_p": 0.9,
-                    "max_tokens": 2000
+                    "temperature": 0.3,
+                    "top_p": 0.7,
+                    "max_tokens": 500,
+                    "num_predict": 500,
+                    "num_ctx": 1024
                 }
             }
             
-            # Make request to Ollama
+            # Make request to Ollama with reduced timeout
             response = requests.post(
                 f"{self.base_url}/api/chat",
                 json=payload,
@@ -143,6 +125,77 @@ Query: {query}
                 "error": f"Analysis error: {str(e)}",
                 "query": query
             }
+    
+    def _is_simple_query(self, query: str) -> bool:
+        """Check if this is a simple query that can be answered quickly"""
+        simple_keywords = ['victory probability', 'compare', 'vs', 'versus', 'conflict']
+        return any(keyword in query.lower() for keyword in simple_keywords)
+    
+    def _get_quick_response(self, query: str, weapon_category: str = None, country: str = None) -> Dict[str, Any]:
+        """Provide a quick response for simple queries without using LLM"""
+        query_lower = query.lower()
+        
+        if 'victory probability' in query_lower or 'compare' in query_lower:
+            # Extract countries from query
+            countries = self._extract_countries_from_query(query)
+            if len(countries) >= 2:
+                return self._quick_victory_analysis(countries[0], countries[1])
+        
+        # Default quick response
+        return {
+            "success": True,
+            "analysis": "Quick analysis: Based on available weapons data, this requires detailed LLM analysis. For faster response, try a more specific query.",
+            "query": query
+        }
+    
+    def _extract_countries_from_query(self, query: str) -> List[str]:
+        """Extract country names from query"""
+        # Simple country extraction - in production you'd want a more sophisticated approach
+        countries = []
+        query_lower = query.lower()
+        
+        # Common Middle East countries
+        middle_east_countries = ['israel', 'syria', 'iran', 'iraq', 'turkey', 'saudi arabia', 'uae', 'egypt', 'jordan', 'lebanon']
+        
+        for country in middle_east_countries:
+            if country in query_lower:
+                countries.append(country.title())
+        
+        return countries
+    
+    def _quick_victory_analysis(self, country1: str, country2: str) -> Dict[str, Any]:
+        """Provide a quick victory analysis based on weapons data"""
+        weapons1 = self.get_country_weapons(country1)
+        weapons2 = self.get_country_weapons(country2)
+        
+        # Simple analysis based on weapon categories
+        categories1 = len(weapons1.keys())
+        categories2 = len(weapons2.keys())
+        
+        if categories1 > categories2:
+            winner = country1
+            confidence = "High"
+            reason = f"{country1} has more weapon categories ({categories1} vs {categories2})"
+        elif categories2 > categories1:
+            winner = country2
+            confidence = "High"
+            reason = f"{country2} has more weapon categories ({categories2} vs {categories1})"
+        else:
+            winner = "Tie"
+            confidence = "Medium"
+            reason = f"Both countries have similar weapon diversity ({categories1} categories each)"
+        
+        analysis = f"Quick Victory Analysis:\n\n{country1} vs {country2}:\n- Winner: {winner}\n- Confidence: {confidence}\n- Reason: {reason}\n\nNote: This is a simplified analysis. For detailed assessment, use LLM analysis."
+        
+        return {
+            "success": True,
+            "analysis": analysis,
+            "country1": country1,
+            "country2": country2,
+            "weapons1": weapons1,
+            "weapons2": weapons2,
+            "query": f"Compare {country1} vs {country2}"
+        }
     
     def get_available_weapon_categories(self) -> List[str]:
         """Get list of available weapon categories"""
@@ -185,8 +238,8 @@ Query: {query}
             weapons1 = self.get_country_weapons(country1)
             weapons2 = self.get_country_weapons(country2)
             
-            # Create analysis query
-            query = f"Compare the military capabilities of {country1} and {country2} in a {scenario} conflict scenario. Analyze their weapons and calculate the probability of victory for each side."
+            # Create a focused analysis query
+            query = f"Compare {country1} vs {country2} in {scenario} conflict. Focus on key weapons and victory probability."
             
             # Perform analysis
             result = self.analyze_weapons(query)

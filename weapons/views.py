@@ -7,6 +7,16 @@ from .services.weapons_service import WeaponsService
 
 logger = logging.getLogger(__name__)
 
+# Initialize weapons service once to avoid repeated initialization
+_weapons_service = None
+
+def get_weapons_service():
+    """Get or create weapons service instance"""
+    global _weapons_service
+    if _weapons_service is None:
+        _weapons_service = WeaponsService()
+    return _weapons_service
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def analyze_weapons(request):
@@ -25,15 +35,8 @@ def analyze_weapons(request):
                 'error': 'Query is required'
             }, status=400)
         
-        # Initialize weapons service
-        weapons_service = WeaponsService()
-        
-        # Check if model is available
-        if not weapons_service.check_model_availability():
-            return JsonResponse({
-                'success': False,
-                'error': 'LLM model not available. Please ensure Ollama is running and the model is installed.'
-            }, status=503)
+        # Get weapons service
+        weapons_service = get_weapons_service()
         
         # Perform analysis
         result = weapons_service.analyze_weapons(query, weapon_category, country)
@@ -61,7 +64,7 @@ def get_weapon_categories(request):
     API endpoint to get list of available weapon categories
     """
     try:
-        weapons_service = WeaponsService()
+        weapons_service = get_weapons_service()
         categories = weapons_service.get_available_weapon_categories()
         
         return JsonResponse({
@@ -81,7 +84,7 @@ def get_weapon_category_data(request, category):
     API endpoint to get data for a specific weapon category
     """
     try:
-        weapons_service = WeaponsService()
+        weapons_service = get_weapons_service()
         category_data = weapons_service.get_weapon_category_data(category)
         
         if category_data:
@@ -108,7 +111,7 @@ def get_country_weapons(request, country):
     API endpoint to get all weapons data for a specific country
     """
     try:
-        weapons_service = WeaponsService()
+        weapons_service = get_weapons_service()
         country_weapons = weapons_service.get_country_weapons(country)
         
         if country_weapons:
@@ -147,15 +150,8 @@ def calculate_victory_probability(request):
                 'error': 'Both country1 and country2 are required'
             }, status=400)
         
-        # Initialize weapons service
-        weapons_service = WeaponsService()
-        
-        # Check if model is available
-        if not weapons_service.check_model_availability():
-            return JsonResponse({
-                'success': False,
-                'error': 'LLM model not available. Please ensure Ollama is running and the model is installed.'
-            }, status=503)
+        # Get weapons service
+        weapons_service = get_weapons_service()
         
         # Calculate victory probability
         result = weapons_service.calculate_victory_probability(country1, country2, scenario)
@@ -183,7 +179,7 @@ def weapons_health_check(request):
     Health check endpoint to verify weapons service status
     """
     try:
-        weapons_service = WeaponsService()
+        weapons_service = get_weapons_service()
         model_available = weapons_service.check_model_availability()
         
         return JsonResponse({
