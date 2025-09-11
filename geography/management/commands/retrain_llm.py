@@ -16,8 +16,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--model',
             type=str,
-            default='llama3.2:3b',
-            help='Ollama model name to use (default: llama3.2:3b)'
+            default='qwen2.5:0.5b',
+            help='Ollama model name to use (default: qwen2.5:0.5b )'
         )
         parser.add_argument(
             '--base-url',
@@ -184,16 +184,16 @@ class Command(BaseCommand):
         weather_patterns = geography_data.get('weather_patterns', {})
         strategic_chokepoints = geography_data.get('strategic_chokepoints', {})
 
-        prompt = "You are a military geography expert specializing in Middle Eastern terrain analysis. Analyze geographical data and provide strategic insights. Be brief and focused.\n\n"
+        prompt = "You are a military geography expert specializing in Middle Eastern terrain analysis and strategic positioning. Your role is to provide detailed analysis of geographical factors affecting military operations and war outcomes.\n\n"
         prompt += "Available regions: "
 
         region_names = []
         for region_key, region_data in regions.items():
             name = region_data.get('name', region_key)
             region_names.append(name)
-        
+
         prompt += ", ".join(region_names)
-        prompt += "\n\nFocus on: terrain impact, weather effects, strategic advantages, military considerations."
+        prompt += "\n\nKey analysis areas:\n- Terrain advantages and disadvantages for military operations\n- Weather impact on combat effectiveness\n- Strategic positioning and defensive capabilities\n- Logistical challenges and supply line vulnerabilities\n- Key battle-winning geographical factors\n- Victory probability based on terrain control\n\nProvide clear, structured analysis with specific geographical insights and strategic recommendations. Focus on actionable intelligence for military planning and war outcome prediction."
 
         return prompt
 
@@ -210,35 +210,35 @@ SYSTEM \"\"\"
 {enhanced_prompt}
 \"\"\"
 
-# Parameters optimized for speed and efficiency
+# Parameters optimized for quality responses
 PARAMETER temperature 0.3
-PARAMETER top_p 0.7
+PARAMETER top_p 0.8
 PARAMETER top_k 40
 PARAMETER repeat_penalty 1.1
-PARAMETER num_ctx 1024
-PARAMETER num_predict 500
+PARAMETER num_ctx 2048
+PARAMETER num_predict 800
 """
         return modelfile
 
     def _create_enhanced_system_prompt(self, base_prompt, geography_data):
         """Create a concise enhanced system prompt with geographical data"""
-        
+
         # Extract key geographical information in a compact format
         regions_summary = []
         for region_key, region_data in geography_data.get('regions', {}).items():
             region_name = region_data.get('name', region_key.title())
             terrain = region_data.get('terrain', {})
             weather = region_data.get('weather', {})
-            
+
             terrain_desc = terrain.get('description', 'Unknown')
             climate = weather.get('climate', 'Unknown')
-            
+
             regions_summary.append(f"{region_name}: {terrain_desc} ({climate})")
-        
+
         enhanced_prompt = f"""{base_prompt}
 
 GEOGRAPHY DATA: {', '.join(regions_summary[:5])}
 
 Provide brief, focused analysis of terrain and strategic considerations."""
-        
+
         return enhanced_prompt

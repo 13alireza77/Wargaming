@@ -11,7 +11,7 @@ class PersonnelService:
     Service for analyzing military personnel data
     """
     
-    def __init__(self, model_name: str = "llama3.2:3b-personnel", base_url: str = "http://localhost:11434"):
+    def __init__(self, model_name: str = "qwen2.5:0.5b-personnel", base_url: str = "http://localhost:11434"):
         self.model_name = model_name
         self.base_url = base_url
         self.personnel_data = self._load_personnel_data()
@@ -31,7 +31,17 @@ class PersonnelService:
     
     def _create_system_prompt(self) -> str:
         """Create the system prompt for personnel analysis"""
-        return """Military personnel expert. Analyze troop capabilities and provide strategic insights. Be brief and focused."""
+        return """You are a military personnel analyst specializing in Middle Eastern armed forces. Your role is to provide detailed analysis of military personnel capabilities, troop effectiveness, and strategic assessments.
+
+Key analysis areas:
+- Personnel strength and composition
+- Training and experience levels
+- Leadership quality and command structure
+- Special forces capabilities
+- Reserve force mobilization potential
+- Victory probability based on human factors
+
+Provide clear, structured analysis with specific insights and recommendations. Focus on actionable intelligence for military planning."""
 
     def _create_user_prompt(self, query: str, personnel_data: Dict[str, Any] = None, country: str = None) -> str:
         """Create the user prompt with personnel context"""
@@ -42,9 +52,148 @@ class PersonnelService:
         
         return context
 
+    def _build_analysis_context(self, query: str, personnel_data: Dict[str, Any] = None, country: str = None, branch: str = None) -> Dict[str, Any]:
+        """Build comprehensive context for LLM analysis"""
+        context = {
+            "query": query,
+            "country": country,
+            "branch": branch,
+            "personnel_data": personnel_data
+        }
+        
+        if personnel_data:
+            context["summary"] = {
+                "total_personnel": personnel_data.get('total_personnel'),
+                "active_duty": personnel_data.get('active_duty'),
+                "reserves": personnel_data.get('reserves'),
+                "branches": list(personnel_data.get('branches', {}).keys())
+            }
+            
+            if branch and branch.lower() in personnel_data.get('branches', {}):
+                branch_data = personnel_data['branches'][branch.lower()]
+                context["branch_summary"] = {
+                    "personnel": branch_data.get('personnel'),
+                    "ranks": branch_data.get('ranks', {}),
+                    "special_units": branch_data.get('special_units', {})
+                }
+        
+        return context
+
+    def _create_enhanced_user_prompt(self, query: str, context_data: Dict[str, Any], country: str = None, branch: str = None) -> str:
+        """Create enhanced user prompt with comprehensive context"""
+        prompt_parts = []
+        
+        # Add query
+        prompt_parts.append(f"Query: {query}")
+        
+        # Add country context
+        if country and context_data.get("summary"):
+            summary = context_data["summary"]
+            prompt_parts.append(f"\nCountry: {country}")
+            prompt_parts.append(f"- Total Personnel: {summary.get('total_personnel', 'Unknown')}")
+            prompt_parts.append(f"- Active Duty: {summary.get('active_duty', 'Unknown')}")
+            prompt_parts.append(f"- Reserves: {summary.get('reserves', 'Unknown')}")
+            prompt_parts.append(f"- Branches: {', '.join(summary.get('branches', []))}")
+        
+        # Add branch context
+        if branch and context_data.get("branch_summary"):
+            branch_summary = context_data["branch_summary"]
+            prompt_parts.append(f"\nBranch: {branch}")
+            prompt_parts.append(f"- Personnel: {branch_summary.get('personnel', 'Unknown')}")
+            if branch_summary.get('special_units'):
+                units = list(branch_summary['special_units'].keys())
+                prompt_parts.append(f"- Special Units: {', '.join(units[:3])}")
+        
+        # Add analysis focus
+        prompt_parts.append(f"\nProvide a focused military analysis considering war conditions and strategic factors.")
+        
+        return "\n".join(prompt_parts)
+
+    def _create_victory_system_prompt(self) -> str:
+        """Create specialized system prompt for victory probability analysis"""
+        return """You are a military strategist specializing in personnel-based victory probability analysis. Your expertise includes:
+
+- Comparative analysis of military personnel strengths
+- Assessment of troop quality and training levels
+- Evaluation of leadership and command effectiveness
+- Analysis of special forces capabilities
+- Reserve force mobilization potential
+- Strategic advantages based on human resources
+
+Provide detailed victory probability assessments with specific reasoning, key factors, and strategic recommendations. Structure your analysis clearly with numbered points and clear conclusions."""
+
+    def _build_victory_comparison_context(self, country1: str, country2: str, country1_data: Dict[str, Any], country2_data: Dict[str, Any], scenario: str) -> Dict[str, Any]:
+        """Build comprehensive context for victory comparison analysis"""
+        return {
+            "country1": {
+                "name": country1,
+                "total_personnel": country1_data.get('total_personnel'),
+                "active_duty": country1_data.get('active_duty'),
+                "reserves": country1_data.get('reserves'),
+                "branches": country1_data.get('branches', {}),
+                "branch_summary": self._summarize_branches(country1_data.get('branches', {}))
+            },
+            "country2": {
+                "name": country2,
+                "total_personnel": country2_data.get('total_personnel'),
+                "active_duty": country2_data.get('active_duty'),
+                "reserves": country2_data.get('reserves'),
+                "branches": country2_data.get('branches', {}),
+                "branch_summary": self._summarize_branches(country2_data.get('branches', {}))
+            },
+            "scenario": scenario
+        }
+
+    def _summarize_branches(self, branches: Dict[str, Any]) -> Dict[str, Any]:
+        """Summarize branch information for comparison"""
+        summary = {}
+        for branch_name, branch_data in branches.items():
+            summary[branch_name] = {
+                "personnel": branch_data.get('personnel'),
+                "special_units": list(branch_data.get('special_units', {}).keys())[:3],
+                "officer_ranks": len(branch_data.get('ranks', {}).get('officers', {})),
+                "enlisted_ranks": len(branch_data.get('ranks', {}).get('enlisted', {}))
+            }
+        return summary
+
+    def _create_victory_user_prompt(self, comparison_context: Dict[str, Any], scenario: str) -> str:
+        """Create comprehensive user prompt for victory analysis"""
+        country1 = comparison_context["country1"]
+        country2 = comparison_context["country2"]
+        
+        prompt = f"""VICTORY PROBABILITY ANALYSIS
+
+Scenario: {scenario} conflict
+
+COUNTRY 1: {country1['name']}
+- Total Personnel: {country1['total_personnel']:,}
+- Active Duty: {country1['active_duty']:,}
+- Reserves: {country1['reserves']:,}
+- Military Branches: {len(country1['branches'])}
+
+COUNTRY 2: {country2['name']}
+- Total Personnel: {country2['total_personnel']:,}
+- Active Duty: {country2['active_duty']:,}
+- Reserves: {country2['reserves']:,}
+- Military Branches: {len(country2['branches'])}
+
+ANALYSIS REQUIRED:
+1. Personnel strength comparison
+2. Training and experience assessment
+3. Leadership quality evaluation
+4. Special forces capabilities
+5. Reserve mobilization potential
+6. Victory probability percentage
+7. Key strategic factors
+8. Recommendations
+
+Provide detailed analysis with specific insights and clear conclusions."""
+        
+        return prompt
+
     def analyze_personnel(self, query: str, country: str = None, branch: str = None) -> Dict[str, Any]:
         """
-        Analyze personnel data based on the query
+        Analyze personnel data based on the query using LLM model
         
         Args:
             query: The personnel analysis question
@@ -55,20 +204,19 @@ class PersonnelService:
             Dictionary containing analysis results
         """
         try:
-            # Check if this is a simple query that can be answered quickly
-            if self._is_simple_query(query):
-                return self._get_quick_response(query, country, branch)
-            
             # Get personnel data if specified
             personnel_data = None
             if country and country.lower() in self.personnel_data.get('personnel_data', {}).get('countries', {}):
                 personnel_data = self.personnel_data['personnel_data']['countries'][country.lower()]
             
+            # Create comprehensive context for the LLM
+            context_data = self._build_analysis_context(query, personnel_data, country, branch)
+            
             # Create prompts
             system_prompt = self._create_system_prompt()
-            user_prompt = self._create_user_prompt(query, personnel_data, country)
+            user_prompt = self._create_enhanced_user_prompt(query, context_data, country, branch)
             
-            # Prepare the request to Ollama with optimized parameters
+            # Prepare the request to Ollama with optimized parameters for quality responses
             payload = {
                 "model": self.model_name,
                 "messages": [
@@ -78,15 +226,17 @@ class PersonnelService:
                 "stream": False,
                 "options": {
                     "temperature": 0.3,
-                    "top_p": 0.7,
-                    "max_tokens": 500,
-                    "num_predict": 500,
-                    "num_ctx": 1024
+                    "top_p": 0.8,
+                    "max_tokens": 600,
+                    "num_predict": 600,
+                    "num_ctx": 1536,
+                    "repeat_penalty": 1.1,
+                    "stop": ["END_ANALYSIS", "---END---"]
                 }
             }
             
-            # Make the request with reduced timeout
-            response = requests.post(f"{self.base_url}/api/chat", json=payload, timeout=30)
+            # Make the request with reasonable timeout
+            response = requests.post(f"{self.base_url}/api/chat", json=payload, timeout=60)
             response.raise_for_status()
             
             result = response.json()
@@ -96,67 +246,35 @@ class PersonnelService:
                 "success": True,
                 "analysis": analysis,
                 "country": country,
-                "branch": branch,
-                "query": query
+                "model_used": self.model_name
             }
             
+        except requests.exceptions.Timeout:
+            logger.error("LLM request timed out")
+            return {
+                "success": False,
+                "error": "LLM request timed out. Please try again or check model availability.",
+                "analysis": None
+            }
         except requests.exceptions.RequestException as e:
             logger.error(f"Error communicating with Ollama: {e}")
             return {
                 "success": False,
-                "error": f"Failed to communicate with LLM service: {str(e)}",
-                "query": query
+                "error": f"LLM service unavailable: {str(e)}",
+                "analysis": None
             }
         except Exception as e:
             logger.error(f"Error analyzing personnel: {e}")
             return {
                 "success": False,
                 "error": f"Analysis failed: {str(e)}",
-                "query": query
+                "analysis": None
             }
 
-    def _is_simple_query(self, query: str) -> bool:
-        """Check if this is a simple query that can be answered quickly"""
-        simple_keywords = ['personnel', 'troops', 'military', 'forces', 'victory probability', 'compare']
-        return any(keyword in query.lower() for keyword in simple_keywords)
-
-    def _get_quick_response(self, query: str, country: str = None, branch: str = None) -> Dict[str, Any]:
-        """Provide a quick response for simple queries"""
-        query_lower = query.lower()
-        
-        if country and country.lower() in self.personnel_data.get('personnel_data', {}).get('countries', {}):
-            country_data = self.personnel_data['personnel_data']['countries'][country.lower()]
-            
-            # Extract key information
-            total = country_data.get('total_personnel', 'Unknown')
-            active = country_data.get('active_duty', 'Unknown')
-            reserves = country_data.get('reserves', 'Unknown')
-            branches = list(country_data.get('branches', {}).keys())
-            
-            analysis = f"Quick Personnel Analysis:\n\n{country}:\n"
-            analysis += f"- Total Personnel: {total}\n"
-            analysis += f"- Active Duty: {active}\n"
-            analysis += f"- Reserves: {reserves}\n"
-            analysis += f"- Military Branches: {', '.join(branches[:3])}\n"
-            analysis += "\nNote: This is a simplified analysis. For detailed assessment, use LLM analysis."
-            
-            return {
-                "success": True,
-                "analysis": analysis,
-                "country": country,
-                "query": query
-            }
-        
-        # Default quick response
-        return {
-            "success": True,
-            "analysis": "Quick analysis: Based on available personnel data, this requires detailed LLM analysis. For faster response, try a more specific query.",
-            "query": query
-        }
 
     def calculate_victory_probability(self, country1: str, country2: str, scenario: str = "conventional") -> Dict[str, Any]:
         """
-        Calculate victory probability based on personnel comparison
+        Calculate victory probability based on personnel comparison using LLM model
         
         Args:
             country1: First country in the conflict
@@ -179,11 +297,14 @@ class PersonnelService:
             country1_data = countries_data[country1.lower()]
             country2_data = countries_data[country2.lower()]
             
-            # Create a focused comparison prompt
-            system_prompt = self._create_system_prompt()
-            user_prompt = f"Compare {country1} vs {country2} personnel for {scenario} conflict. Focus on key factors and victory probability."
+            # Create comprehensive comparison context
+            comparison_context = self._build_victory_comparison_context(country1, country2, country1_data, country2_data, scenario)
             
-            # Prepare the request to Ollama with optimized parameters
+            # Create enhanced prompts for victory analysis
+            system_prompt = self._create_victory_system_prompt()
+            user_prompt = self._create_victory_user_prompt(comparison_context, scenario)
+            
+            # Prepare the request to Ollama with optimized parameters for quality responses
             payload = {
                 "model": self.model_name,
                 "messages": [
@@ -193,15 +314,17 @@ class PersonnelService:
                 "stream": False,
                 "options": {
                     "temperature": 0.3,
-                    "top_p": 0.7,
-                    "max_tokens": 400,
-                    "num_predict": 400,
-                    "num_ctx": 1024
+                    "top_p": 0.8,
+                    "max_tokens": 600,
+                    "num_predict": 600,
+                    "num_ctx": 1536,
+                    "repeat_penalty": 1.1,
+                    "stop": ["END_ANALYSIS", "---END---"]
                 }
             }
             
-            # Make the request with reduced timeout
-            response = requests.post(f"{self.base_url}/api/chat", json=payload, timeout=25)
+            # Make the request with reasonable timeout
+            response = requests.post(f"{self.base_url}/api/chat", json=payload, timeout=60)
             response.raise_for_status()
             
             result = response.json()
@@ -212,76 +335,31 @@ class PersonnelService:
                 "analysis": analysis,
                 "country1": country1,
                 "country2": country2,
-                "scenario": scenario,
-                "country1_data": {
-                    "total_personnel": country1_data.get('total_personnel'),
-                    "active_duty": country1_data.get('active_duty'),
-                    "reserves": country1_data.get('reserves')
-                },
-                "country2_data": {
-                    "total_personnel": country2_data.get('total_personnel'),
-                    "active_duty": country2_data.get('active_duty'),
-                    "reserves": country2_data.get('reserves')
-                }
+                "model_used": self.model_name
             }
             
+        except requests.exceptions.Timeout:
+            logger.error("Victory probability request timed out")
+            return {
+                "success": False,
+                "error": "LLM request timed out. Please try again or check model availability.",
+                "analysis": None
+            }
         except requests.exceptions.RequestException as e:
             logger.error(f"Error communicating with Ollama: {e}")
-            # Fallback to quick analysis
-            return self._quick_victory_analysis(country1, country2, scenario)
+            return {
+                "success": False,
+                "error": f"LLM service unavailable: {str(e)}",
+                "analysis": None
+            }
         except Exception as e:
             logger.error(f"Error calculating victory probability: {e}")
-            # Fallback to quick analysis
-            return self._quick_victory_analysis(country1, country2, scenario)
-
-    def _quick_victory_analysis(self, country1: str, country2: str, scenario: str) -> Dict[str, Any]:
-        """Provide a quick victory analysis based on personnel data"""
-        countries_data = self.personnel_data.get('personnel_data', {}).get('countries', {})
-        
-        country1_data = countries_data[country1.lower()]
-        country2_data = countries_data[country2.lower()]
-        
-        # Simple analysis based on personnel numbers
-        total1 = country1_data.get('total_personnel', 0)
-        total2 = country2_data.get('total_personnel', 0)
-        
-        if isinstance(total1, str):
-            total1 = 0
-        if isinstance(total2, str):
-            total2 = 0
-        
-        if total1 > total2:
-            winner = country1
-            confidence = "High"
-            reason = f"{country1} has more personnel ({total1:,} vs {total2:,})"
-        elif total2 > total1:
-            winner = country2
-            confidence = "High"
-            reason = f"{country2} has more personnel ({total2:,} vs {total1:,})"
-        else:
-            winner = "Tie"
-            confidence = "Medium"
-            reason = f"Both countries have similar personnel numbers ({total1:,} each)"
-        
-        analysis = f"Quick Victory Analysis:\n\n{country1} vs {country2}:\n- Winner: {winner}\n- Confidence: {confidence}\n- Reason: {reason}\n\nNote: This is a simplified analysis. For detailed assessment, use LLM analysis."
-        
-        return {
-            "success": True,
-            "analysis": analysis,
-            "country1": country1,
-            "country2": country2,
-            "scenario": scenario,
-            "country1_data": {
-                "total_personnel": country1_data.get('total_personnel'),
-                "active_duty": country1_data.get('active_duty'),
-                "reserves": country1_data.get('reserves')
-            },
-            "country2_data": {
-                "total_personnel": country2_data.get('total_personnel'),
-                "active_duty": country2_data.get('active_duty'),
-                "reserves": country2_data.get('reserves')
+            return {
+                "success": False,
+                "error": f"Analysis failed: {str(e)}",
+                "analysis": None
             }
-        }
+
 
     def get_country_personnel(self, country: str) -> Dict[str, Any]:
         """
@@ -406,3 +484,14 @@ class PersonnelService:
                 "success": False,
                 "error": f"Failed to get available branches: {str(e)}"
             }
+
+    def check_model_availability(self) -> bool:
+        """Check if the specified model is available in Ollama"""
+        try:
+            response = requests.get(f"{self.base_url}/api/tags", timeout=10)
+            if response.status_code == 200:
+                models = response.json().get('models', [])
+                return any(model.get('name') == self.model_name for model in models)
+            return False
+        except:
+            return False

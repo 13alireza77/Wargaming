@@ -15,8 +15,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--model',
             type=str,
-            default='llama3.2:3b',
-            help='Ollama model name to use (default: llama3.2:3b)'
+            default='qwen2.5:0.5b',
+            help='Ollama model name to use (default: qwen2.5:0.5b)'
         )
         parser.add_argument(
             '--base-url',
@@ -166,7 +166,7 @@ class Command(BaseCommand):
         """Create a concise training prompt with weapons data"""
         categories = weapons_data.get('weapon_categories', {})
         
-        prompt = "You are a military capabilities analyst specializing in weapons and equipment assessment. Analyze military capabilities and provide strategic insights about defense systems and military technology. Focus on technical analysis and capabilities assessment.\n\n"
+        prompt = "You are a military weapons and capabilities analyst specializing in Middle Eastern defense systems and military technology. Your role is to provide detailed analysis of weapons systems, military capabilities, and strategic assessments.\n\n"
         prompt += "Weapon categories: "
         
         category_names = []
@@ -175,7 +175,7 @@ class Command(BaseCommand):
             category_names.append(name)
         
         prompt += ", ".join(category_names)
-        prompt += "\n\nFocus on: technical capabilities, effectiveness assessment, strategic advantages, defense analysis."
+        prompt += "\n\nKey analysis areas:\n- Weapons system effectiveness and capabilities\n- Military technology advantages and disadvantages\n- Defense system analysis and vulnerabilities\n- Strategic weapons capabilities assessment\n- Victory probability based on military technology\n- Comparative analysis of military equipment\n\nProvide clear, structured analysis with specific technical insights and strategic recommendations. Focus on actionable intelligence for military planning and war outcome prediction."
         
         return prompt
 
@@ -192,13 +192,13 @@ SYSTEM \"\"\"
 {enhanced_prompt}
 \"\"\"
 
-# Parameters optimized for speed and efficiency
+# Parameters optimized for quality responses
 PARAMETER temperature 0.3
-PARAMETER top_p 0.7
+PARAMETER top_p 0.8
 PARAMETER top_k 40
 PARAMETER repeat_penalty 1.1
-PARAMETER num_ctx 1024
-PARAMETER num_predict 500
+PARAMETER num_ctx 2048
+PARAMETER num_predict 800
 """
         return modelfile
 

@@ -73,7 +73,7 @@ Get list of all available countries.
 ```
 
 ### Get Country Personnel
-**GET** `/personnel/api/countries/{country}/`
+**GET** `/personnel/api/countries/{country}/personnel/`
 
 Get comprehensive personnel data for a specific country.
 
@@ -111,7 +111,7 @@ Get available military branches for a country.
 ```
 
 ### Get Branch Personnel
-**GET** `/personnel/api/countries/{country}/branches/{branch}/`
+**GET** `/personnel/api/countries/{country}/branches/{branch}/personnel/`
 
 Get detailed personnel data for a specific branch.
 
@@ -127,6 +127,84 @@ Get detailed personnel data for a specific branch.
         "ranks": {...},
         "special_units": {...}
     }
+}
+```
+
+### Analyze Personnel (LLM-powered)
+**POST** `/personnel/api/analyze/`
+
+Analyze personnel data using the specialized LLM model (llama3.2:3b-personnel) with war-focused analysis.
+
+**Request Body:**
+```json
+{
+    "query": "Analyze the military capabilities of Israel",
+    "country": "israel",
+    "branch": "ground_forces"
+}
+```
+
+**Response:**
+```json
+{
+    "success": true,
+    "analysis": "Detailed LLM analysis of military capabilities...",
+    "country": "israel",
+    "branch": "ground_forces",
+    "query": "Analyze the military capabilities of Israel",
+    "model_used": "llama3.2:3b-personnel",
+    "response_time": "<10s"
+}
+```
+
+### Calculate Victory Probability (LLM-powered)
+**POST** `/personnel/api/victory-probability/`
+
+Calculate victory probability between two countries using specialized war analysis.
+
+**Request Body:**
+```json
+{
+    "country1": "israel",
+    "country2": "iran",
+    "scenario": "conventional"
+}
+```
+
+**Response:**
+```json
+{
+    "success": true,
+    "analysis": "Detailed victory probability analysis...",
+    "country1": "israel",
+    "country2": "iran",
+    "scenario": "conventional",
+    "model_used": "llama3.2:3b-personnel",
+    "response_time": "<10s",
+    "country1_data": {...},
+    "country2_data": {...}
+}
+```
+
+### Get Personnel Summary
+**GET** `/personnel/api/summary/`
+
+Get summary of all personnel data across all countries.
+
+**Response:**
+```json
+{
+    "success": true,
+    "summary": {
+        "israel": {
+            "name": "Israel",
+            "total_personnel": 169500,
+            "active_duty": 169500,
+            "reserves": 465000,
+            "branches": ["ground_forces", "air_force", "navy"]
+        }
+    },
+    "total_countries": 10
 }
 ```
 
@@ -199,24 +277,87 @@ Each branch includes detailed rank information:
 
 ## 🎮 Usage Examples
 
-### Get Country Overview
+### Health Check
 ```bash
-curl http://localhost:8000/personnel/api/countries/israel/
-```
-
-### Get Branch Information
-```bash
-curl http://localhost:8000/personnel/api/countries/israel/branches/ground_forces/
+curl -X GET http://localhost:8000/personnel/api/health/
 ```
 
 ### Get Available Countries
 ```bash
-curl http://localhost:8000/personnel/api/countries/
+curl -X GET http://localhost:8000/personnel/api/countries/
+```
+
+### Get Country Overview
+```bash
+curl -X GET http://localhost:8000/personnel/api/countries/israel/personnel/
 ```
 
 ### Get Country Branches
 ```bash
-curl http://localhost:8000/personnel/api/countries/iran/branches/
+curl -X GET http://localhost:8000/personnel/api/countries/israel/branches/
+```
+
+### Get Branch Information
+```bash
+curl -X GET http://localhost:8000/personnel/api/countries/israel/branches/ground_forces/personnel/
+```
+
+### Get Personnel Summary
+```bash
+curl -X GET http://localhost:8000/personnel/api/summary/
+```
+
+### Analyze Personnel (LLM-powered)
+```bash
+curl -X POST http://localhost:8000/personnel/api/analyze/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Analyze the military capabilities of Israel",
+    "country": "israel"
+  }'
+```
+
+### Analyze Specific Branch
+```bash
+curl -X POST http://localhost:8000/personnel/api/analyze/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What are the strengths of the Israeli Ground Forces?",
+    "country": "israel",
+    "branch": "ground_forces"
+  }'
+```
+
+### Calculate Victory Probability (LLM-powered)
+```bash
+curl -X POST http://localhost:8000/personnel/api/victory-probability/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "country1": "israel",
+    "country2": "iran",
+    "scenario": "conventional"
+  }'
+```
+
+### Compare Multiple Countries
+```bash
+curl -X POST http://localhost:8000/personnel/api/victory-probability/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "country1": "turkey",
+    "country2": "egypt",
+    "scenario": "regional_conflict"
+  }'
+```
+
+### Advanced Personnel Analysis
+```bash
+curl -X POST http://localhost:8000/personnel/api/analyze/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Compare the reserve capabilities of Middle Eastern countries",
+    "country": null
+  }'
 ```
 
 ## 🔧 Management Commands
@@ -267,12 +408,33 @@ python manage.py retrain_personnel_llm --force
 - Check that rank quantities are reasonable
 - Ensure special unit personnel is included in branch totals
 
+## 🤖 LLM Integration
+
+The personnel service now uses a specialized LLM model (`llama3.2:3b-personnel`) for advanced analysis:
+
+### Model Capabilities
+- **War Analysis**: Specialized in military personnel assessment and war scenarios
+- **Strategic Assessment**: Provides detailed insights on victory conditions
+- **Organizational Analysis**: Evaluates military structure and capabilities
+- **Fast Response**: Optimized for <10 second response times
+
+### LLM-Powered Endpoints
+- **Personnel Analysis**: `/personnel/api/analyze/` - Deep military capability analysis
+- **Victory Probability**: `/personnel/api/victory-probability/` - Strategic war outcome assessment
+
+### Performance Optimization
+- **Response Time**: <10 seconds for LLM analysis, <1 second for data queries
+- **Model Parameters**: Optimized temperature (0.1-0.2) and token limits (350-400)
+- **Context Management**: Efficient prompt engineering for fast, focused responses
+- **Timeout Handling**: Graceful fallback for requests exceeding 8 seconds
+
 ## 📈 Performance Considerations
 
-- **Response Time**: < 1 second for data queries
+- **Response Time**: <10 seconds for LLM analysis, <1 second for data queries
 - **Memory Usage**: Minimal (JSON data loaded on demand)
 - **Concurrent Requests**: No limitations for read operations
 - **Data Size**: ~1.2MB JSON file
+- **LLM Model**: llama3.2:3b-personnel (specialized for military analysis)
 
 ## 🔮 Future Enhancements
 

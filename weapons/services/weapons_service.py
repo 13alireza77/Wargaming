@@ -11,7 +11,7 @@ class WeaponsService:
     Service for analyzing weapons and military equipment data
     """
     
-    def __init__(self, model_name: str = "llama3.2:3b-weapons", base_url: str = "http://localhost:11434"):
+    def __init__(self, model_name: str = "qwen2.5:0.5b", base_url: str = "http://localhost:11434"):
         self.model_name = model_name
         self.base_url = base_url
         self.weapons_data = self._load_weapons_data()
@@ -31,7 +31,17 @@ class WeaponsService:
     
     def _create_system_prompt(self) -> str:
         """Create the system prompt for weapons analysis"""
-        return """Military weapons expert. Analyze weapons and provide victory probability insights. Be brief and focused."""
+        return """You are a military weapons and capabilities analyst specializing in Middle Eastern defense systems and military technology. Your role is to provide detailed analysis of weapons systems, military capabilities, and strategic assessments.
+
+Key analysis areas:
+- Weapons system effectiveness and capabilities
+- Military technology advantages and disadvantages
+- Defense system analysis and vulnerabilities
+- Strategic weapons capabilities assessment
+- Victory probability based on military technology
+- Comparative analysis of military equipment
+
+Provide clear, structured analysis with specific technical insights and strategic recommendations. Focus on actionable intelligence for military planning and war outcome prediction."""
 
     def _create_user_prompt(self, query: str, weapon_data: Dict[str, Any] = None, country: str = None) -> str:
         """Create the user prompt with weapons context"""
@@ -55,10 +65,6 @@ class WeaponsService:
             Dictionary containing analysis results
         """
         try:
-            # Check if this is a simple query that can be answered quickly
-            if self._is_simple_query(query):
-                return self._get_quick_response(query, weapon_category, country)
-            
             # Get weapon data if specified
             weapon_data = None
             if weapon_category and weapon_category.lower() in self.weapons_data.get('weapon_categories', {}):
@@ -68,7 +74,7 @@ class WeaponsService:
             system_prompt = self._create_system_prompt()
             user_prompt = self._create_user_prompt(query, weapon_data, country)
             
-            # Prepare the request to Ollama with optimized parameters
+            # Prepare the request to Ollama with optimized parameters for quality responses
             payload = {
                 "model": self.model_name,
                 "messages": [
@@ -78,18 +84,20 @@ class WeaponsService:
                 "stream": False,
                 "options": {
                     "temperature": 0.3,
-                    "top_p": 0.7,
-                    "max_tokens": 500,
-                    "num_predict": 500,
-                    "num_ctx": 1024
+                    "top_p": 0.8,
+                    "max_tokens": 600,
+                    "num_predict": 600,
+                    "num_ctx": 1536,
+                    "repeat_penalty": 1.1,
+                    "stop": ["END_ANALYSIS", "---END---"]
                 }
             }
             
-            # Make request to Ollama with reduced timeout
+            # Make request to Ollama with reasonable timeout
             response = requests.post(
                 f"{self.base_url}/api/chat",
                 json=payload,
-                timeout=30
+                timeout=60
             )
             
             if response.status_code == 200:
@@ -126,76 +134,6 @@ class WeaponsService:
                 "query": query
             }
     
-    def _is_simple_query(self, query: str) -> bool:
-        """Check if this is a simple query that can be answered quickly"""
-        simple_keywords = ['victory probability', 'compare', 'vs', 'versus', 'conflict']
-        return any(keyword in query.lower() for keyword in simple_keywords)
-    
-    def _get_quick_response(self, query: str, weapon_category: str = None, country: str = None) -> Dict[str, Any]:
-        """Provide a quick response for simple queries without using LLM"""
-        query_lower = query.lower()
-        
-        if 'victory probability' in query_lower or 'compare' in query_lower:
-            # Extract countries from query
-            countries = self._extract_countries_from_query(query)
-            if len(countries) >= 2:
-                return self._quick_victory_analysis(countries[0], countries[1])
-        
-        # Default quick response
-        return {
-            "success": True,
-            "analysis": "Quick analysis: Based on available weapons data, this requires detailed LLM analysis. For faster response, try a more specific query.",
-            "query": query
-        }
-    
-    def _extract_countries_from_query(self, query: str) -> List[str]:
-        """Extract country names from query"""
-        # Simple country extraction - in production you'd want a more sophisticated approach
-        countries = []
-        query_lower = query.lower()
-        
-        # Common Middle East countries
-        middle_east_countries = ['israel', 'syria', 'iran', 'iraq', 'turkey', 'saudi arabia', 'uae', 'egypt', 'jordan', 'lebanon']
-        
-        for country in middle_east_countries:
-            if country in query_lower:
-                countries.append(country.title())
-        
-        return countries
-    
-    def _quick_victory_analysis(self, country1: str, country2: str) -> Dict[str, Any]:
-        """Provide a quick victory analysis based on weapons data"""
-        weapons1 = self.get_country_weapons(country1)
-        weapons2 = self.get_country_weapons(country2)
-        
-        # Simple analysis based on weapon categories
-        categories1 = len(weapons1.keys())
-        categories2 = len(weapons2.keys())
-        
-        if categories1 > categories2:
-            winner = country1
-            confidence = "High"
-            reason = f"{country1} has more weapon categories ({categories1} vs {categories2})"
-        elif categories2 > categories1:
-            winner = country2
-            confidence = "High"
-            reason = f"{country2} has more weapon categories ({categories2} vs {categories1})"
-        else:
-            winner = "Tie"
-            confidence = "Medium"
-            reason = f"Both countries have similar weapon diversity ({categories1} categories each)"
-        
-        analysis = f"Quick Victory Analysis:\n\n{country1} vs {country2}:\n- Winner: {winner}\n- Confidence: {confidence}\n- Reason: {reason}\n\nNote: This is a simplified analysis. For detailed assessment, use LLM analysis."
-        
-        return {
-            "success": True,
-            "analysis": analysis,
-            "country1": country1,
-            "country2": country2,
-            "weapons1": weapons1,
-            "weapons2": weapons2,
-            "query": f"Compare {country1} vs {country2}"
-        }
     
     def get_available_weapon_categories(self) -> List[str]:
         """Get list of available weapon categories"""
@@ -241,9 +179,30 @@ class WeaponsService:
             # Create a focused analysis query
             query = f"Compare {country1} vs {country2} in {scenario} conflict. Focus on key weapons and victory probability."
             
-            # Use custom model with optimized settings for faster response
-            system_prompt = "Military weapons expert. Analyze weapons and provide victory probability insights. Be brief and focused."
-            user_prompt = f"Victory probability analysis: {query}"
+            # Use comprehensive prompts for victory analysis
+            system_prompt = self._create_system_prompt()
+            user_prompt = f"""VICTORY PROBABILITY ANALYSIS
+
+Scenario: {scenario} conflict
+
+COUNTRY 1: {country1}
+Weapons Categories: {len(weapons1)} categories available
+
+COUNTRY 2: {country2}
+Weapons Categories: {len(weapons2)} categories available
+
+ANALYSIS REQUIRED:
+1. Weapons system comparison
+2. Technology advantage assessment
+3. Defense capabilities evaluation
+4. Strategic weapons analysis
+5. Victory probability percentage
+6. Key technological factors
+7. Recommendations
+
+Query: {query}
+
+Provide detailed analysis with specific insights and clear conclusions."""
             
             payload = {
                 "model": self.model_name,
@@ -254,17 +213,19 @@ class WeaponsService:
                 "stream": False,
                 "options": {
                     "temperature": 0.3,
-                    "top_p": 0.7,
-                    "max_tokens": 400,
-                    "num_predict": 400,
-                    "num_ctx": 1024
+                    "top_p": 0.8,
+                    "max_tokens": 600,
+                    "num_predict": 600,
+                    "num_ctx": 1536,
+                    "repeat_penalty": 1.1,
+                    "stop": ["END_ANALYSIS", "---END---"]
                 }
             }
             
             response = requests.post(
                 f"{self.base_url}/api/chat",
                 json=payload,
-                timeout=25
+                timeout=60
             )
             
             if response.status_code == 200:
@@ -281,13 +242,22 @@ class WeaponsService:
                     "weapons2": weapons2
                 }
             else:
-                # Fallback to quick analysis if model fails
-                return self._quick_victory_analysis(country1, country2)
+                logger.error(f"Ollama API error: {response.status_code} - {response.text}")
+                return {
+                    "success": False,
+                    "error": f"API error: {response.status_code}",
+                    "country1": country1,
+                    "country2": country2
+                }
                 
         except Exception as e:
             logger.error(f"Error calculating victory probability: {str(e)}")
-            # Fallback to quick analysis if model fails
-            return self._quick_victory_analysis(country1, country2)
+            return {
+                "success": False,
+                "error": f"Analysis failed: {str(e)}",
+                "country1": country1,
+                "country2": country2
+            }
     
     def check_model_availability(self) -> bool:
         """Check if the specified model is available in Ollama"""

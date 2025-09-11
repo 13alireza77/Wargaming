@@ -1,6 +1,7 @@
 import json
 import requests
 import logging
+import time
 from django.core.management.base import BaseCommand, CommandError
 from pathlib import Path
 
@@ -14,8 +15,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--model',
             type=str,
-            default='llama3.2:3b',
-            help='Base model to use for training (default: llama3.2:3b)'
+            default='qwen2.5:0.5b',
+            help='Base model to use for training (default: qwen2.5:0.5b)'
         )
         parser.add_argument(
             '--force',
@@ -95,23 +96,38 @@ class Command(BaseCommand):
         """Load the personnel dataset"""
         data_path = Path(__file__).parent.parent.parent / "data" / "middle_east_personnel.json"
         try:
+            self.stdout.write(f'Loading personnel data from: {data_path}')
+            if not data_path.exists():
+                raise FileNotFoundError(f"Personnel data file not found: {data_path}")
+            
             with open(data_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+                self.stdout.write(f'Successfully loaded personnel data with {len(data.get("personnel_data", {}).get("countries", {}))} countries')
+                return data
+        except FileNotFoundError as e:
+            logger.error(f"Personnel data file not found: {e}")
+            self.stdout.write(f'Error: {str(e)}')
+            return {}
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in personnel data file: {e}")
+            self.stdout.write(f'Error: Invalid JSON format in data file')
+            return {}
         except Exception as e:
             logger.error(f"Failed to load personnel data: {e}")
+            self.stdout.write(f'Error loading data: {str(e)}')
             return {}
 
     def _create_training_data(self, personnel_data: dict) -> str:
         """Create training data from personnel dataset"""
-        training_content = """You are a military personnel and human resources expert specializing in Middle Eastern military capabilities analysis. Analyze military personnel data and provide strategic insights. Be brief and focused.
+        training_content = """You are a military personnel analyst specializing in Middle Eastern armed forces. Your role is to provide detailed analysis of military personnel capabilities, troop effectiveness, and strategic assessments.
 
-Your expertise includes:
-- Military personnel analysis and assessment
-- Troop effectiveness evaluation
-- Victory probability calculations based on personnel factors
-- Strategic military planning considering human resources
-- Training and experience analysis
-- Military branch capabilities assessment
+Key analysis areas:
+- Personnel strength and composition
+- Training and experience levels
+- Leadership quality and command structure
+- Special forces capabilities
+- Reserve force mobilization potential
+- Victory probability based on human factors
 
 Available military branches: Ground Forces, Air Force, Navy, Special Forces, Revolutionary Guards (Iran)
 
@@ -125,7 +141,7 @@ Key personnel factors for victory probability:
 7. Morale and motivation factors
 8. Logistics and support personnel ratios
 
-Focus on: personnel effectiveness, strategic advantages, troop capabilities, victory probability.
+Provide clear, structured analysis with specific insights and recommendations. Focus on actionable intelligence for military planning and war outcome prediction.
 
 """
 
@@ -137,32 +153,54 @@ Focus on: personnel effectiveness, strategic advantages, troop capabilities, vic
     def _create_model(self, base_url: str, base_model: str, new_model: str, training_data: str) -> bool:
         """Create the new model with personnel training data"""
         try:
+            self.stdout.write(f'Creating model {new_model} from base model {base_model}...')
+            
             # Create Modelfile content
             modelfile_content = f"""FROM {base_model}
 
 # Set system prompt for personnel analysis
 SYSTEM {json.dumps(training_data)}
 
-# Set parameters optimized for speed and efficiency
+# Set parameters optimized for quality responses
 PARAMETER temperature 0.3
-PARAMETER top_p 0.7
-PARAMETER max_tokens 500
-PARAMETER num_ctx 1024
-PARAMETER num_predict 500
+PARAMETER top_p 0.8
+PARAMETER max_tokens 800
+PARAMETER num_ctx 2048
+PARAMETER num_predict 800
+PARAMETER repeat_penalty 1.1
 """
-            # Create the model
+            # Create the model using the correct Ollama API format
             payload = {
                 "name": new_model,
+                "from": base_model,
                 "modelfile": modelfile_content
             }
 
+            self.stdout.write('Sending model creation request to Ollama...')
             response = requests.post(f"{base_url}/api/create", json=payload, timeout=300)
             response.raise_for_status()
+            
+            # Verify the model was created with retry mechanism
+            self.stdout.write('Verifying model creation...')
+            for attempt in range(5):  # Try 5 times with delays
+                time.sleep(2)  # Wait 2 seconds between attempts
+                existing_models = self._get_existing_models(base_url)
+                if new_model in existing_models:
+                    self.stdout.write(f'Model {new_model} successfully created and verified!')
+                    return True
+                else:
+                    self.stdout.write(f'Attempt {attempt + 1}/5: Model not found yet, waiting...')
+            
+            self.stdout.write(f'Model creation request succeeded but model not found after 5 attempts')
+            return False
 
-            return True
-
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Network error during model creation: {e}")
+            self.stdout.write(f'Network error: {str(e)}')
+            return False
         except Exception as e:
             logger.error(f"Failed to create model: {e}")
+            self.stdout.write(f'Model creation failed: {str(e)}')
             return False
 
     def _test_model(self, base_url: str, model_name: str):
@@ -173,7 +211,10 @@ PARAMETER num_predict 500
             payload = {
                 "model": model_name,
                 "messages": [
-                    {"role": "user", "content": test_prompt}
+                    {
+                        "role": "user",
+                        "content": test_prompt
+                    }
                 ],
                 "stream": False
             }
@@ -188,6 +229,7 @@ PARAMETER num_predict 500
                 self.stdout.write(
                     self.style.SUCCESS('Model test successful - personnel analysis working correctly')
                 )
+                self.stdout.write(f'Test response preview: {analysis[:200]}...')
             else:
                 self.stdout.write(
                     self.style.WARNING('Model test completed but response seems short')

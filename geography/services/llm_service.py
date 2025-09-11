@@ -12,11 +12,10 @@ class LLMService:
     Service for interacting with local LLM via Ollama for geographical analysis
     """
 
-    def __init__(self, model_name: str = "llama3.2:3b-geography", base_url: str = "http://localhost:11434"):
+    def __init__(self, model_name: str = "qwen2.5:0.5b-geography", base_url: str = "http://localhost:11434"):
         self.base_url = base_url
         self.geography_data = self._load_geography_data()
         self.model_name = model_name
-        self.fallback_model = "llama3.2:3b"  # Faster base model as fallback
 
     def _load_geography_data(self) -> Dict[str, Any]:
         """Load the Middle East geography dataset"""
@@ -32,15 +31,18 @@ class LLMService:
             return {}
 
     def _create_system_prompt(self) -> str:
-        """Create the system prompt for the LLM focused on war conditions and strategic analysis"""
-        return """Military geography expert. Analyze war conditions and predict outcomes. Focus on:
-- Terrain advantages for attack/defense
-- Strategic positions and chokepoints  
-- Logistics challenges and supply lines
-- Weather impact on operations
-- War outcome prediction
+        """Create the system prompt for the LLM focused on geographical analysis"""
+        return """You are a military geography expert specializing in Middle Eastern terrain analysis and strategic positioning. Your role is to provide detailed analysis of geographical factors affecting military operations and war outcomes.
 
-Provide concise military intelligence for decision-making."""
+Key analysis areas:
+- Terrain advantages and disadvantages for military operations
+- Weather impact on combat effectiveness
+- Strategic positioning and defensive capabilities
+- Logistical challenges and supply line vulnerabilities
+- Key battle-winning geographical factors
+- Victory probability based on terrain control
+
+Provide clear, structured analysis with specific geographical insights and strategic recommendations. Focus on actionable intelligence for military planning and war outcome prediction."""
 
     def _create_user_prompt(self, query: str, region_data: Dict[str, Any] = None) -> str:
         """Create the user prompt with comprehensive geographical and military context"""
@@ -91,7 +93,7 @@ Analyze the geographical factors for war conditions and strategic military decis
             system_prompt = self._create_system_prompt()
             user_prompt = self._create_user_prompt(query, region_data)
 
-            # Prepare the request to Ollama with optimized parameters for speed
+            # Prepare the request to Ollama with optimized parameters for quality responses
             payload = {
                 "model": self.model_name,
                 "messages": [
@@ -100,181 +102,67 @@ Analyze the geographical factors for war conditions and strategic military decis
                 ],
                 "stream": False,
                 "options": {
-                    "temperature": 0.1,  # Very low temperature for focused responses
-                    "top_p": 0.5,        # Reduced for faster generation
-                    "max_tokens": 300,   # Further reduced for faster response
-                    "num_predict": 300,  # Further reduced for faster response
-                    "num_ctx": 1536,     # Reduced context for speed
-                    "repeat_penalty": 1.05,
-                    "stop": ["\n\n", "---", "##", "Analysis:", "Conclusion:"]  # More stop tokens
+                    "temperature": 0.3,  # Balanced for quality responses
+                    "top_p": 0.8,        # Good balance for quality
+                    "max_tokens": 600,   # Optimized length for analysis
+                    "num_predict": 600,  # Optimized length for analysis
+                    "num_ctx": 1536,     # Sufficient context for analysis
+                    "repeat_penalty": 1.1,
+                    "stop": ["END_ANALYSIS", "---END---"]
                 }
             }
 
-            # Make request to Ollama with strict timeout for 10-second requirement
+            # Make request to Ollama with reasonable timeout
             response = requests.post(
                 f"{self.base_url}/api/chat",
                 json=payload,
-                timeout=3  # 3 seconds to ensure total response under 10 seconds
+                timeout=60  # 60 seconds for quality responses
             )
 
             if response.status_code == 200:
                 result = response.json()
                 analysis = result.get('message', {}).get('content', '').strip()
                 
-                # Add war condition metadata
+                # Return only essential information
                 war_analysis = {
                     "success": True,
                     "analysis": analysis,
                     "region": region_data.get('name') if region_data else None,
-                    "query": query,
-                    "analysis_type": "war_conditions",
-                    "model_used": self.model_name,
-                    "response_time": "< 10 seconds"
+                    "model_used": self.model_name
                 }
-                
-                # Add strategic summary if region data available
-                if region_data:
-                    war_analysis["strategic_summary"] = {
-                        "terrain_difficulty": region_data.get('terrain', {}).get('difficulty', 'unknown'),
-                        "key_advantages": region_data.get('military_considerations', {}).get('terrain_advantages', [])[:3],
-                        "major_challenges": region_data.get('military_considerations', {}).get('terrain_disadvantages', [])[:3]
-                    }
                 
                 return war_analysis
             else:
                 logger.error(f"Ollama API error: {response.status_code} - {response.text}")
                 return {
                     "success": False,
-                    "error": f"API error: {response.status_code}",
-                    "query": query,
-                    "analysis_type": "war_conditions"
+                    "error": f"LLM API error: {response.status_code} - {response.text}",
+                    "analysis": None
                 }
 
         except requests.exceptions.Timeout:
-            logger.warning("Primary model timed out, trying fallback model")
-            return self._try_fallback_model(query, region_data)
+            logger.error("LLM request timed out")
+            return {
+                "success": False,
+                "error": "LLM request timed out. Please try again or check model availability.",
+                "analysis": None
+            }
         except requests.exceptions.ConnectionError:
             logger.error("Could not connect to Ollama. Make sure Ollama is running.")
             return {
                 "success": False,
-                "error": "Ollama not running. Please start Ollama and ensure the model is available.",
-                "query": query,
-                "analysis_type": "war_conditions"
+                "error": "LLM service unavailable. Please start Ollama and ensure the model is available.",
+                "analysis": None
             }
         except Exception as e:
             logger.error(f"Error in war condition analysis: {str(e)}")
             return {
                 "success": False,
-                "error": f"Analysis error: {str(e)}",
-                "query": query,
-                "analysis_type": "war_conditions"
+                "error": f"Analysis failed: {str(e)}",
+                "analysis": None
             }
 
-    def _try_fallback_model(self, query: str, region_data: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Try the fallback model with even more aggressive parameters"""
-        try:
-            # Create simplified prompts for fallback
-            system_prompt = "Military expert. Analyze war conditions briefly."
-            
-            if region_data:
-                user_prompt = f"Region: {region_data.get('name')}. Terrain: {region_data.get('terrain', {}).get('primary', 'Unknown')}. Query: {query}. Analyze war conditions."
-            else:
-                user_prompt = f"Query: {query}. Analyze war conditions briefly."
-            
-            # Very aggressive parameters for speed
-            payload = {
-                "model": self.fallback_model,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                "stream": False,
-                "options": {
-                    "temperature": 0.1,
-                    "top_p": 0.4,
-                    "max_tokens": 200,
-                    "num_predict": 200,
-                    "num_ctx": 1024,
-                    "stop": ["\n\n", "---", "##"]
-                }
-            }
-            
-            # Very short timeout for fallback
-            response = requests.post(
-                f"{self.base_url}/api/chat",
-                json=payload,
-                timeout=2
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                analysis = result.get('message', {}).get('content', '').strip()
-                
-                return {
-                    "success": True,
-                    "analysis": f"[Fallback Model] {analysis}",
-                    "region": region_data.get('name') if region_data else None,
-                    "query": query,
-                    "analysis_type": "war_conditions",
-                    "model_used": self.fallback_model,
-                    "response_time": "< 10 seconds (fallback)"
-                }
-            else:
-                return {
-                    "success": False,
-                    "error": f"Fallback model failed: {response.status_code}",
-                    "query": query,
-                    "analysis_type": "war_conditions"
-                }
-                
-        except Exception as e:
-            logger.error(f"Fallback model also failed: {str(e)}")
-            # Return a mock response for testing when models are too slow
-            return self._get_mock_response(query, region_data)
 
-    def _get_mock_response(self, query: str, region_data: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Provide a mock response when LLM models are unavailable or too slow"""
-        if region_data:
-            terrain = region_data.get('terrain', {})
-            military = region_data.get('military_considerations', {})
-            
-            analysis = f"""WAR CONDITIONS ANALYSIS - {region_data.get('name', 'Region')}:
-
-TERRAIN ASSESSMENT:
-- Primary terrain: {terrain.get('primary', 'Unknown')}
-- Difficulty level: {terrain.get('difficulty', 'Unknown')}
-- Key advantages: {', '.join(military.get('terrain_advantages', [])[:3])}
-- Major challenges: {', '.join(military.get('terrain_disadvantages', [])[:3])}
-
-STRATEGIC EVALUATION:
-- Defensive positions: {', '.join(military.get('defensive_positions', [])[:2])}
-- Offensive routes: {', '.join(military.get('offensive_routes', [])[:2])}
-
-WAR OUTCOME PREDICTION:
-Based on terrain analysis, this region shows {'favorable' if terrain.get('difficulty') == 'moderate' else 'challenging'} conditions for military operations. The geographical factors suggest {'defensive' if 'mountainous' in str(military.get('terrain_advantages', [])) else 'offensive'} advantages.
-
-NOTE: This is a mock analysis. For real-time LLM analysis, ensure Ollama models are properly loaded and responding within timeout limits."""
-        else:
-            analysis = f"""WAR CONDITIONS ANALYSIS:
-
-Based on the query: "{query}"
-
-This analysis requires specific geographical data to provide accurate war condition assessment. The system is designed to analyze terrain advantages, strategic positioning, logistical challenges, and weather impact on military operations.
-
-For detailed analysis, please specify a region or ensure the LLM models are properly configured and responding within the required time limits.
-
-NOTE: This is a mock response. The actual LLM analysis provides more detailed strategic intelligence."""
-        
-        return {
-            "success": True,
-            "analysis": analysis,
-            "region": region_data.get('name') if region_data else None,
-            "query": query,
-            "analysis_type": "war_conditions",
-            "model_used": "mock_response",
-            "response_time": "< 1 second (mock)",
-            "note": "Mock response - LLM models unavailable or too slow"
-        }
 
     def get_available_regions(self) -> List[str]:
         """Get list of available regions"""
@@ -340,12 +228,8 @@ Provide a concise military assessment for strategic decision-making."""
             result = self.analyze_geography(war_prompt)
             
             if result.get('success'):
-                result['war_scenario'] = {
-                    'attacker': attacker_region,
-                    'defender': defender_region,
-                    'scenario': scenario
-                }
-                result['analysis_type'] = 'war_conditions_comparison'
+                result['attacker'] = attacker_region
+                result['defender'] = defender_region
             
             return result
             
@@ -353,8 +237,8 @@ Provide a concise military assessment for strategic decision-making."""
             logger.error(f"Error in war conditions analysis: {str(e)}")
             return {
                 "success": False,
-                "error": f"War analysis error: {str(e)}",
-                "analysis_type": "war_conditions_comparison"
+                "error": f"War analysis failed: {str(e)}",
+                "analysis": None
             }
 
     def check_model_availability(self) -> bool:
