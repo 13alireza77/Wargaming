@@ -179,116 +179,66 @@ class Command(BaseCommand):
                 )
 
     def _create_training_prompt(self, geography_data):
-        """Create a comprehensive training prompt with geographical data"""
+        """Create a concise training prompt with geographical data"""
         regions = geography_data.get('regions', {})
         weather_patterns = geography_data.get('weather_patterns', {})
         strategic_chokepoints = geography_data.get('strategic_chokepoints', {})
 
-        prompt = "You are a military geography expert specializing in Middle Eastern terrain analysis.\n\n"
-        prompt += "Available regions and their key characteristics:\n"
+        prompt = "You are a military geography expert specializing in Middle Eastern terrain analysis. Analyze geographical data and provide strategic insights. Be brief and focused.\n\n"
+        prompt += "Available regions: "
 
+        region_names = []
         for region_key, region_data in regions.items():
             name = region_data.get('name', region_key)
-            terrain = region_data.get('terrain', {}).get('description', 'Unknown')
-            climate = region_data.get('weather', {}).get('climate', 'Unknown')
-            prompt += f"- {name}: {terrain}, {climate} climate\n"
-
-        prompt += f"\nWeather patterns affecting the region:\n"
-        for pattern, data in weather_patterns.items():
-            frequency = data.get('frequency', 'unknown')
-            impact = data.get('impact', {})
-            prompt += f"- {pattern}: {frequency} frequency, affects {', '.join(impact.keys())}\n"
-
-        prompt += f"\nStrategic chokepoints:\n"
-        for chokepoint, data in strategic_chokepoints.items():
-            location = data.get('location', 'unknown')
-            importance = data.get('strategic_importance', 'unknown')
-            prompt += f"- {chokepoint}: {location}, {importance} importance\n"
-
-        prompt += "\nWhen analyzing military scenarios, consider:\n"
-        prompt += "1. Terrain impact on mobility and visibility\n"
-        prompt += "2. Weather effects on operations\n"
-        prompt += "3. Strategic advantages and disadvantages\n"
-        prompt += "4. Logistics challenges and solutions\n"
-        prompt += "5. Defensive and offensive considerations\n"
+            region_names.append(name)
+        
+        prompt += ", ".join(region_names)
+        prompt += "\n\nFocus on: terrain impact, weather effects, strategic advantages, military considerations."
 
         return prompt
 
     def _create_modelfile(self, base_model, training_prompt, geography_data):
         """Create a Modelfile for fine-tuning with geographical data"""
 
-        # Create a comprehensive system prompt with geographical data
+        # Create a concise system prompt with geographical data
         enhanced_prompt = self._create_enhanced_system_prompt(training_prompt, geography_data)
 
         modelfile = f"""FROM {base_model}
 
-# Enhanced system prompt with geographical data
+# Optimized system prompt for fast responses
 SYSTEM \"\"\"
 {enhanced_prompt}
 \"\"\"
 
-# Parameters optimized for geographical analysis
-PARAMETER temperature 0.7
-PARAMETER top_p 0.9
+# Parameters optimized for speed and efficiency
+PARAMETER temperature 0.3
+PARAMETER top_p 0.7
 PARAMETER top_k 40
 PARAMETER repeat_penalty 1.1
-PARAMETER num_ctx 4096
+PARAMETER num_ctx 1024
+PARAMETER num_predict 500
 """
         return modelfile
 
     def _create_enhanced_system_prompt(self, base_prompt, geography_data):
-        """Create an enhanced system prompt with geographical data embedded"""
-
-        # Extract key geographical information
-        regions_info = []
+        """Create a concise enhanced system prompt with geographical data"""
+        
+        # Extract key geographical information in a compact format
+        regions_summary = []
         for region_key, region_data in geography_data.get('regions', {}).items():
             region_name = region_data.get('name', region_key.title())
             terrain = region_data.get('terrain', {})
             weather = region_data.get('weather', {})
-            military = region_data.get('military_considerations', {})
-
-            region_info = f"""
-{region_name}:
-- Terrain: {terrain.get('primary', 'Unknown')} with {', '.join(terrain.get('secondary', []))}
-- Climate: {weather.get('climate', 'Unknown')}, {weather.get('temperature', {}).get('summer', {}).get('min', 'Unknown')}-{weather.get('temperature', {}).get('summer', {}).get('max', 'Unknown')}°C summer
-- Military advantages: {', '.join(military.get('terrain_advantages', []))}
-- Military disadvantages: {', '.join(military.get('terrain_disadvantages', []))}
-- Strategic features: {', '.join(region_data.get('strategic_features', {}).get('urban_centers', []))}
-- Defensive positions: {', '.join(military.get('defensive_positions', []))}
-- Offensive routes: {', '.join(military.get('offensive_routes', []))}
-- Logistics challenges: {', '.join(military.get('logistics_challenges', []))}"""
-
-            regions_info.append(region_info)
-
-        # Create weather patterns info
-        weather_info = []
-        for pattern, data in geography_data.get('weather_patterns', {}).items():
-            frequency = data.get('frequency', 'unknown')
-            impact = data.get('impact', {})
-            regions = data.get('regions', [])
-            weather_info.append(
-                f"- {pattern}: {frequency} frequency, affects {', '.join(impact.keys())}, regions: {', '.join(regions)}")
-
-        # Create strategic chokepoints info
-        chokepoints_info = []
-        for chokepoint, data in geography_data.get('strategic_chokepoints', {}).items():
-            location = data.get('location', 'unknown')
-            importance = data.get('strategic_importance', 'unknown')
-            chokepoints_info.append(f"- {chokepoint}: {location}, {importance} importance")
-
+            
+            terrain_desc = terrain.get('description', 'Unknown')
+            climate = weather.get('climate', 'Unknown')
+            
+            regions_summary.append(f"{region_name}: {terrain_desc} ({climate})")
+        
         enhanced_prompt = f"""{base_prompt}
 
-DETAILED GEOGRAPHICAL DATA:
+GEOGRAPHY DATA: {', '.join(regions_summary[:5])}
 
-REGIONS:
-{chr(10).join(regions_info)}
-
-WEATHER PATTERNS:
-{chr(10).join(weather_info)}
-
-STRATEGIC CHOKEPOINTS:
-{chr(10).join(chokepoints_info)}
-
-When analyzing military scenarios, always reference this specific geographical data and provide detailed, data-driven insights based on the terrain, weather, and strategic considerations for each region."""
-
+Provide brief, focused analysis of terrain and strategic considerations."""
+        
         return enhanced_prompt

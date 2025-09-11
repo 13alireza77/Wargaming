@@ -166,7 +166,7 @@ class Command(BaseCommand):
         """Create a concise training prompt with weapons data"""
         categories = weapons_data.get('weapon_categories', {})
         
-        prompt = "Military weapons expert. Analyze weapons and provide victory probability insights. Be brief and focused.\n\n"
+        prompt = "You are a military capabilities analyst specializing in weapons and equipment assessment. Analyze military capabilities and provide strategic insights about defense systems and military technology. Focus on technical analysis and capabilities assessment.\n\n"
         prompt += "Weapon categories: "
         
         category_names = []
@@ -175,7 +175,7 @@ class Command(BaseCommand):
             category_names.append(name)
         
         prompt += ", ".join(category_names)
-        prompt += "\n\nFocus on: effectiveness, advantages, tactics."
+        prompt += "\n\nFocus on: technical capabilities, effectiveness assessment, strategic advantages, defense analysis."
         
         return prompt
 
@@ -221,8 +221,8 @@ PARAMETER num_predict 500
         
         enhanced_prompt = f"""{base_prompt}
 
-WEAPONS: {', '.join(categories_summary[:5])}
+WEAPONS DATA: {', '.join(categories_summary[:5])}
 
-Provide brief, focused analysis."""
+Provide technical analysis of military capabilities and defense systems. Focus on capabilities assessment and strategic analysis."""
         
         return enhanced_prompt

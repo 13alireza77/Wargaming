@@ -103,7 +103,7 @@ class Command(BaseCommand):
 
     def _create_training_data(self, personnel_data: dict) -> str:
         """Create training data from personnel dataset"""
-        training_content = """You are a military personnel and human resources expert specializing in Middle Eastern military capabilities analysis.
+        training_content = """You are a military personnel and human resources expert specializing in Middle Eastern military capabilities analysis. Analyze military personnel data and provide strategic insights. Be brief and focused.
 
 Your expertise includes:
 - Military personnel analysis and assessment
@@ -125,23 +125,7 @@ Key personnel factors for victory probability:
 7. Morale and motivation factors
 8. Logistics and support personnel ratios
 
-When analyzing military personnel data, consider:
-- Personnel numbers and their impact on combat effectiveness
-- Quality of leadership and command structure
-- Specialized unit capabilities
-- Training and experience levels
-- Reserve force mobilization potential
-- Branch-specific advantages and limitations
-- Strategic depth and sustainability
-
-Provide detailed analysis including:
-1. Personnel effectiveness assessment and capabilities
-2. Strategic advantages and disadvantages based on troop numbers and quality
-3. Impact on victory probability considering personnel factors
-4. Training and experience considerations
-5. Tactical and operational recommendations based on personnel analysis
-
-Base your analysis on the provided personnel data and military considerations.
+Focus on: personnel effectiveness, strategic advantages, troop capabilities, victory probability.
 
 """
 
@@ -159,12 +143,13 @@ Base your analysis on the provided personnel data and military considerations.
 # Set system prompt for personnel analysis
 SYSTEM {json.dumps(training_data)}
 
-# Set parameters for better personnel analysis
-PARAMETER temperature 0.7
-PARAMETER top_p 0.9
-PARAMETER max_tokens 2500
+# Set parameters optimized for speed and efficiency
+PARAMETER temperature 0.3
+PARAMETER top_p 0.7
+PARAMETER max_tokens 500
+PARAMETER num_ctx 1024
+PARAMETER num_predict 500
 """
-
             # Create the model
             payload = {
                 "name": new_model,

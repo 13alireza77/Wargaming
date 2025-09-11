@@ -11,7 +11,7 @@ class WeaponsService:
     Service for analyzing weapons and military equipment data
     """
     
-    def __init__(self, model_name: str = "llama3.2:3b", base_url: str = "http://localhost:11434"):
+    def __init__(self, model_name: str = "llama3.2:3b-weapons", base_url: str = "http://localhost:11434"):
         self.model_name = model_name
         self.base_url = base_url
         self.weapons_data = self._load_weapons_data()
@@ -241,28 +241,53 @@ class WeaponsService:
             # Create a focused analysis query
             query = f"Compare {country1} vs {country2} in {scenario} conflict. Focus on key weapons and victory probability."
             
-            # Perform analysis
-            result = self.analyze_weapons(query)
+            # Use custom model with optimized settings for faster response
+            system_prompt = "Military weapons expert. Analyze weapons and provide victory probability insights. Be brief and focused."
+            user_prompt = f"Victory probability analysis: {query}"
             
-            if result['success']:
+            payload = {
+                "model": self.model_name,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "stream": False,
+                "options": {
+                    "temperature": 0.3,
+                    "top_p": 0.7,
+                    "max_tokens": 400,
+                    "num_predict": 400,
+                    "num_ctx": 1024
+                }
+            }
+            
+            response = requests.post(
+                f"{self.base_url}/api/chat",
+                json=payload,
+                timeout=25
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                analysis = result.get('message', {}).get('content', '')
+                
                 return {
                     "success": True,
                     "country1": country1,
                     "country2": country2,
                     "scenario": scenario,
-                    "analysis": result['analysis'],
+                    "analysis": analysis,
                     "weapons1": weapons1,
                     "weapons2": weapons2
                 }
             else:
-                return result
+                # Fallback to quick analysis if model fails
+                return self._quick_victory_analysis(country1, country2)
                 
         except Exception as e:
             logger.error(f"Error calculating victory probability: {str(e)}")
-            return {
-                "success": False,
-                "error": f"Calculation error: {str(e)}"
-            }
+            # Fallback to quick analysis if model fails
+            return self._quick_victory_analysis(country1, country2)
     
     def check_model_availability(self) -> bool:
         """Check if the specified model is available in Ollama"""
