@@ -1,205 +1,106 @@
 # War Gaming Simulation System
 
-A comprehensive Django-based war game simulation system that uses local LLMs to analyze military data for the Middle East region. The system provides detailed analysis of geography, personnel, and weapons to support military planning and strategic decision-making.
+A Django-based war game system that uses a single local LLM to analyze military data for the Middle East. The chat LLM is trained on geography, personnel, and weapons data and provides victory possibilities, reasons, strategy advice, and wargaming recommendations.
 
 ## 🎯 Overview
 
-This system consists of three main components:
-- **Geography Analysis**: Terrain, weather, and strategic features analysis
-- **Personnel Management**: Military personnel data and organizational structure
-- **Weapons Analysis**: Equipment capabilities and effectiveness assessment
+- **Chat**: One UI and one API; one Ollama model (`wargaming:unified`) trained on all data.
+- **Data** (used only for training the chat LLM):
+  - **Geography**: Terrain, weather, strategic features (`geography/data/`)
+  - **Personnel**: Military personnel and structure (`personnel/data/`)
+  - **Weapons**: Equipment and effectiveness (`weapons/data/`)
 
 ## 🏗️ Architecture
 
 ```
-war_game/                 # Main Django project
-├── geography/           # Geography analysis app
-├── personnel/           # Personnel management app
-├── weapons/            # Weapons analysis app
-└── manage.py           # Django management
+war_game/                 # Django project
+├── orchestrator/         # Chat UI, API, unified LLM service
+├── geography/data/       # Geography JSON (training data)
+├── personnel/data/       # Personnel JSON (training data)
+├── weapons/data/         # Weapons JSON (training data)
+└── manage.py
 ```
 
 ## 🚀 Features
 
-- **Local LLM Integration**: Uses Ollama with Llama 3.2 3B for local processing
-- **Comprehensive Data**: Detailed datasets covering 10+ Middle Eastern countries
-- **RESTful APIs**: Clean API endpoints for each component
-- **Military Intelligence**: Strategic analysis and tactical recommendations
-- **Modular Design**: Independent apps for different military aspects
+- **Unified Wargaming LLM**: Single Ollama model trained on geography, personnel, and weapons data; sub-60s responses
+- **Single Chat UI & API**: `/chat/` and `/orchestrator/api/chat/`
+- **Local LLM**: Ollama (e.g. base `qwen2.5:0.5b`)
+- **Output**: Victory possibilities, reasons, strategy advice, wargaming recommendations
 
 ## 📋 Prerequisites
 
 - Python 3.8+
 - Django 5.2.5
-- Ollama (for local LLM)
-- Mac M1 Pro (optimized for Apple Silicon)
+- Ollama (local LLM)
 
 ## 🛠️ Installation
 
-### 1. Clone the Repository
+### 1. Clone and setup
 ```bash
 git clone <repository-url>
 cd Wargaming
-```
-
-### 2. Set Up Virtual Environment
-```bash
 python3 -m venv venv
 source venv/bin/activate
-```
-
-### 3. Install Dependencies
-```bash
 pip install -r requirements.txt
 ```
 
-### 4. Install Ollama
+### 2. Install Ollama and base model
 ```bash
 curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull qwen2.5:0.5b
 ```
 
-### 5. Download the LLM Model
-```bash
-ollama pull llama3.2:3b
-```
-
-### 6. Run Django Migrations
+### 3. Train the chat LLM (uses geography, personnel, weapons data)
 ```bash
 python manage.py migrate
+python manage.py retrain_wargaming_llm
 ```
 
-### 7. Start the Development Server
+### 4. Run server
 ```bash
 python manage.py runserver
 ```
 
-## 📚 Documentation
+## 🔗 API
 
-Each app has its own detailed documentation:
+- **Chat UI**: `GET /chat/` or `GET /orchestrator/`
+- **Chat API**: `POST /chat/api/chat/` or `POST /orchestrator/api/chat/`
+  - Body: `{"message": "Your question", "conversation_id": "optional-uuid"}`
+  - Response: `{"success", "reply", "sources", "conversation_id"}`
 
-- [Geography App README](geography/README.md) - Terrain and strategic analysis
-- [Personnel App README](personnel/README.md) - Military personnel management
-- [Weapons App README](weapons/README.md) - Equipment and weapons analysis
-
-## 🔗 API Endpoints
-
-### Geography Analysis
-- `POST /geography/api/analyze/` - Analyze geographical data
-- `GET /geography/api/regions/` - Get available regions
-- `GET /geography/api/regions/{region}/` - Get region data
-- `GET /geography/api/health/` - Health check
-
-### Personnel Management
-- `GET /personnel/api/health/` - Health check
-- `GET /personnel/api/countries/` - Get available countries
-- `GET /personnel/api/countries/{country}/` - Get country personnel
-- `GET /personnel/api/countries/{country}/branches/` - Get branches
-- `GET /personnel/api/countries/{country}/branches/{branch}/` - Get branch personnel
-
-### Weapons Analysis
-- `POST /weapons/api/analyze/` - Analyze weapons data
-- `GET /weapons/api/categories/` - Get weapon categories
-- `GET /weapons/api/categories/{category}/` - Get category data
-- `GET /weapons/api/health/` - Health check
-
-## 🎮 Usage Examples
-
-### Geography Analysis
+### Example
 ```bash
-curl -X POST http://localhost:8000/geography/api/analyze/ \
+curl -X POST http://localhost:8000/orchestrator/api/chat/ \
   -H "Content-Type: application/json" \
-  -d '{
-    "query": "What are the key terrain features of Syria?",
-    "region": "syria"
-  }'
-```
-
-### Personnel Query
-```bash
-curl http://localhost:8000/personnel/api/countries/israel/
-```
-
-### Weapons Analysis
-```bash
-curl -X POST http://localhost:8000/weapons/api/analyze/ \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "Compare tank capabilities in the region",
-    "weapon_category": "armored_vehicles"
-  }'
+  -d '{"message": "Compare Syria and Israel for a conventional conflict"}'
 ```
 
 ## 🔧 Management Commands
 
-### Retrain LLM Models
 ```bash
-# Geography model
-python manage.py retrain_llm
+# Create/update the unified chat model (reads geography/data, personnel/data, weapons/data)
+python manage.py retrain_wargaming_llm
 
-# Personnel model
-python manage.py retrain_personnel_llm
-
-# Weapons model
-python manage.py retrain_weapons_llm
+# Options: --model qwen2.5:0.5b --base-url http://localhost:11434 --force
 ```
 
-## 🗺️ Supported Regions
+## 🛡️ Data (for training only)
 
-The system covers military data for:
-- Syria, Iraq, Iran, Israel, Lebanon
-- Jordan, Saudi Arabia, Yemen, Egypt, Turkey
+Data lives in project folders and is read by `retrain_wargaming_llm` and the chat service:
 
-## 🛡️ Data Sources
+- **geography/data/middle_east_geography.json** – Terrain, weather, strategic features
+- **personnel/data/middle_east_personnel.json** – Personnel, branches, reserves
+- **weapons/data/middle_east_weapons.json** – Weapon categories and capabilities
 
-- **Geography**: Terrain, weather, strategic features, military considerations
-- **Personnel**: Active duty, reserves, ranks, special units, branches
-- **Weapons**: Individual weapons, armored vehicles, artillery, air defense, naval vessels
+Regions covered: Syria, Iraq, Iran, Israel, Lebanon, Jordan, Saudi Arabia, Yemen, Egypt, Turkey.
 
 ## 🔍 Troubleshooting
 
-### Ollama Issues
-```bash
-# Start Ollama
-ollama serve
-
-# Check model availability
-ollama list
-```
-
-### API Errors
-- Check Django server logs
-- Verify Ollama is running on `http://localhost:11434`
-- Ensure data files exist in respective app directories
-
-## 📈 Performance
-
-- **Response Time**: 5-15 seconds for LLM analysis
-- **Memory Usage**: ~4GB RAM for LLM model
-- **Concurrent Requests**: 2-3 simultaneous requests recommended
-
-## 🔮 Future Enhancements
-
-- Real-time weather integration
-- Advanced battle simulation algorithms
-- Multi-region conflict scenarios
-- Historical battle data integration
-- Machine learning model improvements
+- Start Ollama: `ollama serve`
+- List models: `ollama list`
+- Ensure data files exist under `geography/data/`, `personnel/data/`, `weapons/data/`
 
 ## 📄 License
 
-This project is for educational and research purposes.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📞 Support
-
-For issues and questions:
-1. Check the troubleshooting section
-2. Review individual app READMEs
-3. Open an issue on the repository
+For educational and research purposes.

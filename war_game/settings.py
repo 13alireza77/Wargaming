@@ -12,6 +12,21 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from war_game.project_config import (
+    DATABASE_PATH,
+    DJANGO_ALLOWED_HOSTS,
+    DJANGO_DEBUG,
+    DJANGO_DEFAULT_AUTO_FIELD,
+    DJANGO_INSTALLED_APPS,
+    DJANGO_LANGUAGE_CODE,
+    DJANGO_MIDDLEWARE,
+    DJANGO_SECRET_KEY,
+    DJANGO_STATIC_URL,
+    DJANGO_TEMPLATE_DIRS,
+    DJANGO_TIME_ZONE,
+    LLM_PROVIDER_CONFIG,
+)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,45 +35,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--6)*6ro84fslumlt5y96hsxj1$jnukfz#y=sva&czjf)f0dm=a'
+SECRET_KEY = DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = DJANGO_DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'geography',
-    'weapons',
-    'personnel',
-    'rest_framework',
-]
+INSTALLED_APPS = DJANGO_INSTALLED_APPS
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+MIDDLEWARE = DJANGO_MIDDLEWARE
 
 ROOT_URLCONF = 'war_game.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': DJANGO_TEMPLATE_DIRS,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,7 +75,7 @@ WSGI_APPLICATION = 'war_game.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATABASE_PATH,
     }
 }
 
@@ -106,9 +102,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = DJANGO_LANGUAGE_CODE
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = DJANGO_TIME_ZONE
 
 USE_I18N = True
 
@@ -118,37 +114,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = DJANGO_STATIC_URL
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = DJANGO_DEFAULT_AUTO_FIELD
 
 # LLM Configuration
-LLM_CONFIG = {
-    'provider': 'ollama',  # Options: 'ollama', 'citome', 'openai', 'anthropic'
-    'ollama': {
-        'base_url': 'http://localhost:11434',
-        'default_model': 'llama3.2:3b',
-        'timeout': 30,
-    },
-    'citome': {
-        'base_url': 'http://localhost:8000',  # Adjust this to your Citome endpoint
-        'default_model': 'citome-model',  # Adjust this to your model name
-        'timeout': 60,
-        'api_key': None,  # Add your API key if required
-    },
-    'openai': {
-        'base_url': 'https://api.openai.com/v1',
-        'default_model': 'gpt-3.5-turbo',
-        'timeout': 30,
-        'api_key': None,  # Add your OpenAI API key
-    },
-    'anthropic': {
-        'base_url': 'https://api.anthropic.com',
-        'default_model': 'claude-3-sonnet-20240229',
-        'timeout': 30,
-        'api_key': None,  # Add your Anthropic API key
-    }
-}
+LLM_CONFIG = LLM_PROVIDER_CONFIG

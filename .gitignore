@@ -285,3 +285,19 @@ fabric.properties
 .idea/**/azureSettings.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,django
+
+### Project-specific ###
+# Word documents (reports, drafts)
+*.docx
+
+# macOS
+.DS_Store
+
+# Cursor IDE
+.cursor/
+
+# Django collected static files
+staticfiles/
+
+# Temporary LLM modelfiles
+*.modelfile
