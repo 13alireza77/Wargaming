@@ -25,7 +25,7 @@ war_game/                 # Django project
 
 - **Unified Wargaming LLM**: Single Ollama model trained on geography, personnel, and weapons data; sub-60s responses
 - **Single Chat UI & API**: `/chat/` and `/orchestrator/api/chat/`
-- **Local LLM**: Ollama (e.g. base `qwen2.5:0.5b`)
+- **Local LLM**: Ollama (default base `qwen2.5:1.5b`)
 - **Output**: Victory possibilities, reasons, strategy advice, wargaming recommendations
 
 ## 📋 Prerequisites
@@ -40,16 +40,19 @@ war_game/                 # Django project
 ```bash
 git clone <repository-url>
 cd Wargaming
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Install Ollama and base model
+### 2. Install Ollama and start the server
 ```bash
 curl -fsSL https://ollama.ai/install.sh | sh
-ollama pull qwen2.5:0.5b
+ollama serve
 ```
+
+The base model (`qwen2.5:1.5b` by default) is pulled automatically by the
+training command in step 3 if it isn't already present.
 
 ### 3. Train the chat LLM (uses geography, personnel, weapons data)
 ```bash
@@ -76,13 +79,25 @@ curl -X POST http://localhost:8000/orchestrator/api/chat/ \
   -d '{"message": "Compare Syria and Israel for a conventional conflict"}'
 ```
 
+## ✅ Testing
+
+With the server running (`runserver`), Ollama running (`ollama serve`), and the
+unified model built (`retrain_wargaming_llm`), run the end-to-end chat test:
+
+```bash
+python test_system.py
+```
+
+It sends several questions to the chat API and prints the model's replies, so you
+can confirm responses are varied and question-specific.
+
 ## 🔧 Management Commands
 
 ```bash
 # Create/update the unified chat model (reads geography/data, personnel/data, weapons/data)
 python manage.py retrain_wargaming_llm
 
-# Options: --model qwen2.5:0.5b --base-url http://localhost:11434 --force
+# Options: --model qwen2.5:1.5b --base-url http://localhost:11434 --force
 ```
 
 ## 🛡️ Data (for training only)

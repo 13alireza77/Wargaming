@@ -346,13 +346,7 @@ class UnifiedLLMService:
             "model": self.model_name,
             "messages": messages,
             "stream": False,
-            "options": {
-                "temperature": UNIFIED_LLM_GENERATION_CONFIG["temperature"],
-                "top_p": UNIFIED_LLM_GENERATION_CONFIG["top_p"],
-                "num_predict": UNIFIED_LLM_GENERATION_CONFIG["num_predict"],
-                "num_ctx": UNIFIED_LLM_GENERATION_CONFIG["num_ctx"],
-                "repeat_penalty": UNIFIED_LLM_GENERATION_CONFIG["repeat_penalty"],
-            },
+            "options": _generation_options_for_intent(resolved_intent),
         }
         try:
             r = requests.post(
@@ -362,7 +356,7 @@ class UnifiedLLMService:
             )
             r.raise_for_status()
             reply = r.json().get("message", {}).get("content", "").strip()
-            print("\n" + "=" * 60 + "\n[LLM pure result]\n" + "=" * 60 + "\n" + reply + "\n" + "=" * 60 + "\n")
+            logger.debug("Unified LLM reply (%d chars)", len(reply))
             return {
                 "success": True,
                 "reply": reply or "I couldn't generate a response. Please try again.",
