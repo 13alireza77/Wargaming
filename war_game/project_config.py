@@ -29,14 +29,15 @@ DJANGO_MIDDLEWARE = [
 ]
 
 DJANGO_TEMPLATE_DIRS = []
-DJANGO_LANGUAGE_CODE = "en-us"
+DJANGO_LANGUAGE_CODE = "fa"
 DJANGO_TIME_ZONE = "UTC"
 DJANGO_STATIC_URL = "static/"
 DJANGO_DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-GEOGRAPHY_DATA_FILE = PROJECT_ROOT / "geography" / "data" / "middle_east_geography.json"
-PERSONNEL_DATA_FILE = PROJECT_ROOT / "personnel" / "data" / "middle_east_personnel.json"
-WEAPONS_DATA_FILE = PROJECT_ROOT / "weapons" / "data" / "middle_east_weapons.json"
+DATA_DIR = PROJECT_ROOT / "data"
+GEOGRAPHY_DATA_FILE = DATA_DIR / "geography" / "middle_east_geography.json"
+PERSONNEL_DATA_FILE = DATA_DIR / "personnel" / "middle_east_personnel.json"
+WEAPONS_DATA_FILE = DATA_DIR / "weapons" / "middle_east_weapons.json"
 
 CHAT_API_URL = "http://localhost:8000/chat/api/chat/"
 
@@ -46,7 +47,7 @@ LLM_PROVIDER_CONFIG = {
     "provider": LLM_PROVIDER_NAME,
     "ollama": {
         "base_url": "http://localhost:11434",
-        "default_model": "llama3.2:3b",
+        "default_model": "aya-expanse:8b",
         "wargaming_model": "wargaming:unified",
         "timeout": 30,
     },
@@ -71,26 +72,27 @@ LLM_PROVIDER_CONFIG = {
 }
 
 UNIFIED_LLM_GENERATION_CONFIG = {
-    "request_timeout_seconds": 100,
-    "temperature": 0.5,
+    "request_timeout_seconds": 300,
+    "temperature": 0.4,
     "top_p": 0.9,
-    "num_predict": 1200,
+    "num_predict": 500,
     "num_ctx": 4096,
-    "repeat_penalty": 1.15,
+    "repeat_penalty": 1.1,
     "conversation_history_limit": 4,
 }
 
 UNIFIED_LLM_TRAINING_CONFIG = {
     "custom_model_name": "wargaming:unified",
-    "default_base_model": "qwen2.5:1.5b",
+    "default_base_model": "aya-expanse:8b",
     "base_url": "http://localhost:11434",
     "ollama_healthcheck_timeout_seconds": 10,
-    "ollama_pull_timeout_seconds": 300,
+    "ollama_pull_timeout_seconds": 600,
     "ollama_create_timeout_seconds": 600,
+    "max_knowledge_chars": 25000,
     "temperature": 0.3,
     "top_p": 0.85,
     "top_k": 40,
     "repeat_penalty": 1.1,
-    "num_ctx": 2048,
+    "num_ctx": 4096,
     "num_predict": 500,
 }

@@ -3,6 +3,8 @@ from django.test import TestCase
 from orchestrator.models import Conversation, Message
 from orchestrator.services.orchestrator_service import OrchestratorService
 from orchestrator.services.router import Router
+from war_game.project_config import UNIFIED_LLM_GENERATION_CONFIG
+
 from orchestrator.services.unified_llm_service import UnifiedLLMService, _generation_options_for_intent
 
 
@@ -99,7 +101,7 @@ class UnifiedLLMContextTestCase(TestCase):
         self.assertNotIn("Nerve Agents", context)
         self.assertNotIn("Fission Weapons", context)
 
-    def test_generation_options_are_trimmed_for_greetings(self):
+    def test_generation_options_use_project_defaults(self):
         options = _generation_options_for_intent(
             {
                 "message_type": "greeting",
@@ -108,11 +110,18 @@ class UnifiedLLMContextTestCase(TestCase):
             }
         )
 
-        self.assertEqual(options["num_predict"], 80)
-        self.assertLessEqual(options["num_ctx"], 3072)
+        self.assertEqual(options["num_predict"], UNIFIED_LLM_GENERATION_CONFIG["num_predict"])
+        self.assertEqual(options["num_ctx"], UNIFIED_LLM_GENERATION_CONFIG["num_ctx"])
 
-    def test_generation_options_limit_comparison_output(self):
-        options = _generation_options_for_intent(
+    def test_generation_options_are_consistent_across_intents(self):
+        greeting_options = _generation_options_for_intent(
+            {
+                "message_type": "greeting",
+                "focus": ["general"],
+                "countries": [],
+            }
+        )
+        comparison_options = _generation_options_for_intent(
             {
                 "message_type": "comparison",
                 "focus": ["weapons"],
@@ -120,8 +129,7 @@ class UnifiedLLMContextTestCase(TestCase):
             }
         )
 
-        self.assertEqual(options["num_predict"], 260)
-        self.assertEqual(options["num_ctx"], 3072)
+        self.assertEqual(greeting_options, comparison_options)
 
 
 class OrchestratorConversationContextTestCase(TestCase):

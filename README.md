@@ -1,121 +1,174 @@
-# War Gaming Simulation System
+# سامانه تحلیل رزم‌افزاری خاورمیانه
 
-A Django-based war game system that uses a single local LLM to analyze military data for the Middle East. The chat LLM is trained on geography, personnel, and weapons data and provides victory possibilities, reasons, strategy advice, and wargaming recommendations.
+سیستم تحلیل نظامی مبتنی بر Django که با یک مدل محلی Ollama، داده‌های جغرافیا، نیروی انسانی و تسلیحات را ترکیب می‌کند و به زبان فارسی پاسخ می‌دهد.
 
-## 🎯 Overview
+## این پروژه چه کاری انجام می‌دهد؟
 
-- **Chat**: One UI and one API; one Ollama model (`wargaming:unified`) trained on all data.
-- **Data** (used only for training the chat LLM):
-  - **Geography**: Terrain, weather, strategic features (`geography/data/`)
-  - **Personnel**: Military personnel and structure (`personnel/data/`)
-  - **Weapons**: Equipment and effectiveness (`weapons/data/`)
+- رابط گفتگوی فارسی (RTL) برای پرسش درباره سناریوهای نظامی
+- یک مدل واحد `wargaming:unified` روی Ollama
+- تحلیل مقایسه‌ای کشورها، زمین‌شناسی، نیروها و تسلیحات
+- پاسخ‌های مبتنی بر داده‌های ساختاریافته (نه حدس آزاد)
 
-## 🏗️ Architecture
+## پیش‌نیازها
 
-```
-war_game/                 # Django project
-├── orchestrator/         # Chat UI, API, unified LLM service
-├── geography/data/       # Geography JSON (training data)
-├── personnel/data/       # Personnel JSON (training data)
-├── weapons/data/         # Weapons JSON (training data)
-└── manage.py
-```
+| مورد | نسخه / توضیح |
+|------|----------------|
+| Python | 3.10 یا بالاتر |
+| Ollama | نصب‌شده و در حال اجرا |
+| RAM | حداقل ۱۶ گیگابایت (برای مدل ۳B پیشنهادی) |
+| سیستم‌عامل | macOS، Linux یا Windows |
 
-## 🚀 Features
+## راه‌اندازی سریع
 
-- **Unified Wargaming LLM**: Single Ollama model trained on geography, personnel, and weapons data; sub-60s responses
-- **Single Chat UI & API**: `/chat/` and `/orchestrator/api/chat/`
-- **Local LLM**: Ollama (default base `qwen2.5:1.5b`)
-- **Output**: Victory possibilities, reasons, strategy advice, wargaming recommendations
+### ۱. کلون و نصب وابستگی‌ها
 
-## 📋 Prerequisites
-
-- Python 3.8+
-- Django 5.2.5
-- Ollama (local LLM)
-
-## 🛠️ Installation
-
-### 1. Clone and setup
 ```bash
 git clone <repository-url>
 cd Wargaming
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # در ویندوز: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Install Ollama and start the server
+### ۲. اجرای Ollama
+
 ```bash
-curl -fsSL https://ollama.ai/install.sh | sh
 ollama serve
 ```
 
-The base model (`qwen2.5:1.5b` by default) is pulled automatically by the
-training command in step 3 if it isn't already present.
+Ollama را **به‌صورت بومی** اجرا کنید (نه داخل Docker روی Mac)، تا از GPU استفاده شود.
 
-### 3. Train the chat LLM (uses geography, personnel, weapons data)
+### ۳. ساخت مدل و پایگاه داده
+
 ```bash
-python manage.py migrate
-python manage.py retrain_wargaming_llm
+python3 manage.py migrate
+python3 manage.py retrain_wargaming_llm
 ```
 
-### 4. Run server
+این دستور در صورت نیاز مدل پایه `qwen2.5:3b` را دانلود می‌کند و مدل سفارشی `wargaming:unified` را می‌سازد.
+
+### ۴. اجرای سرور
+
 ```bash
-python manage.py runserver
+python3 manage.py runserver
 ```
 
-## 🔗 API
+مرورگر: **http://127.0.0.1:8000/chat/**
 
-- **Chat UI**: `GET /chat/` or `GET /orchestrator/`
-- **Chat API**: `POST /chat/api/chat/` or `POST /orchestrator/api/chat/`
-  - Body: `{"message": "Your question", "conversation_id": "optional-uuid"}`
-  - Response: `{"success", "reply", "sources", "conversation_id"}`
+## تست
 
-### Example
+با اجرای سرور، Ollama و مدل `wargaming:unified`:
+
 ```bash
-curl -X POST http://localhost:8000/orchestrator/api/chat/ \
+python3 test_system.py
+```
+
+## API گفتگو
+
+**آدرس:** `POST /chat/api/chat/`
+
+**بدنه درخواست:**
+
+```json
+{
+  "message": "ایران و اسرائیل را از نظر زمینی مقایسه کن",
+  "conversation_id": "اختیاری-uuid"
+}
+```
+
+**پاسخ:**
+
+```json
+{
+  "success": true,
+  "reply": "...",
+  "sources": ["geography", "personnel", "weapons"],
+  "conversation_id": "..."
+}
+```
+
+**نمونه با curl:**
+
+```bash
+curl -X POST http://localhost:8000/chat/api/chat/ \
   -H "Content-Type: application/json" \
-  -d '{"message": "Compare Syria and Israel for a conventional conflict"}'
+  -d '{"message": "قدرت نظامی ایران و ترکیه را مقایسه کن"}'
 ```
 
-## ✅ Testing
+## ساختار پروژه
 
-With the server running (`runserver`), Ollama running (`ollama serve`), and the
-unified model built (`retrain_wargaming_llm`), run the end-to-end chat test:
+```
+Wargaming/
+├── orchestrator/          # اپ Django: رابط کاربری، API، سرویس LLM، مسیریاب پیام
+├── data/                  # داده‌های JSON (جغرافیا، نیرو، تسلیحات)
+│   ├── geography/
+│   ├── personnel/
+│   └── weapons/
+├── war_game/              # تنظیمات Django و project_config
+├── manage.py
+└── requirements.txt
+```
+
+## داده‌ها
+
+سه فایل JSON منبع اصلی تحلیل هستند:
+
+| فایل | محتوا |
+|------|--------|
+| `data/geography/middle_east_geography.json` | زمین، آب‌وهوا، گلوگاه‌ها |
+| `data/personnel/middle_east_personnel.json` | نیرو، ذخیره، ساختار فرماندهی |
+| `data/weapons/middle_east_weapons.json` | تسلیحات و موجودی کشورها |
+
+**کشورهای پوشش‌داده‌شده:** سوریه، عراق، ایران، اسرائیل، لبنان، اردن، عربستان، یمن، مصر، ترکیه
+
+جزئیات ساختار داده در [data/README.md](data/README.md) آمده است.
+
+## به‌روزرسانی داده یا مدل
+
+1. فایل JSON مربوطه را ویرایش کنید.
+2. مدل را دوباره بسازید:
 
 ```bash
-python test_system.py
+python3 manage.py retrain_wargaming_llm --force
 ```
 
-It sends several questions to the chat API and prints the model's replies, so you
-can confirm responses are varied and question-specific.
+3. سرور Django را ری‌استارت کنید (در صورت نیاز).
 
-## 🔧 Management Commands
+**گزینه‌های دستور:**
 
 ```bash
-# Create/update the unified chat model (reads geography/data, personnel/data, weapons/data)
-python manage.py retrain_wargaming_llm
-
-# Options: --model qwen2.5:1.5b --base-url http://localhost:11434 --force
+python3 manage.py retrain_wargaming_llm --model qwen2.5:3b --force
 ```
 
-## 🛡️ Data (for training only)
+## تنظیمات مهم
 
-Data lives in project folders and is read by `retrain_wargaming_llm` and the chat service:
+فایل `war_game/project_config.py`:
 
-- **geography/data/middle_east_geography.json** – Terrain, weather, strategic features
-- **personnel/data/middle_east_personnel.json** – Personnel, branches, reserves
-- **weapons/data/middle_east_weapons.json** – Weapon categories and capabilities
+| تنظیم | مقدار پیش‌فرض |
+|--------|----------------|
+| مدل پایه | `qwen2.5:3b` |
+| مدل تحلیل | `wargaming:unified` |
+| آدرس Ollama | `http://localhost:11434` |
+| زبان رابط | فارسی (`fa`) |
+| زمان انتظار پاسخ | ۱۸۰ ثانیه |
+| حداکثر توکن خروجی | ۴۰۰ (`num_predict`) |
+| پنجره زمینه | ۳۰۷۲ (`num_ctx`) |
 
-Regions covered: Syria, Iraq, Iran, Israel, Lebanon, Jordan, Saudi Arabia, Yemen, Egypt, Turkey.
+## عیب‌یابی
 
-## 🔍 Troubleshooting
+| مشکل | راه‌حل |
+|------|--------|
+| `Cannot connect to Ollama` | `ollama serve` را اجرا کنید |
+| پاسخ timeout | اولین درخواست کند است؛ صبر کنید یا `num_predict` را در config کم کنید |
+| مدل پیدا نشد | `ollama list` و سپس `retrain_wargaming_llm --force` |
+| پاسخ انگلیسی | سؤال را به فارسی بپرسید؛ system prompt فارسی است |
+| کندی شدید | برنامه‌های دیگر را ببندید؛ مدل ۳B حدود ۲–۳ گیگ RAM می‌خواهد |
 
-- Start Ollama: `ollama serve`
-- List models: `ollama list`
-- Ensure data files exist under `geography/data/`, `personnel/data/`, `weapons/data/`
+```bash
+ollama list
+ollama ps
+```
 
-## 📄 License
+## مجوز
 
-For educational and research purposes.
+صرفاً برای اهداف آموزشی و پژوهشی.

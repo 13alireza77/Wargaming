@@ -248,13 +248,13 @@ class Command(BaseCommand):
         parser.add_argument(
             "--max-knowledge-chars",
             type=int,
-            default=60000,
+            default=UNIFIED_LLM_TRAINING_CONFIG["max_knowledge_chars"],
             help="Maximum characters to embed in the model knowledge compendium",
         )
         parser.add_argument(
             "--num-ctx",
             type=int,
-            default=max(UNIFIED_LLM_TRAINING_CONFIG["num_ctx"], 8192),
+            default=UNIFIED_LLM_TRAINING_CONFIG["num_ctx"],
             help="Context window to configure on the trained model",
         )
 
@@ -313,6 +313,11 @@ class Command(BaseCommand):
         )
 
         system_prompt = f"""You are a wargaming analyst specializing in Middle East conflict scenarios.
+
+Language:
+- The knowledge reference below is written in English, but you MUST always respond in fluent, natural Persian (Farsi) unless the user explicitly writes in English.
+- Write in clear, formal, native-quality Persian suitable for military analysis. Do NOT mix English words into Persian sentences, except for standard proper nouns and equipment names (e.g. F-16, S-300), which you may keep in their common form.
+- Translate all analysis, reasoning, and factual descriptions into Persian.
 
 Your job:
 - Understand and use the full structured knowledge reference below.

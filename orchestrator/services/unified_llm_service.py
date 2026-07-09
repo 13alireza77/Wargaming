@@ -5,7 +5,7 @@ Tuned for local models where predictable latency matters.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, Iterator, List, Optional, Set, Tuple
 
 import requests
 
@@ -18,7 +18,16 @@ from war_game.project_config import (
 
 logger = logging.getLogger(__name__)
 
+
+class StreamLLMError(Exception):
+    """Raised when a streaming Ollama request fails."""
+
 UNIFIED_SYSTEM_PROMPT = """You are a Middle East wargaming analyst with access to geography, personnel, and weapons data.
+
+Language:
+- The context data below is written in English, but you MUST always respond in fluent, natural Persian (Farsi) unless the user explicitly writes in English.
+- Write in clear, formal, native-quality Persian suitable for military analysis. Do NOT mix English words into Persian sentences, except for standard proper nouns and equipment names (e.g. F-16, S-300), which you may keep in their common form.
+- Translate all analysis, reasoning, numbers context, and terrain/personnel/weapons descriptions into Persian.
 
 Rules:
 - Answer directly and fully (400–600 words max).
@@ -33,7 +42,7 @@ Rules:
 
 - Use specific data (numbers, locations, units) when available.
 - Structure clearly (paragraphs or concise bullets). Avoid repetition or templates.
-- If greeting → brief, then guide user to ask about scenarios, countries, or analysis.
+- If greeting → brief Persian welcome, then guide user to ask about scenarios, countries, or analysis.
 """
 
 
@@ -205,29 +214,29 @@ def _should_include_summary(focus: List[str], countries: List[str]) -> bool:
 
 
 def _generation_options_for_intent(intent: Dict[str, Any]) -> Dict[str, Any]:
-    message_type = intent.get("message_type", "analysis")
-    focus = intent.get("focus") or []
-    countries = intent.get("countries") or []
+    # message_type = intent.get("message_type", "analysis")
+    # focus = intent.get("focus") or []
+    # countries = intent.get("countries") or []
 
     num_predict = UNIFIED_LLM_GENERATION_CONFIG["num_predict"]
     num_ctx = UNIFIED_LLM_GENERATION_CONFIG["num_ctx"]
     temperature = UNIFIED_LLM_GENERATION_CONFIG["temperature"]
 
-    if message_type == "greeting":
-        num_predict = 80
-    elif message_type == "comparison":
-        num_predict = 260
-    elif message_type == "battle_advice":
-        num_predict = 320
-    elif message_type == "question":
-        num_predict = 220
-    else:
-        num_predict = 320
-
-    if len(countries) >= 2 or "general" in focus:
-        num_ctx = min(num_ctx, 3072)
-    else:
-        num_ctx = min(num_ctx, 2560)
+    # if message_type == "greeting":
+    #     num_predict = 80
+    # elif message_type == "comparison":
+    #     num_predict = 260
+    # elif message_type == "battle_advice":
+    #     num_predict = 320
+    # elif message_type == "question":
+    #     num_predict = 220
+    # else:
+    #     num_predict = 320
+    #
+    # if len(countries) >= 2 or "general" in focus:
+    #     num_ctx = min(num_ctx, 3072)
+    # else:
+    #     num_ctx = min(num_ctx, 2560)
 
     return {
         "temperature": temperature,
@@ -245,7 +254,7 @@ class UnifiedLLMService:
             self,
             model_name: Optional[str] = None,
             base_url: Optional[str] = None,
-            timeout: int = 50,
+            timeout: Optional[int] = None,
     ):
         from django.conf import settings
 
@@ -254,7 +263,7 @@ class UnifiedLLMService:
         self.base_url = base_url or ollama.get("base_url", "http://localhost:11434")
         self.model_name = model_name or ollama.get("wargaming_model", "wargaming:unified")
         config_timeout = UNIFIED_LLM_GENERATION_CONFIG["request_timeout_seconds"]
-        self.timeout = min(timeout, config_timeout)
+        self.timeout = config_timeout if timeout is None else min(timeout, config_timeout)
         self._geography_data: Optional[Dict[str, Any]] = None
         self._personnel_data: Optional[Dict[str, Any]] = None
         self._weapons_data: Optional[Dict[str, Any]] = None
@@ -313,15 +322,12 @@ class UnifiedLLMService:
 
         return "\n".join(parts)
 
-    def analyze(
+    def _prepare_messages(
             self,
             message: str,
             conversation_context: Optional[List[Dict[str, str]]] = None,
             intent: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Single Ollama call. Returns { "success", "reply", "sources" }.
-        """
+    ) -> Tuple[List[Dict[str, str]], Dict[str, Any]]:
         from .router import Router
 
         router = Router()
@@ -341,6 +347,59 @@ class UnifiedLLMService:
                 if role and content and role in ("user", "assistant"):
                     messages.append({"role": role, "content": (content or "")[:800]})
         messages.append({"role": "user", "content": user_content})
+        return messages, resolved_intent
+
+    def analyze_stream(
+            self,
+            message: str,
+            conversation_context: Optional[List[Dict[str, str]]] = None,
+            intent: Optional[Dict[str, Any]] = None,
+    ) -> Iterator[str]:
+        """Stream token chunks from Ollama."""
+        messages, resolved_intent = self._prepare_messages(message, conversation_context, intent)
+        payload = {
+            "model": self.model_name,
+            "messages": messages,
+            "stream": True,
+            "options": _generation_options_for_intent(resolved_intent),
+        }
+        try:
+            with requests.post(
+                f"{self.base_url}/api/chat",
+                json=payload,
+                stream=True,
+                timeout=self.timeout,
+            ) as response:
+                response.raise_for_status()
+                for line in response.iter_lines(decode_unicode=True):
+                    if not line:
+                        continue
+                    data = json.loads(line)
+                    chunk = data.get("message", {}).get("content", "")
+                    if chunk:
+                        yield chunk
+                    if data.get("done"):
+                        return
+        except requests.exceptions.Timeout:
+            logger.warning("Unified LLM stream timed out (limit %ss)", self.timeout)
+            raise StreamLLMError("Request timed out. Please try again.") from None
+        except requests.exceptions.RequestException as e:
+            logger.warning("Unified LLM stream failed: %s", e)
+            raise StreamLLMError(str(e)) from e
+        except Exception as e:
+            logger.exception("Unified LLM analyze_stream failed")
+            raise StreamLLMError(str(e)) from e
+
+    def analyze(
+            self,
+            message: str,
+            conversation_context: Optional[List[Dict[str, str]]] = None,
+            intent: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Single Ollama call. Returns { "success", "reply", "sources" }.
+        """
+        messages, resolved_intent = self._prepare_messages(message, conversation_context, intent)
 
         payload = {
             "model": self.model_name,

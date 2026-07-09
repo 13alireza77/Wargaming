@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
@@ -33,6 +33,16 @@ def chat_api(request):
             }, status=400)
 
         service = OrchestratorService()
+        if data.get('stream'):
+            def event_stream():
+                for event in service.process_message_stream(message, conversation_id=conversation_id):
+                    yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+
+            response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+            response['Cache-Control'] = 'no-cache'
+            response['X-Accel-Buffering'] = 'no'
+            return response
+
         result = service.process_message(message, conversation_id=conversation_id)
 
         if not result.get('success'):

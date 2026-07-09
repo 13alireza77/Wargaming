@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wargaming Analysis Console</title>
+  <title>سامانه تحلیل رزم‌افزاری</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
   <style>
     :root {
@@ -29,7 +30,7 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Vazirmatn, Tahoma, "Segoe UI", sans-serif;
       background:
         radial-gradient(circle at top, rgba(124, 192, 255, 0.08), transparent 28%),
         linear-gradient(180deg, #11141a 0%, #0f1115 100%);
@@ -93,9 +94,22 @@
       background: linear-gradient(180deg, #202734 0%, #171c25 100%);
       border: 1px solid var(--border);
       color: var(--accent);
-      font-size: 0.95rem;
-      font-weight: 700;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .brand-mark svg,
+    .avatar svg {
+      display: block;
+    }
+
+    .brand-mark svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .avatar svg {
+      width: 16px;
+      height: 16px;
     }
 
     .brand-copy {
@@ -225,8 +239,7 @@
       color: var(--accent);
       font-size: 0.78rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0;
     }
 
     .welcome-title {
@@ -253,7 +266,7 @@
     }
 
     .prompt-card {
-      text-align: left;
+      text-align: right;
       padding: 16px;
       min-height: 92px;
       border-radius: 14px;
@@ -292,6 +305,10 @@
     }
 
     .message-row.user {
+      justify-content: flex-start;
+    }
+
+    .message-row.assistant {
       justify-content: flex-end;
     }
 
@@ -327,8 +344,7 @@
       color: var(--muted);
       font-size: 0.76rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0;
     }
 
     .message {
@@ -343,6 +359,8 @@
       color: #f8fcfa;
       white-space: pre-wrap;
       box-shadow: 0 16px 40px rgba(13, 69, 42, 0.28);
+      direction: rtl;
+      text-align: right;
     }
 
     .message.assistant {
@@ -353,6 +371,8 @@
 
     .message.assistant .content {
       font-size: 0.97rem;
+      direction: rtl;
+      text-align: right;
     }
 
     .message.assistant .content h1,
@@ -386,7 +406,8 @@
     .message.assistant .content ul,
     .message.assistant .content ol {
       margin: 0.6em 0;
-      padding-left: 1.45em;
+      padding-inline-start: 1.45em;
+      padding-inline-end: 0;
     }
 
     .message.assistant .content li { margin: 0.28em 0; }
@@ -421,8 +442,9 @@
 
     .message.assistant .content blockquote {
       margin: 0.85em 0;
-      padding: 0.1em 0 0.1em 1em;
-      border-left: 3px solid var(--accent-strong);
+      padding: 0.1em 1em 0.1em 0;
+      border-inline-end: 3px solid var(--accent-strong);
+      border-inline-start: none;
       color: #bcc7d5;
     }
 
@@ -446,6 +468,10 @@
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 10px;
+    }
+
+    .message.assistant.streaming .content {
+      white-space: pre-wrap;
     }
 
     .loading .message {
@@ -495,6 +521,8 @@
       outline: none;
       line-height: 1.6;
       font-size: 1rem;
+      direction: rtl;
+      text-align: right;
     }
 
     #message-input::placeholder {
@@ -502,10 +530,6 @@
     }
 
     .composer-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
       padding: 0 14px 14px;
     }
 
@@ -515,9 +539,7 @@
     }
 
     .composer-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: none;
     }
 
     .hidden {
@@ -584,13 +606,6 @@
 
       .composer-footer {
         padding: 0 12px 12px;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .composer-actions {
-        width: 100%;
-        justify-content: flex-end;
       }
     }
   </style>
@@ -599,16 +614,23 @@
   <div class="shell">
     <header class="topbar">
       <div class="topbar-inner">
-        <div class="brand">
-          <div class="brand-mark">WG</div>
-          <div class="brand-copy">
-            <h1 class="brand-title">Wargaming Analysis Console</h1>
-            <p class="brand-subtitle">Terrain, force structure, weapons, and regional comparison in one workspace.</p>
-          </div>
-        </div>
         <div class="toolbar">
-          <div class="status-pill"><span class="status-dot"></span>Ready for analysis</div>
-          <button type="button" class="btn" id="new-chat">New chat</button>
+          <button type="button" class="btn" id="new-chat">گفتگوی جدید</button>
+          <div class="status-pill"><span class="status-dot"></span>آماده تحلیل</div>
+        </div>
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <circle cx="12" cy="12" r="5"></circle>
+              <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle>
+              <path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path>
+            </svg>
+          </div>
+          <div class="brand-copy">
+            <h1 class="brand-title">سامانه تحلیل رزم‌افزاری</h1>
+            <p class="brand-subtitle">جغرافیا، نیروی انسانی، تسلیحات و مقایسه منطقه‌ای در یک فضای کاری.</p>
+          </div>
         </div>
       </div>
     </header>
@@ -618,29 +640,29 @@
         <div class="messages-inner">
           <section class="welcome" id="welcome-state">
             <div class="welcome-panel">
-              <p class="eyebrow">Scenario workspace</p>
-              <h2 class="welcome-title">Ask for operational comparisons, equipment snapshots, or terrain-aware planning.</h2>
+              <p class="eyebrow">فضای سناریو</p>
+              <h2 class="welcome-title">مقایسه عملیاتی، وضعیت تسلیحات یا برنامه‌ریزی مبتنی بر زمین‌شناسی را بپرسید.</h2>
               <p class="welcome-copy">
-                This chat is tuned for defense analysis workflows, so it should feel more like a focused console than a generic form.
-                Start with a direct question, or use one of the prompts below to get moving quickly.
+                این گفتگو برای تحلیل‌های دفاعی طراحی شده و بیشتر شبیه یک کنسول تخصصی است تا یک فرم عمومی.
+                با یک سؤال مستقیم شروع کنید یا از نمونه‌های زیر برای شروع سریع استفاده کنید.
               </p>
 
               <div class="prompt-grid">
-                <button type="button" class="prompt-card" data-prompt="Compare Iran and Saudi Arabia across terrain, force readiness, and air defense strengths.">
-                  <span class="prompt-title">Compare two countries</span>
-                  <span class="prompt-text">Get a structured view of terrain, readiness, and weapon system tradeoffs.</span>
+                <button type="button" class="prompt-card" data-prompt="ایران و عربستان را از نظر زمین‌شناسی، آمادگی نیروها و پدافند هوایی مقایسه کن.">
+                  <span class="prompt-title">مقایسه دو کشور</span>
+                  <span class="prompt-text">نمای ساختاریافته از زمین، آمادگی و مزایای سیستم‌های تسلیحاتی.</span>
                 </button>
-                <button type="button" class="prompt-card" data-prompt="Summarize the terrain and mobility constraints for a ground operation in the Persian Gulf region.">
-                  <span class="prompt-title">Terrain summary</span>
-                  <span class="prompt-text">Focus the model on geography, chokepoints, and maneuver limitations.</span>
+                <button type="button" class="prompt-card" data-prompt="محدودیت‌های زمین‌شناسی و تحرک برای یک عملیات زمینی در منطقه خلیج فارس را خلاصه کن.">
+                  <span class="prompt-title">خلاصه زمین‌شناسی</span>
+                  <span class="prompt-text">تمرکز بر جغرافیا، گلوگاه‌ها و محدودیت‌های مانور.</span>
                 </button>
-                <button type="button" class="prompt-card" data-prompt="List the key personnel, command structure, and force posture factors that matter in a regional escalation scenario.">
-                  <span class="prompt-title">Personnel and posture</span>
-                  <span class="prompt-text">Surface leadership, structure, and deployment considerations for planning.</span>
+                <button type="button" class="prompt-card" data-prompt="عوامل کلیدی نیروی انسانی، ساختار فرماندهی و وضعیت نیروها در سناریوی تشدید منطقه‌ای را فهرست کن.">
+                  <span class="prompt-title">نیروی انسانی و وضعیت</span>
+                  <span class="prompt-text">رهبری، ساختار و ملاحظات استقرار برای برنامه‌ریزی.</span>
                 </button>
-                <button type="button" class="prompt-card" data-prompt="Compare the major missile, air defense, and armored platforms available to the main actors in the Middle East.">
-                  <span class="prompt-title">Weapons overview</span>
-                  <span class="prompt-text">Build a fast inventory-oriented answer for key systems and capability gaps.</span>
+                <button type="button" class="prompt-card" data-prompt="موشک‌ها، پدافند هوایی و پلتفرم‌های زرهی اصلی بازیگران خاورمیانه را مقایسه کن.">
+                  <span class="prompt-title">مرور تسلیحات</span>
+                  <span class="prompt-text">پاسخ سریع مبتنی بر موجودی برای سیستم‌های کلیدی و شکاف قابلیت‌ها.</span>
                 </button>
               </div>
             </div>
@@ -653,15 +675,12 @@
           <div class="composer-shell">
             <div class="composer-main">
               <div class="composer-input-wrap">
-                <textarea id="message-input" rows="1" placeholder="Ask about terrain, personnel, weapons, or compare countries..." autofocus></textarea>
+                <textarea id="message-input" rows="1" placeholder="درباره زمین‌شناسی، نیروی انسانی، تسلیحات بپرسید یا کشورها را مقایسه کنید..." autofocus></textarea>
               </div>
-              <button type="button" class="btn btn-primary" id="send-btn">Send</button>
+              <button type="button" class="btn btn-primary" id="send-btn">ارسال</button>
             </div>
             <div class="composer-footer">
-              <div class="composer-hint">Enter to send, Shift+Enter for a new line.</div>
-              <div class="composer-actions">
-                <div class="status-pill">Markdown and math supported</div>
-              </div>
+              <div class="composer-hint">Enter برای ارسال، Shift+Enter برای خط جدید.</div>
             </div>
           </div>
         </div>
@@ -681,6 +700,15 @@
       const sendBtn = document.getElementById('send-btn');
       const newChatBtn = document.getElementById('new-chat');
       const promptButtons = document.querySelectorAll('.prompt-card');
+
+      const SOURCE_LABELS = {
+        geography: 'جغرافیا',
+        personnel: 'نیروی انسانی',
+        weapons: 'تسلیحات'
+      };
+
+      const ASSISTANT_AVATAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16"></path><path d="M7 16V10"></path><path d="M12 16V6"></path><path d="M17 16v-4"></path></svg>';
+      const USER_AVATAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6"></path></svg>';
 
       let conversationId = null;
 
@@ -787,10 +815,90 @@
         sources.forEach(function(source) {
           const pill = document.createElement('span');
           pill.className = 'source-pill';
-          pill.textContent = source;
+          pill.textContent = SOURCE_LABELS[source] || source;
           meta.appendChild(pill);
         });
         return meta;
+      }
+
+      function createAssistantMessageRow() {
+        setWelcomeVisible(false);
+
+        const row = document.createElement('div');
+        row.className = 'message-row assistant';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar';
+        avatar.setAttribute('aria-label', 'تحلیلگر');
+        avatar.innerHTML = ASSISTANT_AVATAR;
+
+        const body = document.createElement('div');
+        body.className = 'message-body';
+
+        const label = document.createElement('div');
+        label.className = 'message-label';
+        label.textContent = 'تحلیل';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'message assistant streaming';
+
+        const text = document.createElement('div');
+        text.className = 'content';
+        text.textContent = '';
+
+        bubble.appendChild(text);
+        body.appendChild(label);
+        body.appendChild(bubble);
+        row.appendChild(avatar);
+        row.appendChild(body);
+        messagesInnerEl.appendChild(row);
+        scrollToBottom();
+
+        let renderTimer = null;
+        let latestContent = '';
+
+        function renderAssistantContent(content, streaming) {
+          const formatted = formatAssistantContent(content);
+          text.innerHTML = formatted.html;
+          text.querySelectorAll('a').forEach(function(a) {
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener noreferrer');
+          });
+          if (formatted.mathBlocks && formatted.mathBlocks.length) {
+            renderMathInElement(text, formatted.mathBlocks);
+          }
+          bubble.classList.toggle('streaming', !!streaming);
+        }
+
+        return {
+          row: row,
+          body: body,
+          updateContent: function(content) {
+            latestContent = content;
+            if (renderTimer) return;
+            renderTimer = window.setTimeout(function() {
+              renderTimer = null;
+              renderAssistantContent(latestContent, true);
+              scrollToBottom();
+            }, 80);
+          },
+          finalize: function(content, sources) {
+            if (renderTimer) {
+              window.clearTimeout(renderTimer);
+              renderTimer = null;
+            }
+            latestContent = content;
+            renderAssistantContent(content, false);
+
+            const existingMeta = body.querySelector('.message-meta');
+            if (existingMeta) existingMeta.remove();
+
+            const meta = buildSourceMeta(sources);
+            if (meta) body.appendChild(meta);
+
+            scrollToBottom();
+          }
+        };
       }
 
       function addMessage(role, content, sources) {
@@ -801,14 +909,15 @@
 
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-        avatar.textContent = role === 'assistant' ? 'AI' : 'You';
+        avatar.setAttribute('aria-label', role === 'assistant' ? 'تحلیلگر' : 'شما');
+        avatar.innerHTML = role === 'assistant' ? ASSISTANT_AVATAR : USER_AVATAR;
 
         const body = document.createElement('div');
         body.className = 'message-body';
 
         const label = document.createElement('div');
         label.className = 'message-label';
-        label.textContent = role === 'assistant' ? 'Analysis' : 'You';
+        label.textContent = role === 'assistant' ? 'تحلیل' : 'شما';
 
         const bubble = document.createElement('div');
         bubble.className = 'message ' + role;
@@ -857,18 +966,19 @@
 
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-        avatar.textContent = 'AI';
+        avatar.setAttribute('aria-label', 'تحلیلگر');
+        avatar.innerHTML = ASSISTANT_AVATAR;
 
         const body = document.createElement('div');
         body.className = 'message-body';
 
         const label = document.createElement('div');
         label.className = 'message-label';
-        label.textContent = 'Analysis';
+        label.textContent = 'تحلیل';
 
         const bubble = document.createElement('div');
         bubble.className = 'message assistant';
-        bubble.innerHTML = '<span class="loading-dots">Thinking</span>';
+        bubble.innerHTML = '<span class="loading-dots">در حال تحلیل</span>';
 
         body.appendChild(label);
         body.appendChild(bubble);
@@ -888,6 +998,18 @@
         inputEl.disabled = loading;
       }
 
+      function parseSseChunk(chunk, onEvent) {
+        const lines = chunk.split('\n');
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            onEvent(JSON.parse(line.slice(6)));
+          } catch (e) {
+            console.warn('Invalid SSE payload', e);
+          }
+        }
+      }
+
       async function send(prefilledMessage) {
         const message = (prefilledMessage || inputEl.value).trim();
         if (!message) return;
@@ -895,8 +1017,11 @@
         inputEl.value = '';
         autoResizeInput();
         addMessage('user', message);
-        addLoading();
+        const assistantMessage = createAssistantMessageRow();
         setLoading(true);
+
+        let rawContent = '';
+        let streamFinished = false;
 
         try {
           const res = await fetch('/chat/api/chat/', {
@@ -904,22 +1029,81 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               message: message,
-              conversation_id: conversationId
+              conversation_id: conversationId,
+              stream: true
             })
           });
 
-          const data = await res.json();
-          removeLoading();
+          if (!res.ok) {
+            let errorMessage = 'خطای ناشناخته';
+            try {
+              const data = await res.json();
+              errorMessage = data.error || errorMessage;
+            } catch (e) {
+              errorMessage = res.statusText || errorMessage;
+            }
+            assistantMessage.finalize('خطا: ' + errorMessage, null);
+            return;
+          }
 
-          if (data.success) {
-            conversationId = data.conversation_id;
-            addMessage('assistant', data.reply, data.sources);
-          } else {
-            addMessage('assistant', 'Error: ' + (data.error || 'Unknown error'));
+          if (!res.body) {
+            assistantMessage.finalize('خطا: پاسخ جریانی از سرور دریافت نشد.', null);
+            return;
+          }
+
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const parts = buffer.split('\n\n');
+            buffer = parts.pop() || '';
+
+            for (const part of parts) {
+              parseSseChunk(part, function(event) {
+                if (event.event === 'start' && event.conversation_id) {
+                  conversationId = event.conversation_id;
+                } else if (event.event === 'token' && event.content) {
+                  rawContent += event.content;
+                  assistantMessage.updateContent(rawContent);
+                } else if (event.event === 'done') {
+                  conversationId = event.conversation_id || conversationId;
+                  rawContent = event.reply || rawContent;
+                  streamFinished = true;
+                  assistantMessage.finalize(rawContent, event.sources || null);
+                } else if (event.event === 'error') {
+                  streamFinished = true;
+                  assistantMessage.finalize('خطا: ' + (event.error || 'خطای ناشناخته'), null);
+                }
+              });
+            }
+          }
+
+          if (buffer.trim()) {
+            parseSseChunk(buffer, function(event) {
+              if (event.event === 'done') {
+                conversationId = event.conversation_id || conversationId;
+                rawContent = event.reply || rawContent;
+                streamFinished = true;
+                assistantMessage.finalize(rawContent, event.sources || null);
+              } else if (event.event === 'error') {
+                streamFinished = true;
+                assistantMessage.finalize('خطا: ' + (event.error || 'خطای ناشناخته'), null);
+              }
+            });
+          }
+
+          if (!streamFinished && rawContent.trim()) {
+            assistantMessage.finalize(rawContent, null);
+          } else if (!streamFinished && !rawContent.trim()) {
+            assistantMessage.finalize('پاسخی دریافت نشد. لطفاً دوباره تلاش کنید.', null);
           }
         } catch (e) {
-          removeLoading();
-          addMessage('assistant', 'Error: ' + e.message);
+          assistantMessage.finalize('خطا: ' + e.message, null);
         }
 
         setLoading(false);
