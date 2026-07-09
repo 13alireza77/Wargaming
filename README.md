@@ -13,54 +13,120 @@
 
 | مورد | نسخه / توضیح |
 |------|----------------|
+| Git | آخرین نسخه پایدار |
 | Python | 3.10 یا بالاتر |
-| Ollama | نصب‌شده و در حال اجرا |
-| RAM | حداقل ۱۶ گیگابایت (برای مدل ۳B پیشنهادی) |
+| pip + venv | برای نصب وابستگی‌ها در محیط مجازی |
+| Ollama | آخرین نسخه پایدار |
+| RAM | حداقل ۱۶ گیگابایت (برای مدل 8B پیشنهادی) |
 | سیستم‌عامل | macOS، Linux یا Windows |
 
-## راه‌اندازی سریع
+## نصب روی سیستم خام (بدون پیش‌نیاز)
 
-### ۱. کلون و نصب وابستگی‌ها
+### ۱) نصب ابزارهای پایه
+
+#### macOS (با Homebrew)
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew update
+brew install git python ollama
+```
+
+#### Ubuntu/Debian
+
+```bash
+sudo apt update
+sudo apt install -y git python3 python3-pip python3-venv curl
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+#### Windows (PowerShell + winget)
+
+```powershell
+winget install --id Git.Git -e
+winget install --id Python.Python.3.12 -e
+winget install --id Ollama.Ollama -e
+```
+
+> بعد از نصب در ویندوز، یک PowerShell جدید باز کنید تا `python` و `git` در PATH قابل استفاده باشند.
+
+### ۲) بررسی نصب بودن ابزارها
+
+```bash
+git --version
+python3 --version
+pip3 --version
+ollama --version
+```
+
+در ویندوز اگر `python3` نبود، از `python` و اگر `pip3` نبود، از `pip` استفاده کنید.
+
+## راه‌اندازی پروژه (از صفر)
+
+### ۱) کلون پروژه
 
 ```bash
 git clone <repository-url>
 cd Wargaming
+```
+
+### ۲) ساخت محیط مجازی و نصب وابستگی‌ها
+
+#### macOS / Linux
+
+```bash
 python3 -m venv .venv
-source .venv/bin/activate   # در ویندوز: .venv\Scripts\activate
+source .venv/bin/activate
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### ۲. اجرای Ollama
+#### Windows (PowerShell)
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### ۳) اجرای Ollama
 
 ```bash
 ollama serve
 ```
 
-Ollama را **به‌صورت بومی** اجرا کنید (نه داخل Docker روی Mac)، تا از GPU استفاده شود.
+Ollama را **به‌صورت بومی** اجرا کنید (نه Docker روی macOS) تا شتاب‌دهی سخت‌افزاری بهتر باشد.
 
-### ۳. ساخت مدل و پایگاه داده
+### ۴) مهاجرت دیتابیس و ساخت مدل تحلیل
 
 ```bash
-python3 manage.py migrate
-python3 manage.py retrain_wargaming_llm
+python manage.py migrate
+python manage.py retrain_wargaming_llm
 ```
 
-این دستور در صورت نیاز مدل پایه `qwen2.5:3b` را دانلود می‌کند و مدل سفارشی `wargaming:unified` را می‌سازد.
+این مرحله در صورت نیاز مدل پایه `aya-expanse:8b` را دانلود می‌کند و مدل سفارشی `wargaming:unified` را می‌سازد.
 
-### ۴. اجرای سرور
+### ۵) اجرای سرور Django
 
 ```bash
-python3 manage.py runserver
+python manage.py runserver
 ```
 
 مرورگر: **http://127.0.0.1:8000/chat/**
+
+### ۶) تست سریع سلامت سیستم
+
+```bash
+python test_system.py
+```
 
 ## تست
 
 با اجرای سرور، Ollama و مدل `wargaming:unified`:
 
 ```bash
-python3 test_system.py
+python test_system.py
 ```
 
 ## API گفتگو
@@ -129,7 +195,7 @@ Wargaming/
 2. مدل را دوباره بسازید:
 
 ```bash
-python3 manage.py retrain_wargaming_llm --force
+python manage.py retrain_wargaming_llm --force
 ```
 
 3. سرور Django را ری‌استارت کنید (در صورت نیاز).
@@ -137,7 +203,7 @@ python3 manage.py retrain_wargaming_llm --force
 **گزینه‌های دستور:**
 
 ```bash
-python3 manage.py retrain_wargaming_llm --model qwen2.5:3b --force
+python manage.py retrain_wargaming_llm --model aya-expanse:8b --force
 ```
 
 ## تنظیمات مهم
@@ -146,13 +212,13 @@ python3 manage.py retrain_wargaming_llm --model qwen2.5:3b --force
 
 | تنظیم | مقدار پیش‌فرض |
 |--------|----------------|
-| مدل پایه | `qwen2.5:3b` |
+| مدل پایه | `aya-expanse:8b` |
 | مدل تحلیل | `wargaming:unified` |
 | آدرس Ollama | `http://localhost:11434` |
 | زبان رابط | فارسی (`fa`) |
-| زمان انتظار پاسخ | ۱۸۰ ثانیه |
-| حداکثر توکن خروجی | ۴۰۰ (`num_predict`) |
-| پنجره زمینه | ۳۰۷۲ (`num_ctx`) |
+| زمان انتظار پاسخ | ۳۰۰ ثانیه |
+| حداکثر توکن خروجی | ۵۰۰ (`num_predict`) |
+| پنجره زمینه | ۴۰۹۶ (`num_ctx`) |
 
 ## عیب‌یابی
 
@@ -162,7 +228,7 @@ python3 manage.py retrain_wargaming_llm --model qwen2.5:3b --force
 | پاسخ timeout | اولین درخواست کند است؛ صبر کنید یا `num_predict` را در config کم کنید |
 | مدل پیدا نشد | `ollama list` و سپس `retrain_wargaming_llm --force` |
 | پاسخ انگلیسی | سؤال را به فارسی بپرسید؛ system prompt فارسی است |
-| کندی شدید | برنامه‌های دیگر را ببندید؛ مدل ۳B حدود ۲–۳ گیگ RAM می‌خواهد |
+| کندی شدید | برنامه‌های دیگر را ببندید؛ مدل 8B به RAM بیشتری نیاز دارد (معمولاً ۸ گیگ یا بیشتر فقط برای مدل) |
 
 ```bash
 ollama list
