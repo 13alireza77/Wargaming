@@ -63,14 +63,14 @@ class LLMConfig(SingletonModel):
     # Generation parameters
     temperature = models.FloatField(default=0.4)
     top_p = models.FloatField(default=0.9)
-    num_predict = models.IntegerField(default=600, help_text="Max tokens to generate.")
-    num_ctx = models.IntegerField(default=6144, help_text="Context window size.")
+    num_predict = models.IntegerField(default=280, help_text="Max tokens to generate.")
+    num_ctx = models.IntegerField(default=2048, help_text="Context window size.")
     repeat_penalty = models.FloatField(default=1.1)
     conversation_history_limit = models.IntegerField(
-        default=4,
+        default=2,
         help_text="How many previous messages to include as context.",
     )
-    request_timeout_seconds = models.IntegerField(default=300)
+    request_timeout_seconds = models.IntegerField(default=180)
 
     updated_at = models.DateTimeField(auto_now=True)
 

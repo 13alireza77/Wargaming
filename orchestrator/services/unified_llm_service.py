@@ -25,7 +25,7 @@ Language:
 - Translate all analysis, reasoning, numbers context, and terrain/personnel/weapons descriptions into Persian.
 
 Rules:
-- Answer directly and fully (400–600 words max).
+- Answer directly and fully (120–180 words max). Prefer compact bullets over long paragraphs.
 - Use ONLY provided context when possible. Do not invent numbers, units, or facts. If data is missing, state it.
 - Match response to query type:
   • comparison → clear side-by-side + final judgement  
@@ -198,13 +198,17 @@ def _should_include_summary(focus: List[str], countries: List[str]) -> bool:
 
 def _generation_options_for_intent(intent: Dict[str, Any]) -> Dict[str, Any]:
     gen = config_provider.get_generation_config()
-    return {
+    options = {
         "temperature": gen["temperature"],
         "top_p": gen["top_p"],
         "num_predict": gen["num_predict"],
         "num_ctx": gen["num_ctx"],
         "repeat_penalty": gen["repeat_penalty"],
     }
+    num_thread = gen.get("num_thread")
+    if num_thread:
+        options["num_thread"] = num_thread
+    return options
 
 
 class UnifiedLLMService:
@@ -303,7 +307,7 @@ class UnifiedLLMService:
                 role = msg.get("role")
                 content = msg.get("content")
                 if role and content and role in ("user", "assistant"):
-                    messages.append({"role": role, "content": (content or "")[:800]})
+                    messages.append({"role": role, "content": (content or "")[:400]})
         messages.append({"role": "user", "content": user_content})
         return messages, resolved_intent
 

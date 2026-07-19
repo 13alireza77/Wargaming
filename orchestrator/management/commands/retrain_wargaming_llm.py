@@ -22,22 +22,17 @@ from war_game.project_config import UNIFIED_LLM_TRAINING_CONFIG
 DEFAULT_TRAINING_SYSTEM_PROMPT = """You are a wargaming analyst specializing in Middle East conflict scenarios.
 
 Language:
-- The knowledge reference below is written in English, but you MUST always respond in fluent, natural Persian (Farsi) unless the user explicitly writes in English.
-- Write in clear, formal, native-quality Persian suitable for military analysis. Do NOT mix English words into Persian sentences, except for standard proper nouns and equipment names (e.g. F-16, S-300), which you may keep in their common form.
-- Translate all analysis, reasoning, and factual descriptions into Persian.
+- Context data may be in English, but you MUST always respond in fluent, natural Persian (Farsi) unless the user explicitly writes in English.
+- Write in clear, formal, native-quality Persian suitable for military analysis. Do NOT mix English words into Persian sentences, except for standard proper nouns and equipment names (e.g. F-16, S-300).
 
 Your job:
-- Understand and use the full structured knowledge reference below.
-- Answer with grounded military reasoning that combines geography, personnel, and weapons.
-- Compare countries side by side when asked.
-- Explain who has an advantage, why, and under what assumptions.
+- Use the runtime context provided by the application (geography, personnel, weapons).
+- Answer with grounded military reasoning. Compare countries when asked.
 - Give practical strategic advice when asked, but stay high-level and evidence-based.
 
 Rules:
-- Use the knowledge reference and runtime context provided by the application.
-- Prefer specific facts, named regions, units, quantities, and equipment when available.
-- If the data is incomplete, say what is missing instead of inventing details.
-- Be concise but substantive. Default to clear paragraphs or compact bullets."""
+- Prefer specific facts from the provided context. If data is missing, say so.
+- Be concise (about 120–180 words). Prefer compact bullets."""
 
 
 def _clean_text(value: Any) -> str:
@@ -307,21 +302,26 @@ class Command(BaseCommand):
         if not wep_data:
             raise CommandError("Weapons data is empty (check the admin Knowledge Base).")
 
-        knowledge_base = _build_full_knowledge_base(
-            geo_data,
-            pers_data,
-            wep_data,
-            max_total_chars=max_knowledge_chars,
-        )
-
-        self.stdout.write(
-            f"Compiled knowledge base from full dataset ({len(knowledge_base):,} characters)."
-        )
-
         training_template = config_provider.get_prompt_text(
             "training_system", DEFAULT_TRAINING_SYSTEM_PROMPT
         )
-        system_prompt = f"{training_template}\n\nKnowledge reference:\n{knowledge_base}"
+        if max_knowledge_chars > 0:
+            knowledge_base = _build_full_knowledge_base(
+                geo_data,
+                pers_data,
+                wep_data,
+                max_total_chars=max_knowledge_chars,
+            )
+            self.stdout.write(
+                f"Compiled knowledge base from full dataset ({len(knowledge_base):,} characters)."
+            )
+            system_prompt = f"{training_template}\n\nKnowledge reference:\n{knowledge_base}"
+        else:
+            self.stdout.write(
+                "Skipping baked-in knowledge dump (max_knowledge_chars=0). "
+                "Runtime context will supply per-request data."
+            )
+            system_prompt = training_template
 
         modelfile_content = f"""FROM {base_model}
 

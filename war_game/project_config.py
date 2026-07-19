@@ -78,13 +78,15 @@ LLM_PROVIDER_CONFIG = {
 }
 
 UNIFIED_LLM_GENERATION_CONFIG = {
-    "request_timeout_seconds": 300,
+    "request_timeout_seconds": 180,
     "temperature": 0.4,
     "top_p": 0.9,
-    "num_predict": 600,
-    "num_ctx": 6144,
+    # CPU-oriented defaults: shorter answers + smaller context = much faster.
+    "num_predict": 280,
+    "num_ctx": 2048,
+    "num_thread": 14,
     "repeat_penalty": 1.1,
-    "conversation_history_limit": 4,
+    "conversation_history_limit": 2,
 }
 
 UNIFIED_LLM_TRAINING_CONFIG = {
@@ -94,11 +96,13 @@ UNIFIED_LLM_TRAINING_CONFIG = {
     "ollama_healthcheck_timeout_seconds": 10,
     "ollama_pull_timeout_seconds": 600,
     "ollama_create_timeout_seconds": 600,
-    "max_knowledge_chars": 12000,
+    # 0 = do not bake the knowledge dump into the Modelfile SYSTEM prompt.
+    # Runtime already injects country-scoped context per request (far faster on CPU).
+    "max_knowledge_chars": 0,
     "temperature": 0.3,
     "top_p": 0.85,
     "top_k": 40,
     "repeat_penalty": 1.1,
-    "num_ctx": 6144,
-    "num_predict": 600,
+    "num_ctx": 2048,
+    "num_predict": 280,
 }
