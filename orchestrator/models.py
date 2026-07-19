@@ -45,7 +45,7 @@ class LLMConfig(SingletonModel):
     )
     base_model = models.CharField(
         max_length=120,
-        default="gemma3n:e2b",
+        default="qwen2.5:3b",
         help_text="Base model used when (re)building the custom wargaming model.",
     )
     wargaming_model = models.CharField(
