@@ -53,7 +53,7 @@ LLM_PROVIDER_CONFIG = {
     "provider": LLM_PROVIDER_NAME,
     "ollama": {
         "base_url": "http://localhost:11434",
-        "default_model": "gemma3:4b",
+        "default_model": "gemma3n:e2b",
         "wargaming_model": "wargaming:unified",
         "timeout": 30,
     },
@@ -81,9 +81,9 @@ UNIFIED_LLM_GENERATION_CONFIG = {
     "request_timeout_seconds": 180,
     "temperature": 0.4,
     "top_p": 0.9,
-    # CPU-oriented defaults: shorter answers + smaller context = much faster.
-    "num_predict": 280,
-    "num_ctx": 2048,
+    # Balanced for CPU: complete answers without huge latency.
+    "num_predict": 450,
+    "num_ctx": 3072,
     "num_thread": 14,
     "repeat_penalty": 1.1,
     "conversation_history_limit": 2,
@@ -91,7 +91,9 @@ UNIFIED_LLM_GENERATION_CONFIG = {
 
 UNIFIED_LLM_TRAINING_CONFIG = {
     "custom_model_name": "wargaming:unified",
-    "default_base_model": "gemma3:4b",
+    # gemma3n:e2b is the lightest Gemma that still keeps usable multilingual/Persian quality.
+    # gemma3:1b is faster but too weak for this demo; gemma3:4b is better quality but slower on CPU.
+    "default_base_model": "gemma3n:e2b",
     "base_url": "http://localhost:11434",
     "ollama_healthcheck_timeout_seconds": 10,
     "ollama_pull_timeout_seconds": 600,
@@ -103,6 +105,6 @@ UNIFIED_LLM_TRAINING_CONFIG = {
     "top_p": 0.85,
     "top_k": 40,
     "repeat_penalty": 1.1,
-    "num_ctx": 2048,
-    "num_predict": 280,
+    "num_ctx": 3072,
+    "num_predict": 450,
 }

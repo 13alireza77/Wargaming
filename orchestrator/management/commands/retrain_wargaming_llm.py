@@ -32,7 +32,7 @@ Your job:
 
 Rules:
 - Prefer specific facts from the provided context. If data is missing, say so.
-- Be concise (about 120–180 words). Prefer compact bullets."""
+- Be complete but focused (about 220–320 words). Prefer compact bullets or short paragraphs."""
 
 
 def _clean_text(value: Any) -> str:
