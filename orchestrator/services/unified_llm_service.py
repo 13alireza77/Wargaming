@@ -209,6 +209,9 @@ def _generation_options_for_intent(intent: Dict[str, Any]) -> Dict[str, Any]:
     num_thread = gen.get("num_thread")
     if num_thread:
         options["num_thread"] = num_thread
+    num_batch = gen.get("num_batch")
+    if num_batch:
+        options["num_batch"] = num_batch
     return options
 
 

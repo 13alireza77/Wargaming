@@ -84,7 +84,12 @@ UNIFIED_LLM_GENERATION_CONFIG = {
     # Balanced for CPU: complete answers without huge latency.
     "num_predict": 450,
     "num_ctx": 3072,
-    "num_thread": 14,
+    # Threads: set to the number of PHYSICAL cores. On a 16-vCPU cloud box that
+    # is often 8 (hyperthreaded); oversubscribing threads SLOWS CPU inference.
+    # Benchmark 8 vs 16 and keep the faster one.
+    "num_thread": 8,
+    # Larger prompt batch = faster prefill on many-core CPUs (quality-free).
+    "num_batch": 1024,
     "repeat_penalty": 1.1,
     "conversation_history_limit": 2,
 }
