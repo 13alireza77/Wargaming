@@ -53,7 +53,7 @@ LLM_PROVIDER_CONFIG = {
     "provider": LLM_PROVIDER_NAME,
     "ollama": {
         "base_url": "http://localhost:11434",
-        "default_model": "qwen2.5:3b",
+        "default_model": "gemma3n:e2b",
         "wargaming_model": "wargaming:unified",
         "timeout": 30,
     },
@@ -96,10 +96,9 @@ UNIFIED_LLM_GENERATION_CONFIG = {
 
 UNIFIED_LLM_TRAINING_CONFIG = {
     "custom_model_name": "wargaming:unified",
-    # qwen2.5:3b is a lighter, CPU-friendly dense model with usable Persian.
-    # Faster/more predictable on CPU than gemma3n:e2b; qwen2.5:1.5b is faster
-    # still but its Persian quality is too weak for this demo.
-    "default_base_model": "qwen2.5:3b",
+    # gemma3n:e2b is the lightest Gemma that still keeps usable multilingual/Persian quality.
+    # gemma3:1b is faster but too weak for this demo; gemma3:4b is better quality but slower on CPU.
+    "default_base_model": "gemma3n:e2b",
     "base_url": "http://localhost:11434",
     "ollama_healthcheck_timeout_seconds": 10,
     "ollama_pull_timeout_seconds": 600,
