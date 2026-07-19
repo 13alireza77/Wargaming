@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from django.templatetags.static import static
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+
 from war_game.project_config import (
     DATABASE_PATH,
     DJANGO_ALLOWED_HOSTS,
@@ -123,3 +127,113 @@ DEFAULT_AUTO_FIELD = DJANGO_DEFAULT_AUTO_FIELD
 
 # LLM Configuration
 LLM_CONFIG = LLM_PROVIDER_CONFIG
+
+
+# ---------------------------------------------------------------------------
+# Unfold admin theme
+# ---------------------------------------------------------------------------
+UNFOLD = {
+    "SITE_TITLE": _("Wargaming Admin"),
+    "SITE_HEADER": _("Wargaming Control Center"),
+    "SITE_SUBHEADER": _("Config · Prompts · Knowledge · Conversations"),
+    "SITE_SYMBOL": "military_tech",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": False,
+    "SHOW_LANGUAGES": False,
+    "BORDER_RADIUS": "8px",
+    "COLORS": {
+        "primary": {
+            "50": "236 253 245",
+            "100": "209 250 229",
+            "200": "167 243 208",
+            "300": "110 231 183",
+            "400": "52 211 153",
+            "500": "16 185 129",
+            "600": "5 150 105",
+            "700": "4 120 87",
+            "800": "6 95 70",
+            "900": "6 78 59",
+            "950": "2 44 34",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": _("Overview"),
+                "separator": False,
+                "items": [
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                ],
+            },
+            {
+                "title": _("LLM Service"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Model & Config"),
+                        "icon": "tune",
+                        "link": reverse_lazy("admin:orchestrator_llmconfig_changelist"),
+                    },
+                    {
+                        "title": _("Prompts"),
+                        "icon": "chat_paste_go",
+                        "link": reverse_lazy("admin:orchestrator_prompt_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Knowledge Base"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Data (Geo / Personnel / Weapons)"),
+                        "icon": "database",
+                        "link": reverse_lazy("admin:orchestrator_knowledgebase_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Chat"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Conversations"),
+                        "icon": "forum",
+                        "link": reverse_lazy("admin:orchestrator_conversation_changelist"),
+                    },
+                    {
+                        "title": _("Messages"),
+                        "icon": "mail",
+                        "link": reverse_lazy("admin:orchestrator_message_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Administration"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Users"),
+                        "icon": "person",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                    {
+                        "title": _("Groups"),
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                    },
+                ],
+            },
+        ],
+    },
+}

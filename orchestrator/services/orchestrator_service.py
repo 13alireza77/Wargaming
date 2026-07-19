@@ -131,11 +131,14 @@ class OrchestratorService:
     def _get_conversation_context(self, conversation_id: str) -> List[Dict[str, str]]:
         try:
             from orchestrator.models import Conversation, Message
+            from . import config_provider
+
             conv = Conversation.objects.filter(id=conversation_id).first()
             if not conv:
                 return []
+            history_limit = config_provider.get_generation_config()["conversation_history_limit"]
             recent_messages = list(
-                Message.objects.filter(conversation=conv).order_by('-created_at')[:10]
+                Message.objects.filter(conversation=conv).order_by('-created_at')[:history_limit]
             )
             recent_messages.reverse()
             return [{'role': m.role, 'content': m.content or ''} for m in recent_messages]

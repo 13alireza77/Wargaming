@@ -8,12 +8,17 @@ DJANGO_DEBUG = True
 DJANGO_ALLOWED_HOSTS = []
 
 DJANGO_INSTALLED_APPS = [
+    # Unfold admin theme must come before django.contrib.admin.
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_json_widget",
     "orchestrator",
     "rest_framework",
 ]
@@ -75,8 +80,8 @@ UNIFIED_LLM_GENERATION_CONFIG = {
     "request_timeout_seconds": 300,
     "temperature": 0.4,
     "top_p": 0.9,
-    "num_predict": 500,
-    "num_ctx": 4096,
+    "num_predict": 1400,
+    "num_ctx": 6144,
     "repeat_penalty": 1.1,
     "conversation_history_limit": 4,
 }
@@ -93,6 +98,6 @@ UNIFIED_LLM_TRAINING_CONFIG = {
     "top_p": 0.85,
     "top_k": 40,
     "repeat_penalty": 1.1,
-    "num_ctx": 4096,
-    "num_predict": 500,
+    "num_ctx": 6144,
+    "num_predict": 1400,
 }

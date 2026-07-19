@@ -1,3 +1,5 @@
 Django==5.2.5
 djangorestframework==3.15.2
 requests==2.31.0
+django-unfold==0.101.0
+django-json-widget==2.1.1

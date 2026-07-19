@@ -4,17 +4,11 @@ Tuned for local models where predictable latency matters.
 """
 import json
 import logging
-from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Set, Tuple
 
 import requests
 
-from war_game.project_config import (
-    GEOGRAPHY_DATA_FILE,
-    PERSONNEL_DATA_FILE,
-    UNIFIED_LLM_GENERATION_CONFIG,
-    WEAPONS_DATA_FILE,
-)
+from . import config_provider
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +16,7 @@ logger = logging.getLogger(__name__)
 class StreamLLMError(Exception):
     """Raised when a streaming Ollama request fails."""
 
+# Built-in default; the admin-editable prompt (key="unified_system") overrides this.
 UNIFIED_SYSTEM_PROMPT = """You are a Middle East wargaming analyst with access to geography, personnel, and weapons data.
 
 Language:
@@ -44,18 +39,6 @@ Rules:
 - Structure clearly (paragraphs or concise bullets). Avoid repetition or templates.
 - If greeting → brief Persian welcome, then guide user to ask about scenarios, countries, or analysis.
 """
-
-
-def _load_json(path: Path) -> Dict[str, Any]:
-    try:
-        if not path.exists():
-            logger.warning("Data file not found: %s", path)
-            return {}
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except json.JSONDecodeError as e:
-        logger.warning("Invalid JSON at %s: %s", path, e)
-        return {}
 
 
 def _lookup_country_entry(data_map: Dict[str, Any], country: str) -> Optional[Dict[str, Any]]:
@@ -214,36 +197,13 @@ def _should_include_summary(focus: List[str], countries: List[str]) -> bool:
 
 
 def _generation_options_for_intent(intent: Dict[str, Any]) -> Dict[str, Any]:
-    # message_type = intent.get("message_type", "analysis")
-    # focus = intent.get("focus") or []
-    # countries = intent.get("countries") or []
-
-    num_predict = UNIFIED_LLM_GENERATION_CONFIG["num_predict"]
-    num_ctx = UNIFIED_LLM_GENERATION_CONFIG["num_ctx"]
-    temperature = UNIFIED_LLM_GENERATION_CONFIG["temperature"]
-
-    # if message_type == "greeting":
-    #     num_predict = 80
-    # elif message_type == "comparison":
-    #     num_predict = 260
-    # elif message_type == "battle_advice":
-    #     num_predict = 320
-    # elif message_type == "question":
-    #     num_predict = 220
-    # else:
-    #     num_predict = 320
-    #
-    # if len(countries) >= 2 or "general" in focus:
-    #     num_ctx = min(num_ctx, 3072)
-    # else:
-    #     num_ctx = min(num_ctx, 2560)
-
+    gen = config_provider.get_generation_config()
     return {
-        "temperature": temperature,
-        "top_p": UNIFIED_LLM_GENERATION_CONFIG["top_p"],
-        "num_predict": num_predict,
-        "num_ctx": num_ctx,
-        "repeat_penalty": UNIFIED_LLM_GENERATION_CONFIG["repeat_penalty"],
+        "temperature": gen["temperature"],
+        "top_p": gen["top_p"],
+        "num_predict": gen["num_predict"],
+        "num_ctx": gen["num_ctx"],
+        "repeat_penalty": gen["repeat_penalty"],
     }
 
 
@@ -256,13 +216,10 @@ class UnifiedLLMService:
             base_url: Optional[str] = None,
             timeout: Optional[int] = None,
     ):
-        from django.conf import settings
-
-        cfg = getattr(settings, "LLM_CONFIG", {})
-        ollama = cfg.get("ollama", {})
-        self.base_url = base_url or ollama.get("base_url", "http://localhost:11434")
-        self.model_name = model_name or ollama.get("wargaming_model", "wargaming:unified")
-        config_timeout = UNIFIED_LLM_GENERATION_CONFIG["request_timeout_seconds"]
+        endpoint = config_provider.get_service_endpoint()
+        self.base_url = base_url or endpoint["base_url"]
+        self.model_name = model_name or endpoint["model_name"]
+        config_timeout = config_provider.get_generation_config()["request_timeout_seconds"]
         self.timeout = config_timeout if timeout is None else min(timeout, config_timeout)
         self._geography_data: Optional[Dict[str, Any]] = None
         self._personnel_data: Optional[Dict[str, Any]] = None
@@ -271,9 +228,9 @@ class UnifiedLLMService:
     def _load_data(self) -> None:
         if self._geography_data is not None:
             return
-        self._geography_data = _load_json(GEOGRAPHY_DATA_FILE)
-        self._personnel_data = _load_json(PERSONNEL_DATA_FILE)
-        self._weapons_data = _load_json(WEAPONS_DATA_FILE)
+        self._geography_data = config_provider.get_knowledge("geography")
+        self._personnel_data = config_provider.get_knowledge("personnel")
+        self._weapons_data = config_provider.get_knowledge("weapons")
 
     def _build_context_block(self, intent: Dict[str, Any]) -> str:
         countries = intent.get("countries") or []
@@ -338,9 +295,10 @@ class UnifiedLLMService:
         if context_block.strip():
             user_content = f"Context:\n{context_block}\n\nUser question:\n{message}"
 
-        messages = [{"role": "system", "content": UNIFIED_SYSTEM_PROMPT}]
+        system_prompt = config_provider.get_prompt_text("unified_system", UNIFIED_SYSTEM_PROMPT)
+        messages = [{"role": "system", "content": system_prompt}]
         if conversation_context:
-            history_limit = UNIFIED_LLM_GENERATION_CONFIG["conversation_history_limit"]
+            history_limit = config_provider.get_generation_config()["conversation_history_limit"]
             for msg in conversation_context[-history_limit:]:
                 role = msg.get("role")
                 content = msg.get("content")

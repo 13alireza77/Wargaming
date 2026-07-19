@@ -7,29 +7,37 @@ model with a strong system prompt plus a structured knowledge compendium built
 from the full dataset so the model can reason from far more than a few short
 summaries.
 """
-import json
 import os
 import subprocess
 import tempfile
-from pathlib import Path
 from typing import Any, Dict, Iterable, List
 
 import requests
 from django.core.management.base import BaseCommand, CommandError
 
-from war_game.project_config import (
-    GEOGRAPHY_DATA_FILE,
-    PERSONNEL_DATA_FILE,
-    UNIFIED_LLM_TRAINING_CONFIG,
-    WEAPONS_DATA_FILE,
-)
+from orchestrator.services import config_provider
+from war_game.project_config import UNIFIED_LLM_TRAINING_CONFIG
 
 
-def _load_json(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+DEFAULT_TRAINING_SYSTEM_PROMPT = """You are a wargaming analyst specializing in Middle East conflict scenarios.
+
+Language:
+- The knowledge reference below is written in English, but you MUST always respond in fluent, natural Persian (Farsi) unless the user explicitly writes in English.
+- Write in clear, formal, native-quality Persian suitable for military analysis. Do NOT mix English words into Persian sentences, except for standard proper nouns and equipment names (e.g. F-16, S-300), which you may keep in their common form.
+- Translate all analysis, reasoning, and factual descriptions into Persian.
+
+Your job:
+- Understand and use the full structured knowledge reference below.
+- Answer with grounded military reasoning that combines geography, personnel, and weapons.
+- Compare countries side by side when asked.
+- Explain who has an advantage, why, and under what assumptions.
+- Give practical strategic advice when asked, but stay high-level and evidence-based.
+
+Rules:
+- Use the knowledge reference and runtime context provided by the application.
+- Prefer specific facts, named regions, units, quantities, and equipment when available.
+- If the data is incomplete, say what is missing instead of inventing details.
+- Be concise but substantive. Default to clear paragraphs or compact bullets."""
 
 
 def _clean_text(value: Any) -> str:
@@ -231,14 +239,14 @@ class Command(BaseCommand):
         parser.add_argument(
             "--model",
             type=str,
-            default=UNIFIED_LLM_TRAINING_CONFIG["default_base_model"],
-            help=f"Base Ollama model (default: {UNIFIED_LLM_TRAINING_CONFIG['default_base_model']})",
+            default=None,
+            help="Base Ollama model (defaults to the admin LLM Config base model).",
         )
         parser.add_argument(
             "--base-url",
             type=str,
-            default=UNIFIED_LLM_TRAINING_CONFIG["base_url"],
-            help="Ollama base URL",
+            default=None,
+            help="Ollama base URL (defaults to the admin LLM Config).",
         )
         parser.add_argument(
             "--force",
@@ -254,16 +262,17 @@ class Command(BaseCommand):
         parser.add_argument(
             "--num-ctx",
             type=int,
-            default=UNIFIED_LLM_TRAINING_CONFIG["num_ctx"],
-            help="Context window to configure on the trained model",
+            default=None,
+            help="Context window to configure on the trained model (defaults to admin LLM Config).",
         )
 
     def handle(self, *args, **options):
-        base_model = options["model"]
-        base_url = options["base_url"]
+        defaults = config_provider.get_training_defaults()
+        base_model = options["model"] or defaults["default_base_model"]
+        base_url = options["base_url"] or defaults["base_url"]
         force = options["force"]
         max_knowledge_chars = options["max_knowledge_chars"]
-        num_ctx = options["num_ctx"]
+        num_ctx = options["num_ctx"] or defaults["num_ctx"]
 
         self.stdout.write(self.style.SUCCESS("Starting unified wargaming LLM training..."))
 
@@ -287,20 +296,17 @@ class Command(BaseCommand):
             )
             return
 
-        geo_path = GEOGRAPHY_DATA_FILE
-        pers_path = PERSONNEL_DATA_FILE
-        wep_path = WEAPONS_DATA_FILE
+        geo_data = config_provider.get_knowledge("geography")
+        pers_data = config_provider.get_knowledge("personnel")
+        wep_data = config_provider.get_knowledge("weapons")
 
-        if not geo_path.exists():
-            raise CommandError(f"Geography data not found: {geo_path}")
-        if not pers_path.exists():
-            raise CommandError(f"Personnel data not found: {pers_path}")
-        if not wep_path.exists():
-            raise CommandError(f"Weapons data not found: {wep_path}")
+        if not geo_data:
+            raise CommandError("Geography data is empty (check the admin Knowledge Base).")
+        if not pers_data:
+            raise CommandError("Personnel data is empty (check the admin Knowledge Base).")
+        if not wep_data:
+            raise CommandError("Weapons data is empty (check the admin Knowledge Base).")
 
-        geo_data = _load_json(geo_path)
-        pers_data = _load_json(pers_path)
-        wep_data = _load_json(wep_path)
         knowledge_base = _build_full_knowledge_base(
             geo_data,
             pers_data,
@@ -312,28 +318,10 @@ class Command(BaseCommand):
             f"Compiled knowledge base from full dataset ({len(knowledge_base):,} characters)."
         )
 
-        system_prompt = f"""You are a wargaming analyst specializing in Middle East conflict scenarios.
-
-Language:
-- The knowledge reference below is written in English, but you MUST always respond in fluent, natural Persian (Farsi) unless the user explicitly writes in English.
-- Write in clear, formal, native-quality Persian suitable for military analysis. Do NOT mix English words into Persian sentences, except for standard proper nouns and equipment names (e.g. F-16, S-300), which you may keep in their common form.
-- Translate all analysis, reasoning, and factual descriptions into Persian.
-
-Your job:
-- Understand and use the full structured knowledge reference below.
-- Answer with grounded military reasoning that combines geography, personnel, and weapons.
-- Compare countries side by side when asked.
-- Explain who has an advantage, why, and under what assumptions.
-- Give practical strategic advice when asked, but stay high-level and evidence-based.
-
-Rules:
-- Use the knowledge reference and runtime context provided by the application.
-- Prefer specific facts, named regions, units, quantities, and equipment when available.
-- If the data is incomplete, say what is missing instead of inventing details.
-- Be concise but substantive. Default to clear paragraphs or compact bullets.
-
-Knowledge reference:
-{knowledge_base}"""
+        training_template = config_provider.get_prompt_text(
+            "training_system", DEFAULT_TRAINING_SYSTEM_PROMPT
+        )
+        system_prompt = f"{training_template}\n\nKnowledge reference:\n{knowledge_base}"
 
         modelfile_content = f"""FROM {base_model}
 
