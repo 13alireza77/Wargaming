@@ -4,8 +4,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATABASE_PATH = PROJECT_ROOT / "db.sqlite3"
 
 DJANGO_SECRET_KEY = "django-insecure--6)*6ro84fslumlt5y96hsxj1$jnukfz#y=sva&czjf)f0dm=a"
-DJANGO_DEBUG = True
-DJANGO_ALLOWED_HOSTS = []
+DJANGO_DEBUG = False
+DJANGO_ALLOWED_HOSTS = ["185.218.139.25", "localhost", "127.0.0.1"]
 
 DJANGO_INSTALLED_APPS = [
     # Unfold admin theme must come before django.contrib.admin.
@@ -25,6 +25,7 @@ DJANGO_INSTALLED_APPS = [
 
 DJANGO_MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -52,7 +53,7 @@ LLM_PROVIDER_CONFIG = {
     "provider": LLM_PROVIDER_NAME,
     "ollama": {
         "base_url": "http://localhost:11434",
-        "default_model": "aya-expanse:8b",
+        "default_model": "gemma3:4b",
         "wargaming_model": "wargaming:unified",
         "timeout": 30,
     },
@@ -80,7 +81,7 @@ UNIFIED_LLM_GENERATION_CONFIG = {
     "request_timeout_seconds": 300,
     "temperature": 0.4,
     "top_p": 0.9,
-    "num_predict": 1400,
+    "num_predict": 600,
     "num_ctx": 6144,
     "repeat_penalty": 1.1,
     "conversation_history_limit": 4,
@@ -88,16 +89,16 @@ UNIFIED_LLM_GENERATION_CONFIG = {
 
 UNIFIED_LLM_TRAINING_CONFIG = {
     "custom_model_name": "wargaming:unified",
-    "default_base_model": "aya-expanse:8b",
+    "default_base_model": "gemma3:4b",
     "base_url": "http://localhost:11434",
     "ollama_healthcheck_timeout_seconds": 10,
     "ollama_pull_timeout_seconds": 600,
     "ollama_create_timeout_seconds": 600,
-    "max_knowledge_chars": 25000,
+    "max_knowledge_chars": 12000,
     "temperature": 0.3,
     "top_p": 0.85,
     "top_k": 40,
     "repeat_penalty": 1.1,
     "num_ctx": 6144,
-    "num_predict": 1400,
+    "num_predict": 600,
 }
