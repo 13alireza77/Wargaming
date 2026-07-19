@@ -45,7 +45,7 @@ class LLMConfig(SingletonModel):
     )
     base_model = models.CharField(
         max_length=120,
-        default="aya-expanse:8b",
+        default="gemma3:4b",
         help_text="Base model used when (re)building the custom wargaming model.",
     )
     wargaming_model = models.CharField(
@@ -63,7 +63,7 @@ class LLMConfig(SingletonModel):
     # Generation parameters
     temperature = models.FloatField(default=0.4)
     top_p = models.FloatField(default=0.9)
-    num_predict = models.IntegerField(default=1400, help_text="Max tokens to generate.")
+    num_predict = models.IntegerField(default=600, help_text="Max tokens to generate.")
     num_ctx = models.IntegerField(default=6144, help_text="Context window size.")
     repeat_penalty = models.FloatField(default=1.1)
     conversation_history_limit = models.IntegerField(
