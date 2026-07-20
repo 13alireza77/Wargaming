@@ -53,9 +53,9 @@ LLM_PROVIDER_CONFIG = {
     "provider": LLM_PROVIDER_NAME,
     "ollama": {
         "base_url": "http://localhost:11434",
-        "default_model": "gemma3n:e2b",
+        "default_model": "gemma3:12b",
         "wargaming_model": "wargaming:unified",
-        "timeout": 30,
+        "timeout": 60,
     },
     "citome": {
         "base_url": "http://localhost:8000",
@@ -78,38 +78,35 @@ LLM_PROVIDER_CONFIG = {
 }
 
 UNIFIED_LLM_GENERATION_CONFIG = {
-    "request_timeout_seconds": 180,
+    "request_timeout_seconds": 300,
     "temperature": 0.4,
     "top_p": 0.9,
-    # Balanced for CPU: complete answers without huge latency.
-    "num_predict": 450,
-    "num_ctx": 3072,
-    # Threads: set to the number of PHYSICAL cores. On a 16-vCPU cloud box that
-    # is often 8 (hyperthreaded); oversubscribing threads SLOWS CPU inference.
-    # Benchmark 8 vs 16 and keep the faster one.
-    "num_thread": 8,
-    # Larger prompt batch = faster prefill on many-core CPUs (quality-free).
-    "num_batch": 1024,
+    # Tuned for RTX 3090 (24GB): fuller answers with comfortable latency.
+    "num_predict": 800,
+    "num_ctx": 8192,
+    # Match the 16-core GPU server; Ollama uses GPU for weights, threads for CPU ops.
+    "num_thread": 16,
+    # Moderate batch size is friendlier on GPU than large CPU-oriented batches.
+    "num_batch": 512,
     "repeat_penalty": 1.1,
     "conversation_history_limit": 2,
 }
 
 UNIFIED_LLM_TRAINING_CONFIG = {
     "custom_model_name": "wargaming:unified",
-    # gemma3n:e2b is the lightest Gemma that still keeps usable multilingual/Persian quality.
-    # gemma3:1b is faster but too weak for this demo; gemma3:4b is better quality but slower on CPU.
-    "default_base_model": "gemma3n:e2b",
+    # gemma3:12b: strong multilingual/Persian on Gemma, fits RTX 3090 (~7–12GB VRAM).
+    "default_base_model": "gemma3:12b",
     "base_url": "http://localhost:11434",
     "ollama_healthcheck_timeout_seconds": 10,
     "ollama_pull_timeout_seconds": 600,
     "ollama_create_timeout_seconds": 600,
     # 0 = do not bake the knowledge dump into the Modelfile SYSTEM prompt.
-    # Runtime already injects country-scoped context per request (far faster on CPU).
+    # Runtime already injects country-scoped context per request.
     "max_knowledge_chars": 0,
     "temperature": 0.3,
     "top_p": 0.85,
     "top_k": 40,
     "repeat_penalty": 1.1,
-    "num_ctx": 3072,
-    "num_predict": 450,
+    "num_ctx": 8192,
+    "num_predict": 800,
 }

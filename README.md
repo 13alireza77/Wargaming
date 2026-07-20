@@ -17,7 +17,8 @@
 | Python | 3.10 یا بالاتر |
 | pip + venv | برای نصب وابستگی‌ها در محیط مجازی |
 | Ollama | آخرین نسخه پایدار |
-| RAM | حداقل ۱۶ گیگابایت (برای مدل 8B پیشنهادی) |
+| RAM | حداقل ۱۶ گیگابایت (برای مدل ۱۲B پیشنهادی؛ سرور GPU با ۲۴GB VRAM ایده‌آل است) |
+| GPU | اختیاری ولی توصیه‌شده (مثلاً RTX 3090)؛ بدون GPU هم با Ollama اجرا می‌شود ولی کندتر است |
 | سیستم‌عامل | macOS، Linux یا Windows |
 
 ## نصب روی سیستم خام (بدون پیش‌نیاز)
@@ -105,7 +106,7 @@ python manage.py migrate
 python manage.py retrain_wargaming_llm
 ```
 
-این مرحله در صورت نیاز مدل پایه `aya-expanse:8b` را دانلود می‌کند و مدل سفارشی `wargaming:unified` را می‌سازد.
+این مرحله در صورت نیاز مدل پایه `gemma3:12b` را دانلود می‌کند و مدل سفارشی `wargaming:unified` را می‌سازد.
 
 ### ۵) اجرای سرور Django
 
@@ -113,7 +114,13 @@ python manage.py retrain_wargaming_llm
 python manage.py runserver
 ```
 
-مرورگر: **http://127.0.0.1:8000/chat/**
+برای دسترسی از بیرون روی سرور GPU (bind به همه اینترفیس‌ها):
+
+```bash
+gunicorn war_game.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 300
+```
+
+مرورگر: **http://127.0.0.1:8000/chat/** (یا `http://<SERVER_IP>:8000/chat/`)
 
 ### ۶) تست سریع سلامت سیستم
 
@@ -203,7 +210,7 @@ python manage.py retrain_wargaming_llm --force
 **گزینه‌های دستور:**
 
 ```bash
-python manage.py retrain_wargaming_llm --model aya-expanse:8b --force
+python manage.py retrain_wargaming_llm --model gemma3:12b --force
 ```
 
 ## تنظیمات مهم
@@ -212,13 +219,13 @@ python manage.py retrain_wargaming_llm --model aya-expanse:8b --force
 
 | تنظیم | مقدار پیش‌فرض |
 |--------|----------------|
-| مدل پایه | `aya-expanse:8b` |
+| مدل پایه | `gemma3:12b` |
 | مدل تحلیل | `wargaming:unified` |
 | آدرس Ollama | `http://localhost:11434` |
 | زبان رابط | فارسی (`fa`) |
 | زمان انتظار پاسخ | ۳۰۰ ثانیه |
-| حداکثر توکن خروجی | ۵۰۰ (`num_predict`) |
-| پنجره زمینه | ۴۰۹۶ (`num_ctx`) |
+| حداکثر توکن خروجی | ۸۰۰ (`num_predict`) |
+| پنجره زمینه | ۸۱۹۲ (`num_ctx`) |
 
 ## عیب‌یابی
 
@@ -228,12 +235,44 @@ python manage.py retrain_wargaming_llm --model aya-expanse:8b --force
 | پاسخ timeout | اولین درخواست کند است؛ صبر کنید یا `num_predict` را در config کم کنید |
 | مدل پیدا نشد | `ollama list` و سپس `retrain_wargaming_llm --force` |
 | پاسخ انگلیسی | سؤال را به فارسی بپرسید؛ system prompt فارسی است |
-| کندی شدید | برنامه‌های دیگر را ببندید؛ مدل 8B به RAM بیشتری نیاز دارد (معمولاً ۸ گیگ یا بیشتر فقط برای مدل) |
+| کندی شدید | روی CPU مدل ۱۲B سنگین است؛ از GPU با Ollama بومی استفاده کنید؛ `ollama ps` باید VRAM را نشان دهد |
 
 ```bash
 ollama list
 ollama ps
+nvidia-smi
 ```
+
+## راه‌اندازی سریع روی سرور GPU (Ubuntu + RTX 3090)
+
+```bash
+# ۱) وابستگی‌های سیستم و Ollama
+sudo apt update
+sudo apt install -y git python3 python3-pip python3-venv curl
+nvidia-smi   # اگر خطا داد، درایور NVIDIA را نصب و ری‌بوت کنید
+curl -fsSL https://ollama.com/install.sh | sh
+sudo systemctl enable --now ollama   # یا: ollama serve
+
+# ۲) پروژه
+cd ~/Wargaming   # مسیر کلون خودتان
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# ۳) مدل و دیتابیس (دانلود ~۸GB — زود شروع کنید)
+ollama pull gemma3:12b
+python manage.py migrate
+python manage.py seed_admin_data --force
+python manage.py retrain_wargaming_llm --model gemma3:12b --force
+ollama list
+
+# ۴) اجرا
+gunicorn war_game.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 300
+# UI: http://<SERVER_IP>:8000/chat/
+```
+
+در صورت نیاز پورت را باز کنید: `sudo ufw allow 8000/tcp`
 
 ## مجوز
 

@@ -45,7 +45,7 @@ class LLMConfig(SingletonModel):
     )
     base_model = models.CharField(
         max_length=120,
-        default="gemma3n:e2b",
+        default="gemma3:12b",
         help_text="Base model used when (re)building the custom wargaming model.",
     )
     wargaming_model = models.CharField(
@@ -63,14 +63,14 @@ class LLMConfig(SingletonModel):
     # Generation parameters
     temperature = models.FloatField(default=0.4)
     top_p = models.FloatField(default=0.9)
-    num_predict = models.IntegerField(default=450, help_text="Max tokens to generate.")
-    num_ctx = models.IntegerField(default=3072, help_text="Context window size.")
+    num_predict = models.IntegerField(default=800, help_text="Max tokens to generate.")
+    num_ctx = models.IntegerField(default=8192, help_text="Context window size.")
     repeat_penalty = models.FloatField(default=1.1)
     conversation_history_limit = models.IntegerField(
         default=2,
         help_text="How many previous messages to include as context.",
     )
-    request_timeout_seconds = models.IntegerField(default=180)
+    request_timeout_seconds = models.IntegerField(default=300)
 
     updated_at = models.DateTimeField(auto_now=True)
 
