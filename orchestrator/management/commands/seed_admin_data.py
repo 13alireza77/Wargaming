@@ -47,12 +47,20 @@ class Command(BaseCommand):
             action="store_true",
             help="Overwrite existing rows with the values from files/constants.",
         )
+        parser.add_argument(
+            "--prompts-only",
+            action="store_true",
+            help="Update only Prompt rows (skip LLM config and knowledge datasets).",
+        )
 
     def handle(self, *args, **options):
         force = options["force"]
-        self._seed_config(force)
+        prompts_only = options["prompts_only"]
+        if not prompts_only:
+            self._seed_config(force)
         self._seed_prompts(force)
-        self._seed_knowledge(force)
+        if not prompts_only:
+            self._seed_knowledge(force)
         self.stdout.write(self.style.SUCCESS("Admin data seeding complete."))
 
     def _seed_config(self, force: bool):
