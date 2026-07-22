@@ -5,7 +5,7 @@ DATABASE_PATH = PROJECT_ROOT / "db.sqlite3"
 
 DJANGO_SECRET_KEY = "django-insecure--6)*6ro84fslumlt5y96hsxj1$jnukfz#y=sva&czjf)f0dm=a"
 DJANGO_DEBUG = False
-DJANGO_ALLOWED_HOSTS = ["85.208.254.176", "localhost", "127.0.0.1"]
+DJANGO_ALLOWED_HOSTS = ["45.159.113.156", "localhost", "127.0.0.1"]
 
 DJANGO_INSTALLED_APPS = [
     # Unfold admin theme must come before django.contrib.admin.
