@@ -89,60 +89,137 @@ detect_public_ip() {
 }
 
 # Fresh cloud images often run unattended-upgrades at boot and hold apt locks.
-wait_for_apt() {
-  local max_wait_seconds="${1:-900}"
-  local waited=0
+# apt-get update can succeed while dpkg install lock is still held.
+stop_background_apt() {
+  info "Stopping background apt / unattended-upgrades (ephemeral server)..."
+  systemctl stop unattended-upgrades.service 2>/dev/null || true
+  systemctl stop apt-daily.service apt-daily-upgrade.service 2>/dev/null || true
+  systemctl stop apt-daily.timer apt-daily-upgrade.timer 2>/dev/null || true
+  systemctl disable --now unattended-upgrades.service 2>/dev/null || true
+  systemctl kill --kill-who=all unattended-upgrades.service 2>/dev/null || true
+  # Do not force-kill dpkg mid-transaction unless it has been stuck a long time.
+  ok "requested stop of background apt services"
+}
+
+apt_lock_busy() {
   local locks=(
     /var/lib/dpkg/lock-frontend
     /var/lib/dpkg/lock
     /var/cache/apt/archives/lock
     /var/lib/apt/lists/lock
   )
+  local lock
+
+  # Process checks (name is truncated to unattended-upgr on Linux)
+  if pgrep -x unattended-upgr >/dev/null 2>&1; then
+    echo "process:unattended-upgr"
+    return 0
+  fi
+  if pgrep -x apt-get >/dev/null 2>&1; then
+    echo "process:apt-get"
+    return 0
+  fi
+  if pgrep -x apt >/dev/null 2>&1; then
+    echo "process:apt"
+    return 0
+  fi
+  if pgrep -x dpkg >/dev/null 2>&1; then
+    echo "process:dpkg"
+    return 0
+  fi
+
+  for lock in "${locks[@]}"; do
+    if command -v fuser >/dev/null 2>&1; then
+      if fuser "$lock" >/dev/null 2>&1; then
+        echo "lock:$lock"
+        return 0
+      fi
+    elif command -v lsof >/dev/null 2>&1; then
+      if lsof "$lock" >/dev/null 2>&1; then
+        echo "lock:$lock"
+        return 0
+      fi
+    fi
+  done
+
+  # Last resort: try opening the frontend lock non-blocking with flock
+  if command -v flock >/dev/null 2>&1; then
+    if ! flock --nonblock /var/lib/dpkg/lock-frontend true 2>/dev/null; then
+      echo "flock:/var/lib/dpkg/lock-frontend"
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
+wait_for_apt() {
+  local max_wait_seconds="${1:-1200}"
+  local waited=0
+  local holder=""
 
   info "Waiting for apt/dpkg locks (unattended-upgrades may be running)..."
   while (( waited < max_wait_seconds )); do
-    local busy=0
-    local holder=""
-
-    if pgrep -x unattended-upgr >/dev/null 2>&1 || pgrep -f unattended-upgrade >/dev/null 2>&1; then
-      busy=1
-      holder="unattended-upgrades"
-    elif pgrep -x apt-get >/dev/null 2>&1 || pgrep -x apt >/dev/null 2>&1 || pgrep -x dpkg >/dev/null 2>&1; then
-      busy=1
-      holder="apt/dpkg"
-    else
-      for lock in "${locks[@]}"; do
-        if [[ -e "$lock" ]] && fuser "$lock" >/dev/null 2>&1; then
-          busy=1
-          holder="$lock"
-          break
-        fi
-      done
-    fi
-
-    if [[ $busy -eq 0 ]]; then
+    holder="$(apt_lock_busy || true)"
+    if [[ -z "$holder" ]]; then
       ok "apt is free (waited ${waited}s)"
       return 0
     fi
 
     if (( waited % 15 == 0 )); then
-      warn "apt busy (${holder:-unknown}) — waited ${waited}s / ${max_wait_seconds}s"
+      warn "apt busy (${holder}) — waited ${waited}s / ${max_wait_seconds}s"
+      ps -o pid,etime,cmd -C unattended-upgr,apt-get,apt,dpkg 2>/dev/null || true
     fi
+
+    # Keep trying to stop background upgraders while we wait
+    if (( waited > 0 && waited % 60 == 0 )); then
+      stop_background_apt
+    fi
+
     sleep 5
     waited=$((waited + 5))
   done
 
-  fail "Timed out waiting for apt lock after ${max_wait_seconds}s. Check: ps aux | grep -E 'apt|dpkg|unattended'"
+  fail "Timed out waiting for apt lock after ${max_wait_seconds}s. Run: ps aux | grep -E 'apt|dpkg|unattended'"
 }
 
 apt_update() {
   wait_for_apt
-  run apt-get update
+  local attempt
+  for attempt in 1 2 3 4 5; do
+    echo
+    echo "$(yellow "\$") $(bold "apt-get update")  (attempt $attempt/5)"
+    echo "$(cyan "────────────────────────────────────────────────────────────")"
+    if apt-get update; then
+      echo "$(cyan "────────────────────────────────────────────────────────────")"
+      ok "exit 0"
+      return 0
+    fi
+    warn "apt-get update failed — waiting for lock and retrying..."
+    sleep 10
+    wait_for_apt
+  done
+  fail "apt-get update failed after retries"
 }
 
 apt_install() {
   wait_for_apt
-  run apt-get install -y "$@"
+  local attempt
+  for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    echo
+    echo "$(yellow "\$") $(bold "apt-get install -y $*")  (attempt $attempt/10)"
+    echo "$(cyan "────────────────────────────────────────────────────────────")"
+    if apt-get install -y "$@"; then
+      echo "$(cyan "────────────────────────────────────────────────────────────")"
+      ok "exit 0"
+      return 0
+    fi
+    warn "apt-get install failed (likely lock) — waiting and retrying..."
+    stop_background_apt
+    sleep 15
+    wait_for_apt
+  done
+  fail "apt-get install failed after retries: $*"
 }
 
 # =============================================================================
@@ -190,12 +267,8 @@ fi
 
 # =============================================================================
 banner "Install system packages + Python 3.13"
-# Ensure fuser exists for lock checks (usually from psmisc)
-if ! command -v fuser >/dev/null 2>&1; then
-  wait_for_apt
-  apt-get update
-  apt-get install -y psmisc || true
-fi
+stop_background_apt
+wait_for_apt
 
 apt_update
 apt_install \
