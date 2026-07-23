@@ -88,6 +88,63 @@ detect_public_ip() {
   echo "$ip"
 }
 
+# Fresh cloud images often run unattended-upgrades at boot and hold apt locks.
+wait_for_apt() {
+  local max_wait_seconds="${1:-900}"
+  local waited=0
+  local locks=(
+    /var/lib/dpkg/lock-frontend
+    /var/lib/dpkg/lock
+    /var/cache/apt/archives/lock
+    /var/lib/apt/lists/lock
+  )
+
+  info "Waiting for apt/dpkg locks (unattended-upgrades may be running)..."
+  while (( waited < max_wait_seconds )); do
+    local busy=0
+    local holder=""
+
+    if pgrep -x unattended-upgr >/dev/null 2>&1 || pgrep -f unattended-upgrade >/dev/null 2>&1; then
+      busy=1
+      holder="unattended-upgrades"
+    elif pgrep -x apt-get >/dev/null 2>&1 || pgrep -x apt >/dev/null 2>&1 || pgrep -x dpkg >/dev/null 2>&1; then
+      busy=1
+      holder="apt/dpkg"
+    else
+      for lock in "${locks[@]}"; do
+        if [[ -e "$lock" ]] && fuser "$lock" >/dev/null 2>&1; then
+          busy=1
+          holder="$lock"
+          break
+        fi
+      done
+    fi
+
+    if [[ $busy -eq 0 ]]; then
+      ok "apt is free (waited ${waited}s)"
+      return 0
+    fi
+
+    if (( waited % 15 == 0 )); then
+      warn "apt busy (${holder:-unknown}) — waited ${waited}s / ${max_wait_seconds}s"
+    fi
+    sleep 5
+    waited=$((waited + 5))
+  done
+
+  fail "Timed out waiting for apt lock after ${max_wait_seconds}s. Check: ps aux | grep -E 'apt|dpkg|unattended'"
+}
+
+apt_update() {
+  wait_for_apt
+  run apt-get update
+}
+
+apt_install() {
+  wait_for_apt
+  run apt-get install -y "$@"
+}
+
 # =============================================================================
 need_root
 
@@ -133,8 +190,15 @@ fi
 
 # =============================================================================
 banner "Install system packages + Python 3.13"
-run apt-get update
-run apt-get install -y \
+# Ensure fuser exists for lock checks (usually from psmisc)
+if ! command -v fuser >/dev/null 2>&1; then
+  wait_for_apt
+  apt-get update
+  apt-get install -y psmisc || true
+fi
+
+apt_update
+apt_install \
   software-properties-common \
   curl \
   unzip \
@@ -142,15 +206,17 @@ run apt-get install -y \
   zstd \
   ca-certificates \
   build-essential \
-  git
+  git \
+  psmisc
 
 if ! apt-cache show "$PYTHON_BIN" >/dev/null 2>&1; then
   info "Adding deadsnakes PPA for $PYTHON_BIN"
+  wait_for_apt
   run add-apt-repository -y ppa:deadsnakes/ppa
-  run apt-get update
+  apt_update
 fi
 
-run apt-get install -y \
+apt_install \
   "$PYTHON_BIN" \
   "${PYTHON_BIN}-venv" \
   "${PYTHON_BIN}-dev"
@@ -166,6 +232,7 @@ if command -v nvidia-smi >/dev/null 2>&1; then
 else
   warn "nvidia-smi not found — Ollama will run on CPU (much slower)"
   if ask_yes_no "Try auto-install NVIDIA drivers now? (needs reboot after)" "n"; then
+    wait_for_apt
     run ubuntu-drivers autoinstall
     warn "Reboot the server, then re-run this script."
     exit 0
