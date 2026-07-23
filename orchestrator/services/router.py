@@ -119,6 +119,15 @@ ADVICE_PATTERN = re.compile(
     r"|راهکار|راهبرد|استراتژی|تاکتیک|توصیه|پیشنهاد|بهترین راه|چگونه برتری|چطور برتری|چگونه می‌تواند|چگونه میتواند)",
     re.IGNORECASE,
 )
+# Explicit war/conflict intent. Used to distinguish a real battle scenario
+# (which triggers the بازیکنان/راهکارها structure) from a plain capability
+# comparison like "compare the air forces", which should stay flexible.
+CONFLICT_PATTERN = re.compile(
+    r"(war|battle|conflict|attack|invade|invasion|fight|who would win|would win"
+    # جنگ(?!نده) matches "جنگ/جنگی" (war) but NOT "جنگنده" (fighter jet).
+    r"|جنگ(?!نده)|نبرد|درگیری|حمله|تهاجم|سناریو|پیروزی|برنده|شکست|مقابله|رویاروی)",
+    re.IGNORECASE,
+)
 QUESTION_PATTERN = re.compile(r"[?؟]\s*$")
 PERSIAN_QUESTION_STARTERS = ("آیا", "چگونه", "چطور", "کدام", "چرا", "چه", "چند", "چقدر")
 
@@ -336,7 +345,11 @@ def _route(message: str) -> Dict[str, Any]:
     focus = _detect_focus(message)
     weapon_subtypes = _detect_weapon_subtypes(message)
     message_type = _detect_message_type(message, countries)
-    is_battle_scenario = message_type in {"comparison", "battle_advice"} and len(countries) >= 2
+    # A battle scenario needs two countries AND explicit conflict intent
+    # (battle_advice, or war/conflict wording). A plain "compare X and Y" is not one.
+    is_battle_scenario = len(countries) >= 2 and (
+        message_type == "battle_advice" or bool(CONFLICT_PATTERN.search(message))
+    )
     processed_message = _build_processed_message(
         message, countries, non_me_countries, scenario, message_type, focus, is_battle_scenario
     )
