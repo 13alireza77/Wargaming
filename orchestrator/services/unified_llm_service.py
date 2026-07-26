@@ -48,7 +48,11 @@ Battle/conflict scenario between two Middle East countries — use EXACTLY this 
 راهکارهای بازیکن ۲:
 بهترین راهکار بازیکن ۱:
 بهترین راهکار بازیکن ۲:
-- Under "بازیکنان" name the two countries. Under each "راهکارها" list concrete options with the reasoning/data behind them. Under "بهترین راهکار" pick and justify the single best option for each side, and make clear which side is more likely to prevail and why.
+- Produce each heading EXACTLY ONCE, in this exact order. Never repeat a heading.
+- Under "بازیکنان" name the two countries; بازیکن ۱ = the first country, بازیکن ۲ = the second. Do NOT restate this player→country mapping anywhere else.
+- Under each "راهکارها" list that side's concrete options with the reasoning/data behind them.
+- Under "بهترین راهکار بازیکن ۱/۲" write that side's single best راهکار as a full justified sentence — NOT the country name. NEVER output a bare line that just repeats the mapping (e.g. do NOT write "بهترین راهکار بازیکن ۱: ایران").
+- After the headings, add one final line "حکم نهایی:" stating which side is more likely to prevail and why.
 
 Other query types (keep a flexible, clear format):
 - comparison → decisive side-by-side + a clear final judgement with reasons
@@ -286,8 +290,9 @@ class UnifiedLLMService:
             parts.append(
                 "This is a battle/conflict scenario between two Middle East countries. "
                 "Respond using the required battle-scenario structure "
-                "(بازیکنان / سناریوهای بازی یا درگیری / راهکارهای بازیکن ۱ و ۲ / بهترین راهکار بازیکن ۱ و ۲) "
-                "and reach a decisive judgement with reasons."
+                "(بازیکنان / سناریوهای بازی یا درگیری / راهکارهای بازیکن ۱ و ۲ / بهترین راهکار بازیکن ۱ و ۲ / حکم نهایی). "
+                "Write each heading exactly once and never add bare lines that just repeat player→country "
+                "(e.g. 'بهترین راهکار بازیکن ۱: ایران'). Reach a decisive judgement with reasons."
             )
         if has_non_me:
             parts.append(
