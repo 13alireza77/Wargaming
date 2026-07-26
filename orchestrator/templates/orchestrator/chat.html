@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>سامانه تحلیل رزم‌افزاری</title>
+  <title>سامانه مشاوره رزم‌افزاری</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
   <style>
@@ -616,7 +616,7 @@
       <div class="topbar-inner">
         <div class="toolbar">
           <button type="button" class="btn" id="new-chat">گفتگوی جدید</button>
-          <div class="status-pill"><span class="status-dot"></span>آماده تحلیل</div>
+          <div class="status-pill"><span class="status-dot"></span>آماده مشاوره</div>
         </div>
         <div class="brand">
           <div class="brand-mark" aria-hidden="true">
@@ -628,7 +628,7 @@
             </svg>
           </div>
           <div class="brand-copy">
-            <h1 class="brand-title">سامانه تحلیل رزم‌افزاری</h1>
+            <h1 class="brand-title">سامانه مشاوره رزم‌افزاری</h1>
             <p class="brand-subtitle">جغرافیا، نیروی انسانی، تسلیحات و مقایسه منطقه‌ای در یک فضای کاری.</p>
           </div>
         </div>
@@ -643,7 +643,7 @@
               <p class="eyebrow">فضای سناریو</p>
               <h2 class="welcome-title">مقایسه عملیاتی، وضعیت تسلیحات یا برنامه‌ریزی مبتنی بر زمین‌شناسی را بپرسید.</h2>
               <p class="welcome-copy">
-                این گفتگو برای تحلیل‌های دفاعی طراحی شده و بیشتر شبیه یک کنسول تخصصی است تا یک فرم عمومی.
+                این گفتگو برای مشاوره‌های دفاعی طراحی شده و بیشتر شبیه یک کنسول تخصصی است تا یک فرم عمومی.
                 با یک سؤال مستقیم شروع کنید یا از نمونه‌های زیر برای شروع سریع استفاده کنید.
               </p>
 
@@ -829,7 +829,7 @@
 
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-        avatar.setAttribute('aria-label', 'تحلیلگر');
+        avatar.setAttribute('aria-label', 'مشاور');
         avatar.innerHTML = ASSISTANT_AVATAR;
 
         const body = document.createElement('div');
@@ -837,7 +837,7 @@
 
         const label = document.createElement('div');
         label.className = 'message-label';
-        label.textContent = 'تحلیل';
+        label.textContent = 'مشاور';
 
         const bubble = document.createElement('div');
         bubble.className = 'message assistant streaming';
@@ -909,7 +909,7 @@
 
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-        avatar.setAttribute('aria-label', role === 'assistant' ? 'تحلیلگر' : 'شما');
+        avatar.setAttribute('aria-label', role === 'assistant' ? 'مشاور' : 'شما');
         avatar.innerHTML = role === 'assistant' ? ASSISTANT_AVATAR : USER_AVATAR;
 
         const body = document.createElement('div');
@@ -917,7 +917,7 @@
 
         const label = document.createElement('div');
         label.className = 'message-label';
-        label.textContent = role === 'assistant' ? 'تحلیل' : 'شما';
+        label.textContent = role === 'assistant' ? 'مشاور' : 'شما';
 
         const bubble = document.createElement('div');
         bubble.className = 'message ' + role;
@@ -966,7 +966,7 @@
 
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-        avatar.setAttribute('aria-label', 'تحلیلگر');
+        avatar.setAttribute('aria-label', 'مشاور');
         avatar.innerHTML = ASSISTANT_AVATAR;
 
         const body = document.createElement('div');
@@ -974,11 +974,11 @@
 
         const label = document.createElement('div');
         label.className = 'message-label';
-        label.textContent = 'تحلیل';
+        label.textContent = 'مشاور';
 
         const bubble = document.createElement('div');
         bubble.className = 'message assistant';
-        bubble.innerHTML = '<span class="loading-dots">در حال تحلیل</span>';
+        bubble.innerHTML = '<span class="loading-dots">در حال مشاوره</span>';
 
         body.appendChild(label);
         body.appendChild(bubble);

@@ -47,10 +47,23 @@ COUNTRY_ALIASES = {
     "ترکیه‌ای": "turkey",
 }
 
-COUNTRY_PATTERN = re.compile(
-    r"(" + "|".join(sorted((re.escape(k) for k in COUNTRY_ALIASES), key=len, reverse=True)) + r")",
-    re.IGNORECASE,
-)
+# Characters that count as "inside a word" for both Persian and Latin scripts.
+# Persian lacks the whitespace-\b behavior Latin has, so a naive alternation
+# matches country names embedded in unrelated words (e.g. "هند"/India inside
+# "خواهند", "مصر"/Egypt inside "مصرف", "چین"/China inside "همچنین"). We assert
+# the match is not flanked by these characters to emulate a real word boundary.
+_WORDCHAR = r"A-Za-z0-9_\u0600-\u06FF\u200c"
+
+
+def _bounded_pattern(keys) -> "re.Pattern[str]":
+    alternation = "|".join(sorted((re.escape(k) for k in keys), key=len, reverse=True))
+    return re.compile(
+        rf"(?<![{_WORDCHAR}])({alternation})(?![{_WORDCHAR}])",
+        re.IGNORECASE,
+    )
+
+
+COUNTRY_PATTERN = _bounded_pattern(COUNTRY_ALIASES)
 
 # Common non-Middle-East countries (curated). Used to flag questions that fall
 # outside the dataset so the prompt can answer briefly and note limited data.
@@ -99,10 +112,7 @@ NON_ME_COUNTRY_ALIASES = {
     "آذربایجان": "azerbaijan",
 }
 
-NON_ME_COUNTRY_PATTERN = re.compile(
-    r"(" + "|".join(sorted((re.escape(k) for k in NON_ME_COUNTRY_ALIASES), key=len, reverse=True)) + r")",
-    re.IGNORECASE,
-)
+NON_ME_COUNTRY_PATTERN = _bounded_pattern(NON_ME_COUNTRY_ALIASES)
 
 GREETING_PATTERN = re.compile(
     r"^\s*(hi|hello|hey|yo|good morning|good afternoon|good evening"
@@ -295,7 +305,7 @@ def _build_processed_message(
     if message_type == "greeting":
         return (
             "The user is greeting the assistant. Introduce yourself briefly as a military "
-            "advisor, list what you can analyze, and invite a wargaming scenario. Do not dump data."
+            "consultant, list what you can advise on, and invite a wargaming scenario. Do not dump data."
         )
 
     details = []
@@ -311,9 +321,9 @@ def _build_processed_message(
         elif message_type == "battle_advice" and len(display_countries) >= 2:
             details.append(f"Assess a battle between {display_countries[0]} and {display_countries[1]}")
         else:
-            details.append(f"Analyze {', '.join(display_countries)}")
+            details.append(f"Advise on {', '.join(display_countries)}")
     else:
-        details.append("Answer the user's military analysis request")
+        details.append("Answer the user's military consulting request")
 
     if message_type == "battle_advice":
         details.append("provide practical battle advice and strategy considerations with justification")
@@ -322,7 +332,7 @@ def _build_processed_message(
     elif message_type == "question":
         details.append("answer the question directly")
     else:
-        details.append("provide a clear analytical answer")
+        details.append("provide a clear consulting answer")
 
     if focus and focus != ["general"]:
         details.append(f"focus on {', '.join(focus)}")
