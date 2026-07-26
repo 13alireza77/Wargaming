@@ -51,6 +51,36 @@ step "Restore runtime files"
 [[ -f "$BACKUP_DIR/db.sqlite3-journal" ]] && cp -a "$BACKUP_DIR/db.sqlite3-journal" "$PROJECT_DIR/db.sqlite3-journal"
 rm -rf "$BACKUP_DIR"
 
+step "Patch ALLOWED_HOSTS for this server IP"
+SERVER_IP="$(curl -fsS --max-time 5 https://ifconfig.me 2>/dev/null || true)"
+if [[ -z "$SERVER_IP" ]]; then
+  SERVER_IP="$(curl -fsS --max-time 5 https://api.ipify.org 2>/dev/null || true)"
+fi
+if [[ -z "$SERVER_IP" ]]; then
+  SERVER_IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
+fi
+CONFIG_FILE="$PROJECT_DIR/war_game/project_config.py"
+if [[ -n "$SERVER_IP" && -f "$CONFIG_FILE" ]]; then
+  echo "Detected IP: $SERVER_IP"
+  python3 - <<PY
+from pathlib import Path
+path = Path("$CONFIG_FILE")
+text = path.read_text(encoding="utf-8")
+needle = "DJANGO_ALLOWED_HOSTS = ["
+start = text.find(needle)
+if start < 0:
+    raise SystemExit("DJANGO_ALLOWED_HOSTS not found")
+end = text.find("]", start)
+line_end = text.find("\n", end)
+hosts = ['"$SERVER_IP"', '"localhost"', '"127.0.0.1"']
+new_line = "DJANGO_ALLOWED_HOSTS = [" + ", ".join(hosts) + "]"
+path.write_text(text[:start] + new_line + text[line_end:], encoding="utf-8")
+print(new_line)
+PY
+else
+  echo "WARNING: could not patch ALLOWED_HOSTS (IP=$SERVER_IP)"
+fi
+
 step "Install deps + migrate + static"
 # shellcheck disable=SC1091
 source "$PROJECT_DIR/.venv/bin/activate"
