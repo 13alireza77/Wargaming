@@ -28,6 +28,7 @@ ENABLE_GPU=0
 SKIP_MODEL_PULL=0
 OLLAMA_MODELS="gemma3:12b"
 FORCE_RECLONE=0
+SKIP_GIT_PULL=0
 COMPOSE_PROJECT_NAME="wargaming"
 
 usage() {
@@ -35,9 +36,12 @@ usage() {
 Usage:
   sudo bash docker-install-online.sh [options]
 
-  # Or fetch + run in one shot (server has internet):
+  # First install (from any empty Linux server):
+  curl -fsSL https://raw.githubusercontent.com/13alireza77/Wargaming/main/docker-install-online.sh | sudo bash
+
+  # Update / redeploy existing install (git pull + rebuild):
   curl -fsSL https://raw.githubusercontent.com/13alireza77/Wargaming/main/docker-install-online.sh \
-    | sudo bash -s -- [options]
+    | sudo bash -s -- --gpu
 
 Options:
   --install-dir <path>         Where to place/run the project.
@@ -51,15 +55,17 @@ Options:
   --gpu                        Enable NVIDIA GPU for Ollama
   --skip-model-pull            Do not pull Ollama models (app may still retrain later)
   --force-reclone              Delete install-dir and re-download the project
+  --skip-git-pull              Do not git pull when an existing checkout is found
   --help                       Show this help
 
 What this script installs/downloads (via curl / Docker):
   1. curl + ca-certificates (apt) if missing
   2. Docker Engine + Compose (https://get.docker.com)
   3. Project source (git clone, or curl GitHub tarball if git is missing)
-  4. Docker images: python base (build), ollama/ollama:latest
-  5. Ollama model weights (ollama pull)
-  6. Starts app + ollama with docker compose
+  4. On re-run: git pull latest code, then rebuild/restart
+  5. Docker images: python base (build), ollama/ollama:latest
+  6. Ollama model weights (ollama pull)
+  7. Starts app + ollama; entrypoint creates wargaming:unified
 EOF
 }
 
@@ -152,6 +158,28 @@ resolve_project() {
   mkdir -p "$(dirname "$INSTALL_DIR")"
   download_project "$INSTALL_DIR"
   PROJECT_ROOT="$INSTALL_DIR"
+}
+
+# Pull latest code when re-running against an existing git checkout.
+pull_latest_code() {
+  if [[ "$SKIP_GIT_PULL" -eq 1 ]]; then
+    log "Skipping git pull (--skip-git-pull)."
+    return 0
+  fi
+  if [[ ! -d "$PROJECT_ROOT/.git" ]]; then
+    warn "No .git in $PROJECT_ROOT — cannot pull. Use --force-reclone to re-download."
+    return 0
+  fi
+  have git || err "git is required to update an existing install"
+  log "Updating code: git pull origin $BRANCH in $PROJECT_ROOT"
+  git -C "$PROJECT_ROOT" remote set-url origin "$REPO_URL" 2>/dev/null || true
+  retry_cmd 3 git -C "$PROJECT_ROOT" fetch --depth 1 origin "$BRANCH" ||
+    err "git fetch failed"
+  git -C "$PROJECT_ROOT" checkout -B "$BRANCH" "origin/$BRANCH" 2>/dev/null ||
+    git -C "$PROJECT_ROOT" checkout "$BRANCH"
+  retry_cmd 3 git -C "$PROJECT_ROOT" pull --ff-only origin "$BRANCH" ||
+    err "git pull failed — fix the checkout or use --force-reclone"
+  log "Code at: $(git -C "$PROJECT_ROOT" rev-parse --short HEAD) ($(git -C "$PROJECT_ROOT" log -1 --pretty=%s))"
 }
 
 download_project() {
@@ -277,6 +305,7 @@ while [[ $# -gt 0 ]]; do
     --gpu)             ENABLE_GPU=1; shift ;;
     --skip-model-pull) SKIP_MODEL_PULL=1; shift ;;
     --force-reclone)   FORCE_RECLONE=1; shift ;;
+    --skip-git-pull)   SKIP_GIT_PULL=1; shift ;;
     --help|-h)         usage; exit 0 ;;
     *)                 err "Unknown argument: $1" ;;
   esac
@@ -297,6 +326,7 @@ if [[ -z "$ALLOWED_HOSTS" ]]; then
 fi
 
 resolve_project
+pull_latest_code
 [[ -f "$PROJECT_ROOT/docker-compose.yml" ]] || err "missing docker-compose.yml in $PROJECT_ROOT"
 [[ -f "$PROJECT_ROOT/Dockerfile" ]] || err "missing Dockerfile in $PROJECT_ROOT"
 
@@ -339,8 +369,8 @@ log "Chat UI  : http://${FIRST_HOST}:8000/chat/"
 log "Admin    : http://${FIRST_HOST}:8000/admin/"
 log "Logs     : ${COMPOSE[*]} logs -f app"
 log ""
-log "Re-run later to update:"
-log "  curl -fsSL ${RAW_BASE}/docker-install-online.sh | sudo bash -s -- --force-reclone"
+log "Update / redeploy later:"
+log "  curl -fsSL ${RAW_BASE}/docker-install-online.sh | sudo bash -s -- --gpu"
 if [[ "$ENABLE_GPU" -eq 1 ]]; then
-  log "  (GPU was enabled this run — pass --gpu again)"
+  log "  (keep passing --gpu on GPU servers)"
 fi

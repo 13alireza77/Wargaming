@@ -7,9 +7,7 @@ model with a strong system prompt plus a structured knowledge compendium built
 from the full dataset so the model can reason from far more than a few short
 summaries.
 """
-import os
-import subprocess
-import tempfile
+import json
 from typing import Any, Dict, Iterable, List
 
 import requests
@@ -73,6 +71,18 @@ def _clean_text(value: Any) -> str:
     if isinstance(value, (int, float)):
         return str(value)
     return " ".join(str(value).split())
+
+
+def _model_present(models: List[str], name: str) -> bool:
+    """True if Ollama lists the model (handles optional :latest)."""
+    for model in models:
+        if not model:
+            continue
+        if model == name or model == f"{name}:latest":
+            return True
+        if ":" not in name and model.startswith(f"{name}:"):
+            return True
+    return False
 
 
 def _compact_list(values: Iterable[Any], limit: int | None = None) -> str:
@@ -315,7 +325,7 @@ class Command(BaseCommand):
 
         models = [m.get("name") for m in r.json().get("models", [])]
         custom_model_name = UNIFIED_LLM_TRAINING_CONFIG["custom_model_name"]
-        if custom_model_name in models and not force:
+        if _model_present(models, custom_model_name) and not force:
             self.stdout.write(
                 self.style.WARNING(
                     f"Model {custom_model_name} already exists. Use --force to recreate."
@@ -355,67 +365,92 @@ class Command(BaseCommand):
             )
             system_prompt = training_template
 
-        modelfile_content = f"""FROM {base_model}
-
-SYSTEM \"\"\"
-{system_prompt}
-\"\"\"
-
-PARAMETER temperature {UNIFIED_LLM_TRAINING_CONFIG["temperature"]}
-PARAMETER top_p {UNIFIED_LLM_TRAINING_CONFIG["top_p"]}
-PARAMETER top_k {UNIFIED_LLM_TRAINING_CONFIG["top_k"]}
-PARAMETER repeat_penalty {UNIFIED_LLM_TRAINING_CONFIG["repeat_penalty"]}
-PARAMETER num_ctx {num_ctx}
-PARAMETER num_predict {UNIFIED_LLM_TRAINING_CONFIG["num_predict"]}
-"""
-
-        if base_model not in models:
+        if not _model_present(models, base_model):
             self.stdout.write(f"Pulling base model {base_model}...")
             try:
-                pull_r = requests.post(
+                with requests.post(
                     f"{base_url}/api/pull",
-                    json={"name": base_model},
+                    json={"name": base_model, "stream": False},
                     timeout=UNIFIED_LLM_TRAINING_CONFIG["ollama_pull_timeout_seconds"],
-                )
-                if pull_r.status_code != 200:
-                    raise CommandError(f"Failed to pull {base_model}")
+                ) as pull_r:
+                    if pull_r.status_code != 200:
+                        raise CommandError(
+                            f"Failed to pull {base_model}: HTTP {pull_r.status_code} {pull_r.text[:300]}"
+                        )
                 self.stdout.write(self.style.SUCCESS(f"Pulled {base_model}"))
+            except CommandError:
+                raise
             except Exception as e:
-                raise CommandError(f"Error pulling model: {e}")
+                raise CommandError(f"Error pulling model: {e}") from e
 
-        fd, modelfile_path = tempfile.mkstemp(suffix=".modelfile", text=True)
+        self.stdout.write(
+            f"Creating custom model {custom_model_name} with context window {num_ctx}..."
+        )
+        # Use the HTTP create API so this works inside the app container
+        # (no local `ollama` CLI / no OLLAMA_HOST pointing at localhost).
+        create_payload = {
+            "model": custom_model_name,
+            "from": base_model,
+            "system": system_prompt,
+            "parameters": {
+                "temperature": UNIFIED_LLM_TRAINING_CONFIG["temperature"],
+                "top_p": UNIFIED_LLM_TRAINING_CONFIG["top_p"],
+                "top_k": UNIFIED_LLM_TRAINING_CONFIG["top_k"],
+                "repeat_penalty": UNIFIED_LLM_TRAINING_CONFIG["repeat_penalty"],
+                "num_ctx": num_ctx,
+                "num_predict": UNIFIED_LLM_TRAINING_CONFIG["num_predict"],
+            },
+            "stream": False,
+        }
         try:
-            with os.fdopen(fd, "w", encoding="utf-8") as f:
-                f.write(modelfile_content)
-
-            self.stdout.write(
-                f"Creating custom model {custom_model_name} with context window {num_ctx}..."
-            )
-            result = subprocess.run(
-                ["ollama", "create", custom_model_name, "-f", modelfile_path],
-                capture_output=True,
-                text=True,
+            create_r = requests.post(
+                f"{base_url}/api/create",
+                json=create_payload,
                 timeout=UNIFIED_LLM_TRAINING_CONFIG["ollama_create_timeout_seconds"],
             )
-            if result.returncode != 0:
-                raise CommandError(f"ollama create failed: {result.stderr or result.stdout}")
+        except Exception as e:
+            raise CommandError(f"Error creating model via /api/create: {e}") from e
 
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Unified wargaming model {custom_model_name} created successfully."
-                )
+        if create_r.status_code != 200:
+            raise CommandError(
+                f"ollama /api/create failed: HTTP {create_r.status_code} {create_r.text[:500]}"
             )
 
-            try:
-                from orchestrator.services.unified_llm_service import UnifiedLLMService
+        # stream=false still sometimes returns NDJSON; accept either.
+        body = (create_r.text or "").strip()
+        if body:
+            last_status = ""
+            for line in body.splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(event, dict):
+                    if event.get("error"):
+                        raise CommandError(f"ollama /api/create error: {event['error']}")
+                    last_status = str(event.get("status") or last_status)
+            if last_status and last_status != "success":
+                # Older servers may omit an explicit success object when stream=false.
+                self.stdout.write(f"Create finished with status: {last_status}")
 
-                svc = UnifiedLLMService(base_url=base_url)
-                if svc.check_model_availability():
-                    self.stdout.write(self.style.SUCCESS("Model availability check passed."))
-                else:
-                    self.stdout.write(self.style.WARNING("Model created but availability check failed."))
-            except Exception as e:
-                self.stdout.write(self.style.WARNING(f"Post-create check skipped: {e}"))
-        finally:
-            if os.path.exists(modelfile_path):
-                os.unlink(modelfile_path)
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Unified wargaming model {custom_model_name} created successfully."
+            )
+        )
+
+        try:
+            from orchestrator.services.unified_llm_service import UnifiedLLMService
+
+            svc = UnifiedLLMService(base_url=base_url)
+            if svc.check_model_availability():
+                self.stdout.write(self.style.SUCCESS("Model availability check passed."))
+            else:
+                self.stdout.write(
+                    self.style.WARNING("Model created but availability check failed.")
+                )
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Post-create check skipped: {e}"))

@@ -279,6 +279,15 @@ Chat UI: `http://SERVER_IP:8000/chat/`
 
 مسیر پیش‌فرض نصب: `/opt/wargaming`
 
+### به‌روزرسانی / redeploy
+
+همان اسکریپت را دوباره اجرا کنید — `git pull` می‌زند، image را دوباره می‌سازد، و اگر `wargaming:unified` نباشد آن را می‌سازد:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/13alireza77/Wargaming/main/docker-install-online.sh \
+  | sudo bash -s -- --gpu
+```
+
 ## استقرار آفلاین با Docker
 
 با Docker تنها نیاز سرور **Docker** است (از قبل نصب‌شده). سه اسکریپت:

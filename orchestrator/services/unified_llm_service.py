@@ -454,6 +454,21 @@ class UnifiedLLMService:
         except requests.exceptions.Timeout:
             logger.warning("Unified LLM stream timed out (limit %ss)", self.timeout)
             raise StreamLLMError("Request timed out. Please try again.") from None
+        except requests.exceptions.HTTPError as e:
+            status = getattr(getattr(e, "response", None), "status_code", None)
+            detail = ""
+            try:
+                detail = (e.response.text or "")[:300]
+            except Exception:
+                pass
+            if status == 404:
+                logger.warning("Unified LLM stream 404 (model missing?): %s %s", e, detail)
+                raise StreamLLMError(
+                    f"Ollama model '{self.model_name}' not found. "
+                    "Run: python manage.py retrain_wargaming_llm --force"
+                ) from e
+            logger.warning("Unified LLM stream failed: %s", e)
+            raise StreamLLMError(str(e)) from e
         except requests.exceptions.RequestException as e:
             logger.warning("Unified LLM stream failed: %s", e)
             raise StreamLLMError(str(e)) from e
@@ -499,6 +514,31 @@ class UnifiedLLMService:
                 "reply": "",
                 "sources": [],
                 "error": "Request timed out. Please try again.",
+            }
+        except requests.exceptions.HTTPError as e:
+            status = getattr(getattr(e, "response", None), "status_code", None)
+            detail = ""
+            try:
+                detail = (e.response.text or "")[:300]
+            except Exception:
+                pass
+            if status == 404:
+                logger.warning("Unified LLM 404 (model missing?): %s %s", e, detail)
+                return {
+                    "success": False,
+                    "reply": "",
+                    "sources": [],
+                    "error": (
+                        f"Ollama model '{self.model_name}' not found. "
+                        "Run: python manage.py retrain_wargaming_llm --force"
+                    ),
+                }
+            logger.warning("Unified LLM request failed: %s", e)
+            return {
+                "success": False,
+                "reply": "",
+                "sources": [],
+                "error": str(e),
             }
         except requests.exceptions.RequestException as e:
             logger.warning("Unified LLM request failed: %s", e)
