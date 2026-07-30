@@ -1,21 +1,37 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 from django.db import models as django_models
 from django.db.models import Count
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.html import format_html
 from django_json_widget.widgets import JSONEditorWidget
+from pathlib import Path
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.decorators import display
 from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
 
-from .models import Conversation, KnowledgeBase, LLMConfig, Message, Prompt
+from war_game.project_config import DOCUMENT_KNOWLEDGE_CONFIG
+
+from .models import (
+    Conversation,
+    KnowledgeBase,
+    KnowledgeDocument,
+    KnowledgeDocumentChunk,
+    LLMConfig,
+    Message,
+    Prompt,
+)
+from .services.document_ingest import detect_file_type, ingest_document, validate_upload_size
 
 User = get_user_model()
+
+_PREVIEW_CHARS = int(DOCUMENT_KNOWLEDGE_CONFIG["preview_chars"])
+_MAX_UPLOAD_MB = DOCUMENT_KNOWLEDGE_CONFIG["max_upload_bytes"] / (1024 * 1024)
 
 
 # ---------------------------------------------------------------------------
@@ -105,6 +121,159 @@ class KnowledgeBaseAdmin(ModelAdmin):
             keys = ", ".join(list(obj.data.keys())[:6])
             return keys
         return "—"
+
+
+# ---------------------------------------------------------------------------
+# Uploaded knowledge documents (TXT / PDF / DOCX)
+# ---------------------------------------------------------------------------
+class KnowledgeDocumentChunkInline(TabularInline):
+    model = KnowledgeDocumentChunk
+    extra = 0
+    can_delete = False
+    fields = ("chunk_index", "short_content")
+    readonly_fields = ("chunk_index", "short_content")
+    ordering = ("chunk_index",)
+    show_change_link = False
+    max_num = 20
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    @admin.display(description="Content preview")
+    def short_content(self, obj):
+        text = (obj.content or "")[:160]
+        return text + ("…" if len(obj.content or "") > 160 else "")
+
+
+@admin.register(KnowledgeDocument)
+class KnowledgeDocumentAdmin(ModelAdmin):
+    warn_unsaved_form = True
+    list_display = (
+        "title",
+        "file_type_badge",
+        "status_badge",
+        "active_badge",
+        "chunk_count",
+        "char_count",
+        "updated_at",
+    )
+    list_filter = ("status", "file_type", "is_active")
+    search_fields = ("title", "extracted_text")
+    readonly_fields = (
+        "file_type",
+        "status",
+        "error_message",
+        "char_count",
+        "chunk_count",
+        "extracted_preview",
+        "created_at",
+        "updated_at",
+    )
+    inlines = (KnowledgeDocumentChunkInline,)
+    fieldsets = (
+        (
+            None,
+            {
+                "description": (
+                    f"Upload .txt, .pdf, or .docx (max {_MAX_UPLOAD_MB:.0f} MB). "
+                    "Text is extracted and chunked on save; relevant excerpts are "
+                    "added to the LLM Context when answering chat questions."
+                ),
+                "fields": ("title", "file", "is_active"),
+            },
+        ),
+        (
+            "Processing",
+            {
+                "classes": ("tab",),
+                "fields": (
+                    "file_type",
+                    "status",
+                    "error_message",
+                    "char_count",
+                    "chunk_count",
+                    "extracted_preview",
+                    "created_at",
+                    "updated_at",
+                ),
+            },
+        ),
+    )
+
+    @display(
+        description="Type",
+        label={
+            "txt": "info",
+            "pdf": "warning",
+            "docx": "success",
+            "": "danger",
+        },
+    )
+    def file_type_badge(self, obj):
+        return obj.file_type or "—", (obj.file_type or "—").upper()
+
+    @display(
+        description="Status",
+        label={
+            "ready": "success",
+            "pending": "warning",
+            "error": "danger",
+        },
+    )
+    def status_badge(self, obj):
+        return obj.status, obj.get_status_display()
+
+    @display(description="Active", label={True: "success", False: "danger"})
+    def active_badge(self, obj):
+        return obj.is_active, ("Yes" if obj.is_active else "No")
+
+    @admin.display(description="Extracted text preview")
+    def extracted_preview(self, obj):
+        text = obj.extracted_text or ""
+        if not text:
+            return "—"
+        if len(text) > _PREVIEW_CHARS:
+            return text[:_PREVIEW_CHARS] + "…"
+        return text
+
+    def save_model(self, request, obj, form, change):
+        uploaded = form.cleaned_data.get("file")
+        file_changed = "file" in form.changed_data if change else bool(uploaded)
+
+        try:
+            if uploaded is not None and file_changed:
+                validate_upload_size(uploaded)
+                obj.file_type = detect_file_type(getattr(uploaded, "name", "") or obj.file.name)
+        except ValidationError as exc:
+            self.message_user(request, str(exc), level=messages.ERROR)
+            raise
+
+        if not obj.title and uploaded is not None:
+            obj.title = Path(getattr(uploaded, "name", "Document")).stem or "Document"
+
+        super().save_model(request, obj, form, change)
+
+        if file_changed or obj.status == KnowledgeDocument.Status.PENDING:
+            try:
+                ingest_document(obj)
+            except ValidationError as exc:
+                self.message_user(
+                    request,
+                    f"Document saved but processing failed: {exc}",
+                    level=messages.ERROR,
+                )
+            except Exception as exc:
+                self.message_user(
+                    request,
+                    f"Document saved but processing failed: {exc}",
+                    level=messages.ERROR,
+                )
+            else:
+                self.message_user(
+                    request,
+                    f"Document processed: {obj.chunk_count} chunk(s), {obj.char_count:,} characters.",
+                    level=messages.SUCCESS,
+                )
 
 
 # ---------------------------------------------------------------------------

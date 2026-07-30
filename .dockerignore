@@ -1,0 +1,16 @@
+.git
+.idea
+.cursor
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+*.docx
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+offline-dist/
+.offline-cache/
+*.modelfile
+.DS_Store

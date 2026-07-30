@@ -23,6 +23,8 @@ from war_game.project_config import (
     DJANGO_DEFAULT_AUTO_FIELD,
     DJANGO_INSTALLED_APPS,
     DJANGO_LANGUAGE_CODE,
+    DJANGO_MEDIA_ROOT,
+    DJANGO_MEDIA_URL,
     DJANGO_MIDDLEWARE,
     DJANGO_SECRET_KEY,
     DJANGO_STATIC_URL,
@@ -121,6 +123,9 @@ USE_TZ = True
 STATIC_URL = DJANGO_STATIC_URL
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+MEDIA_URL = DJANGO_MEDIA_URL
+MEDIA_ROOT = DJANGO_MEDIA_ROOT
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -207,6 +212,13 @@ UNFOLD = {
                         "title": _("Data (Geo / Personnel / Weapons)"),
                         "icon": "database",
                         "link": reverse_lazy("admin:orchestrator_knowledgebase_changelist"),
+                    },
+                    {
+                        "title": _("Documents"),
+                        "icon": "upload_file",
+                        "link": reverse_lazy(
+                            "admin:orchestrator_knowledgedocument_changelist"
+                        ),
                     },
                 ],
             },

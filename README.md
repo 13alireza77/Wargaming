@@ -243,36 +243,161 @@ ollama ps
 nvidia-smi
 ```
 
-## راه‌اندازی سریع روی سرور GPU (Ubuntu + RTX 3090)
+## استقرار آنلاین با Docker (سرور با اینترنت)
+
+روی سروری که اینترنت دارد، یک اسکریپت همه چیز را با `curl` نصب و سرویس را بالا می‌آورد:
 
 ```bash
-# ۱) وابستگی‌های سیستم و Ollama
-sudo apt update
-sudo apt install -y git python3 python3-pip python3-venv curl
-nvidia-smi   # اگر خطا داد، درایور NVIDIA را نصب و ری‌بوت کنید
-curl -fsSL https://ollama.com/install.sh | sh
-sudo systemctl enable --now ollama   # یا: ollama serve
-
-# ۲) پروژه
-cd ~/Wargaming   # مسیر کلون خودتان
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-
-# ۳) مدل و دیتابیس (دانلود ~۸GB — زود شروع کنید)
-ollama pull gemma3:12b
-python manage.py migrate
-python manage.py seed_admin_data --force
-python manage.py retrain_wargaming_llm --model gemma3:12b --force
-ollama list
-
-# ۴) اجرا
-gunicorn war_game.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 300
-# UI: http://<SERVER_IP>:8000/chat/
+curl -fsSL https://raw.githubusercontent.com/13alireza77/Wargaming/main/docker-install-online.sh | sudo bash
 ```
 
-در صورت نیاز پورت را باز کنید: `sudo ufw allow 8000/tcp`
+با GPU و host مشخص:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/13alireza77/Wargaming/main/docker-install-online.sh \
+  | sudo bash -s -- --gpu --allowed-hosts "SERVER_IP,localhost,127.0.0.1"
+```
+
+یا بعد از کلون:
+
+```bash
+git clone https://github.com/13alireza77/Wargaming.git
+cd Wargaming
+sudo bash docker-install-online.sh --gpu
+```
+
+اسکریپت به‌ترتیب:
+
+1. در صورت نیاز `curl` را نصب می‌کند
+2. Docker را با `curl -fsSL https://get.docker.com | sh` نصب می‌کند
+3. سورس را با `git clone` (یا در نبود git با tarball از GitHub) می‌گیرد
+4. imageهای Docker را می‌سازد/می‌کشد و `docker compose up` می‌زند
+5. مدل `gemma3:12b` را داخل Ollama دانلود می‌کند
+6. اپ مدل `wargaming:unified` را می‌سازد
+
+Chat UI: `http://SERVER_IP:8000/chat/`
+
+مسیر پیش‌فرض نصب: `/opt/wargaming`
+
+## استقرار آفلاین با Docker
+
+با Docker تنها نیاز سرور **Docker** است (از قبل نصب‌شده). سه اسکریپت:
+
+| اسکریپت | محل اجرا | کار |
+|---------|----------|-----|
+| `docker-build-offline.sh` | ماشین آنلاین | ساخت بسته imageها + مدل‌ها |
+| `docker-upload-offline.sh` | ماشین آنلاین | آپلود بسته به سرور با SCP |
+| `docker-run-offline.sh` | سرور | لود و اجرا — **بدون اینترنت** |
+
+> سرور واقعی آفلاین هیچ چیزی از اینترنت دانلود نمی‌کند. مدل‌ها داخل بسته ساخته می‌شوند.
+
+### ۰) پیش‌نیاز سرور: نصب Docker (یک‌بار)
+
+اگر روی سرور خطا می‌گیرید `docker not found`، اول Docker را نصب کنید.
+روی سرور تست (که اینترنت دارد):
+
+```bash
+curl -fsSL https://get.docker.com | sh
+systemctl enable --now docker
+docker --version
+docker compose version
+```
+
+روی سرور واقعی آفلاین، Docker باید از قبل نصب شده باشد.
+
+### ۱) ساخت بسته (ماشین آنلاین)
+
+```bash
+cd Wargaming
+bash docker-build-offline.sh --output-dir ./offline-dist
+```
+
+> اگر روی Mac (Apple Silicon / ARM) بیلد می‌کنید، اسکریپت به‌صورت پیش‌فرض `linux/amd64` می‌سازد تا روی سرورهای معمولی x86_64 اجرا شود. بسته قبلی ARM را دور بیندازید و دوباره بیلد کنید.
+
+خروجی: `offline-dist/wargaming-docker-offline-YYYYmmdd-HHMMSS.tar.gz` (حجم بزرگ، چند گیگابایت)
+
+### ۲) آپلود به سرور
+
+```bash
+bash docker-upload-offline.sh \
+  --bundle-file ./offline-dist/wargaming-docker-offline-YYYYmmdd-HHMMSS.tar.gz \
+  --server 85.208.254.201 \
+  --user root
+```
+
+| پارامتر | توضیح |
+|---------|--------|
+| `--bundle-file` | مسیر بسته (اجباری) |
+| `--server` | IP یا hostname سرور (اجباری) |
+| `--user` | کاربر SSH |
+| `--port` | پورت SSH (پیش‌فرض ۲۲) |
+| `--identity` | مسیر کلید خصوصی SSH |
+| `--remote-dir` | مسیر مقصد روی سرور (پیش‌فرض `/opt/wargaming-offline`) |
+
+### ۳) اجرا روی سرور (بدون اینترنت)
+
+```bash
+ssh root@SERVER_IP
+cd /opt/wargaming-offline
+
+sudo bash docker-run-offline.sh \
+  --bundle-file ./wargaming-docker-offline-YYYYmmdd-HHMMSS.tar.gz \
+  --allowed-hosts "SERVER_IP,localhost,127.0.0.1"
+```
+
+با GPU:
+
+```bash
+sudo bash docker-run-offline.sh \
+  --bundle-file ./wargaming-docker-offline-YYYYmmdd-HHMMSS.tar.gz \
+  --allowed-hosts "SERVER_IP,localhost,127.0.0.1" \
+  --gpu
+```
+
+| پارامتر | توضیح |
+|---------|--------|
+| `--bundle-file` | مسیر بسته روی سرور |
+| `--install-dir` | مسیر استخراج/اجرا (پیش‌فرض `/opt/wargaming-offline`) |
+| `--allowed-hosts` | لیست hostهای Django |
+| `--gpu` | فعال‌سازی GPU NVIDIA |
+| `--skip-start` | فقط لود imageها |
+
+Chat UI: `http://SERVER_IP:8000/chat/`
+
+### استفاده روزمره روی سرور
+
+```bash
+cd /opt/wargaming-offline
+COMPOSE="docker compose -f docker-compose.yml -f docker-compose.override.yml"
+
+$COMPOSE ps
+$COMPOSE logs -f app
+$COMPOSE restart
+$COMPOSE down
+$COMPOSE up -d
+```
+
+### توسعه محلی با Docker
+
+```bash
+docker compose up --build -d
+# Chat UI: http://localhost:8000/chat/
+```
+
+### متغیرهای محیطی قابل تنظیم
+
+| متغیر | مقدار پیش‌فرض | توضیح |
+|--------|----------------|--------|
+| `DJANGO_ALLOWED_HOSTS` | `*` | لیست hostهای مجاز (CSV) |
+| `DJANGO_SECRET_KEY` | کلید پیش‌فرض | کلید رمزنگاری Django |
+| `DJANGO_DEBUG` | `0` | حالت debug |
+| `OLLAMA_BASE_URL` | `http://ollama:11434` | آدرس Ollama |
+| `OLLAMA_WAIT_SECONDS` | `30` | زمان انتظار برای آماده شدن Ollama |
+| `DATABASE_PATH` | `db.sqlite3` | مسیر فایل دیتابیس |
+
+### پیش‌نیاز سرور
+
+فقط **Docker** (+ `docker compose`).
 
 ## مجوز
 

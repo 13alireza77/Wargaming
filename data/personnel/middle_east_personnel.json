@@ -14,68 +14,115 @@
               "officers": {
                 "general": {
                   "quantity": 15,
-                  "roles": ["Chief of Staff", "Deputy Chief of Staff", "Branch Commanders"]
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chief of Staff",
+                    "Branch Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 150,
-                  "roles": ["Brigade Commanders", "Division Chiefs of Staff"]
+                  "roles": [
+                    "Brigade Commanders",
+                    "Division Chiefs of Staff"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 800,
-                  "roles": ["Battalion Commanders", "Regiment Commanders"]
+                  "roles": [
+                    "Battalion Commanders",
+                    "Regiment Commanders"
+                  ]
                 },
                 "major": {
                   "quantity": 2000,
-                  "roles": ["Company Commanders", "Staff Officers"]
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 5000,
-                  "roles": ["Platoon Leaders", "Staff Officers"]
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 8000,
-                  "roles": ["Platoon Leaders", "Section Leaders"]
+                  "roles": [
+                    "Platoon Leaders",
+                    "Section Leaders"
+                  ]
                 }
               },
               "enlisted": {
                 "sergeant_major": {
                   "quantity": 2000,
-                  "roles": ["Senior NCOs", "Training Instructors"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
                 },
                 "master_sergeant": {
                   "quantity": 5000,
-                  "roles": ["Platoon Sergeants", "Section Leaders"]
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
                 },
                 "sergeant": {
                   "quantity": 15000,
-                  "roles": ["Squad Leaders", "Team Leaders"]
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
                 },
                 "corporal": {
                   "quantity": 25000,
-                  "roles": ["Team Leaders", "Specialists"]
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
                 },
                 "private": {
                   "quantity": 80000,
-                  "roles": ["Infantry", "Combat Support", "Combat Service Support"]
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
                 }
               }
             },
             "special_units": {
               "paratroopers": {
                 "quantity": 5000,
-                "roles": ["Airborne Operations", "Special Missions"]
+                "roles": [
+                  "Airborne Operations",
+                  "Special Missions"
+                ]
               },
               "armored": {
                 "quantity": 15000,
-                "roles": ["Tank Operations", "Mechanized Infantry"]
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
               },
               "artillery": {
                 "quantity": 8000,
-                "roles": ["Indirect Fire Support", "Air Defense"]
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
               },
               "engineering": {
                 "quantity": 5000,
-                "roles": ["Combat Engineering", "Construction"]
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
               }
             }
           },
@@ -86,41 +133,68 @@
               "officers": {
                 "general": {
                   "quantity": 5,
-                  "roles": ["Air Force Commander", "Deputy Commander"]
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commander"
+                  ]
                 },
                 "colonel": {
                   "quantity": 50,
-                  "roles": ["Wing Commanders", "Squadron Leaders"]
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 200,
-                  "roles": ["Squadron Leaders", "Staff Officers"]
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "major": {
                   "quantity": 500,
-                  "roles": ["Flight Leaders", "Staff Officers"]
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 1000,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 1500,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "technical_sergeant": {
                   "quantity": 2000,
-                  "roles": ["Aircraft Maintenance", "Ground Support"]
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
                 },
                 "staff_sergeant": {
                   "quantity": 5000,
-                  "roles": ["Ground Crew", "Support Personnel"]
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
                 },
                 "airman": {
                   "quantity": 20000,
-                  "roles": ["Ground Support", "Administrative"]
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
                 }
               }
             },
@@ -146,37 +220,62 @@
               "officers": {
                 "admiral": {
                   "quantity": 3,
-                  "roles": ["Navy Commander", "Deputy Commander"]
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commander"
+                  ]
                 },
                 "captain": {
                   "quantity": 30,
-                  "roles": ["Ship Commanders", "Staff Officers"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "commander": {
                   "quantity": 100,
-                  "roles": ["Ship Commanders", "Department Heads"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
                 },
                 "lieutenant_commander": {
                   "quantity": 200,
-                  "roles": ["Department Heads", "Watch Officers"]
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 400,
-                  "roles": ["Watch Officers", "Division Officers"]
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "chief_petty_officer": {
                   "quantity": 300,
-                  "roles": ["Senior NCOs", "Technical Specialists"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
                 },
                 "petty_officer": {
                   "quantity": 600,
-                  "roles": ["Technical Specialists", "Team Leaders"]
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
                 },
                 "seaman": {
                   "quantity": 1200,
-                  "roles": ["Deck Crew", "Engineering", "Support"]
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
                 }
               }
             },
@@ -201,19 +300,31 @@
             "units": {
               "sayeret_matkal": {
                 "quantity": 200,
-                "roles": ["Special Operations", "Intelligence Gathering"]
+                "roles": [
+                  "Special Operations",
+                  "Intelligence Gathering"
+                ]
               },
               "shayetet_13": {
                 "quantity": 300,
-                "roles": ["Naval Special Operations", "Underwater Operations"]
+                "roles": [
+                  "Naval Special Operations",
+                  "Underwater Operations"
+                ]
               },
               "shaldag": {
                 "quantity": 200,
-                "roles": ["Air Force Special Operations", "Forward Air Control"]
+                "roles": [
+                  "Air Force Special Operations",
+                  "Forward Air Control"
+                ]
               },
               "duvdevan": {
                 "quantity": 300,
-                "roles": ["Counter-terrorism", "Urban Operations"]
+                "roles": [
+                  "Counter-terrorism",
+                  "Urban Operations"
+                ]
               }
             }
           }
@@ -232,68 +343,115 @@
               "officers": {
                 "general": {
                   "quantity": 25,
-                  "roles": ["Chief of Staff", "Deputy Chiefs", "Corps Commanders"]
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 300,
-                  "roles": ["Division Commanders", "Brigade Commanders"]
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 1200,
-                  "roles": ["Brigade Commanders", "Regiment Commanders"]
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
                 },
                 "major": {
                   "quantity": 3000,
-                  "roles": ["Battalion Commanders", "Staff Officers"]
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 8000,
-                  "roles": ["Company Commanders", "Staff Officers"]
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 15000,
-                  "roles": ["Platoon Leaders", "Staff Officers"]
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "sergeant_major": {
                   "quantity": 5000,
-                  "roles": ["Senior NCOs", "Training Instructors"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
                 },
                 "master_sergeant": {
                   "quantity": 12000,
-                  "roles": ["Platoon Sergeants", "Section Leaders"]
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
                 },
                 "sergeant": {
                   "quantity": 30000,
-                  "roles": ["Squad Leaders", "Team Leaders"]
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
                 },
                 "corporal": {
                   "quantity": 50000,
-                  "roles": ["Team Leaders", "Specialists"]
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
                 },
                 "private": {
                   "quantity": 200000,
-                  "roles": ["Infantry", "Combat Support", "Combat Service Support"]
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
                 }
               }
             },
             "special_units": {
               "armored": {
                 "quantity": 25000,
-                "roles": ["Tank Operations", "Mechanized Infantry"]
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
               },
               "artillery": {
                 "quantity": 20000,
-                "roles": ["Indirect Fire Support", "Air Defense"]
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
               },
               "engineering": {
                 "quantity": 15000,
-                "roles": ["Combat Engineering", "Construction"]
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
               },
               "airborne": {
                 "quantity": 10000,
-                "roles": ["Airborne Operations", "Special Missions"]
+                "roles": [
+                  "Airborne Operations",
+                  "Special Missions"
+                ]
               }
             }
           },
@@ -304,41 +462,68 @@
               "officers": {
                 "general": {
                   "quantity": 10,
-                  "roles": ["Air Force Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 100,
-                  "roles": ["Wing Commanders", "Squadron Leaders"]
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 400,
-                  "roles": ["Squadron Leaders", "Staff Officers"]
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "major": {
                   "quantity": 1000,
-                  "roles": ["Flight Leaders", "Staff Officers"]
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 2500,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 4000,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "technical_sergeant": {
                   "quantity": 5000,
-                  "roles": ["Aircraft Maintenance", "Ground Support"]
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
                 },
                 "staff_sergeant": {
                   "quantity": 15000,
-                  "roles": ["Ground Crew", "Support Personnel"]
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
                 },
                 "airman": {
                   "quantity": 100000,
-                  "roles": ["Ground Support", "Administrative"]
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
                 }
               }
             },
@@ -364,37 +549,62 @@
               "officers": {
                 "admiral": {
                   "quantity": 5,
-                  "roles": ["Navy Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "captain": {
                   "quantity": 50,
-                  "roles": ["Ship Commanders", "Staff Officers"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "commander": {
                   "quantity": 200,
-                  "roles": ["Ship Commanders", "Department Heads"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
                 },
                 "lieutenant_commander": {
                   "quantity": 400,
-                  "roles": ["Department Heads", "Watch Officers"]
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 800,
-                  "roles": ["Watch Officers", "Division Officers"]
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "chief_petty_officer": {
                   "quantity": 600,
-                  "roles": ["Senior NCOs", "Technical Specialists"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
                 },
                 "petty_officer": {
                   "quantity": 1200,
-                  "roles": ["Technical Specialists", "Team Leaders"]
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
                 },
                 "seaman": {
                   "quantity": 14000,
-                  "roles": ["Deck Crew", "Engineering", "Support"]
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
                 }
               }
             },
@@ -424,60 +634,103 @@
               "officers": {
                 "general": {
                   "quantity": 15,
-                  "roles": ["IRGC Commander", "Deputy Commanders", "Corps Commanders"]
+                  "roles": [
+                    "IRGC Commander",
+                    "Deputy Commanders",
+                    "Corps Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 200,
-                  "roles": ["Division Commanders", "Brigade Commanders"]
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 800,
-                  "roles": ["Brigade Commanders", "Regiment Commanders"]
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
                 },
                 "major": {
                   "quantity": 2000,
-                  "roles": ["Battalion Commanders", "Staff Officers"]
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 5000,
-                  "roles": ["Company Commanders", "Staff Officers"]
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 10000,
-                  "roles": ["Platoon Leaders", "Staff Officers"]
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "sergeant_major": {
                   "quantity": 3000,
-                  "roles": ["Senior NCOs", "Training Instructors"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
                 },
                 "master_sergeant": {
                   "quantity": 8000,
-                  "roles": ["Platoon Sergeants", "Section Leaders"]
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
                 },
                 "sergeant": {
                   "quantity": 20000,
-                  "roles": ["Squad Leaders", "Team Leaders"]
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
                 },
                 "corporal": {
                   "quantity": 30000,
-                  "roles": ["Team Leaders", "Specialists"]
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
                 },
                 "private": {
                   "quantity": 60000,
-                  "roles": ["Infantry", "Combat Support", "Special Operations"]
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Special Operations"
+                  ]
                 }
               }
             },
             "special_units": {
               "quds_force": {
                 "quantity": 5000,
-                "roles": ["Special Operations", "Foreign Operations", "Intelligence"]
+                "roles": [
+                  "Special Operations",
+                  "Foreign Operations",
+                  "Intelligence"
+                ]
               },
               "basij": {
                 "quantity": 90000,
-                "roles": ["Militia Operations", "Internal Security", "Support"]
+                "roles": [
+                  "Militia Operations",
+                  "Internal Security",
+                  "Support"
+                ]
               }
             }
           }
@@ -496,68 +749,115 @@
               "officers": {
                 "general": {
                   "quantity": 20,
-                  "roles": ["Chief of Staff", "Deputy Chiefs", "Corps Commanders"]
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 250,
-                  "roles": ["Division Commanders", "Brigade Commanders"]
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 1000,
-                  "roles": ["Brigade Commanders", "Regiment Commanders"]
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
                 },
                 "major": {
                   "quantity": 2500,
-                  "roles": ["Battalion Commanders", "Staff Officers"]
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 6000,
-                  "roles": ["Company Commanders", "Staff Officers"]
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 12000,
-                  "roles": ["Platoon Leaders", "Staff Officers"]
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "sergeant_major": {
                   "quantity": 4000,
-                  "roles": ["Senior NCOs", "Training Instructors"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
                 },
                 "master_sergeant": {
                   "quantity": 10000,
-                  "roles": ["Platoon Sergeants", "Section Leaders"]
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
                 },
                 "sergeant": {
                   "quantity": 25000,
-                  "roles": ["Squad Leaders", "Team Leaders"]
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
                 },
                 "corporal": {
                   "quantity": 40000,
-                  "roles": ["Team Leaders", "Specialists"]
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
                 },
                 "private": {
                   "quantity": 150000,
-                  "roles": ["Infantry", "Combat Support", "Combat Service Support"]
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
                 }
               }
             },
             "special_units": {
               "armored": {
                 "quantity": 20000,
-                "roles": ["Tank Operations", "Mechanized Infantry"]
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
               },
               "artillery": {
                 "quantity": 15000,
-                "roles": ["Indirect Fire Support", "Air Defense"]
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
               },
               "engineering": {
                 "quantity": 10000,
-                "roles": ["Combat Engineering", "Construction"]
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
               },
               "airborne": {
                 "quantity": 8000,
-                "roles": ["Airborne Operations", "Special Missions"]
+                "roles": [
+                  "Airborne Operations",
+                  "Special Missions"
+                ]
               }
             }
           },
@@ -568,41 +868,68 @@
               "officers": {
                 "general": {
                   "quantity": 8,
-                  "roles": ["Air Force Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 80,
-                  "roles": ["Wing Commanders", "Squadron Leaders"]
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 300,
-                  "roles": ["Squadron Leaders", "Staff Officers"]
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "major": {
                   "quantity": 800,
-                  "roles": ["Flight Leaders", "Staff Officers"]
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 2000,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 3000,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "technical_sergeant": {
                   "quantity": 3000,
-                  "roles": ["Aircraft Maintenance", "Ground Support"]
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
                 },
                 "staff_sergeant": {
                   "quantity": 8000,
-                  "roles": ["Ground Crew", "Support Personnel"]
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
                 },
                 "airman": {
                   "quantity": 45000,
-                  "roles": ["Ground Support", "Administrative"]
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
                 }
               }
             },
@@ -628,37 +955,62 @@
               "officers": {
                 "admiral": {
                   "quantity": 4,
-                  "roles": ["Navy Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "captain": {
                   "quantity": 40,
-                  "roles": ["Ship Commanders", "Staff Officers"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "commander": {
                   "quantity": 160,
-                  "roles": ["Ship Commanders", "Department Heads"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
                 },
                 "lieutenant_commander": {
                   "quantity": 320,
-                  "roles": ["Department Heads", "Watch Officers"]
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 640,
-                  "roles": ["Watch Officers", "Division Officers"]
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "chief_petty_officer": {
                   "quantity": 500,
-                  "roles": ["Senior NCOs", "Technical Specialists"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
                 },
                 "petty_officer": {
                   "quantity": 1000,
-                  "roles": ["Technical Specialists", "Team Leaders"]
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
                 },
                 "seaman": {
                   "quantity": 32000,
-                  "roles": ["Deck Crew", "Engineering", "Support"]
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
                 }
               }
             },
@@ -687,19 +1039,31 @@
             "units": {
               "maroon_berets": {
                 "quantity": 5000,
-                "roles": ["Special Operations", "Counter-terrorism"]
+                "roles": [
+                  "Special Operations",
+                  "Counter-terrorism"
+                ]
               },
               "navy_seals": {
                 "quantity": 3000,
-                "roles": ["Naval Special Operations", "Underwater Operations"]
+                "roles": [
+                  "Naval Special Operations",
+                  "Underwater Operations"
+                ]
               },
               "air_force_special_forces": {
                 "quantity": 2000,
-                "roles": ["Air Force Special Operations", "Forward Air Control"]
+                "roles": [
+                  "Air Force Special Operations",
+                  "Forward Air Control"
+                ]
               },
               "gendarmerie_special_forces": {
                 "quantity": 5000,
-                "roles": ["Internal Security", "Counter-terrorism"]
+                "roles": [
+                  "Internal Security",
+                  "Counter-terrorism"
+                ]
               }
             }
           }
@@ -718,68 +1082,115 @@
               "officers": {
                 "general": {
                   "quantity": 15,
-                  "roles": ["Chief of Staff", "Deputy Chiefs", "Corps Commanders"]
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 200,
-                  "roles": ["Division Commanders", "Brigade Commanders"]
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 800,
-                  "roles": ["Brigade Commanders", "Regiment Commanders"]
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
                 },
                 "major": {
                   "quantity": 2000,
-                  "roles": ["Battalion Commanders", "Staff Officers"]
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 5000,
-                  "roles": ["Company Commanders", "Staff Officers"]
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 10000,
-                  "roles": ["Platoon Leaders", "Staff Officers"]
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "sergeant_major": {
                   "quantity": 3000,
-                  "roles": ["Senior NCOs", "Training Instructors"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
                 },
                 "master_sergeant": {
                   "quantity": 8000,
-                  "roles": ["Platoon Sergeants", "Section Leaders"]
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
                 },
                 "sergeant": {
                   "quantity": 20000,
-                  "roles": ["Squad Leaders", "Team Leaders"]
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
                 },
                 "corporal": {
                   "quantity": 30000,
-                  "roles": ["Team Leaders", "Specialists"]
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
                 },
                 "private": {
                   "quantity": 100000,
-                  "roles": ["Infantry", "Combat Support", "Combat Service Support"]
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
                 }
               }
             },
             "special_units": {
               "armored": {
                 "quantity": 15000,
-                "roles": ["Tank Operations", "Mechanized Infantry"]
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
               },
               "artillery": {
                 "quantity": 10000,
-                "roles": ["Indirect Fire Support", "Air Defense"]
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
               },
               "engineering": {
                 "quantity": 8000,
-                "roles": ["Combat Engineering", "Construction"]
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
               },
               "airborne": {
                 "quantity": 5000,
-                "roles": ["Airborne Operations", "Special Missions"]
+                "roles": [
+                  "Airborne Operations",
+                  "Special Missions"
+                ]
               }
             }
           },
@@ -790,41 +1201,68 @@
               "officers": {
                 "general": {
                   "quantity": 5,
-                  "roles": ["Air Force Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 60,
-                  "roles": ["Wing Commanders", "Squadron Leaders"]
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 240,
-                  "roles": ["Squadron Leaders", "Staff Officers"]
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "major": {
                   "quantity": 600,
-                  "roles": ["Flight Leaders", "Staff Officers"]
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 1500,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 2500,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "technical_sergeant": {
                   "quantity": 2000,
-                  "roles": ["Aircraft Maintenance", "Ground Support"]
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
                 },
                 "staff_sergeant": {
                   "quantity": 5000,
-                  "roles": ["Ground Crew", "Support Personnel"]
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
                 },
                 "airman": {
                   "quantity": 12000,
-                  "roles": ["Ground Support", "Administrative"]
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
                 }
               }
             },
@@ -850,37 +1288,62 @@
               "officers": {
                 "admiral": {
                   "quantity": 3,
-                  "roles": ["Navy Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "captain": {
                   "quantity": 30,
-                  "roles": ["Ship Commanders", "Staff Officers"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "commander": {
                   "quantity": 120,
-                  "roles": ["Ship Commanders", "Department Heads"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
                 },
                 "lieutenant_commander": {
                   "quantity": 240,
-                  "roles": ["Department Heads", "Watch Officers"]
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 480,
-                  "roles": ["Watch Officers", "Division Officers"]
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "chief_petty_officer": {
                   "quantity": 400,
-                  "roles": ["Senior NCOs", "Technical Specialists"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
                 },
                 "petty_officer": {
                   "quantity": 800,
-                  "roles": ["Technical Specialists", "Team Leaders"]
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
                 },
                 "seaman": {
                   "quantity": 14000,
-                  "roles": ["Deck Crew", "Engineering", "Support"]
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
                 }
               }
             },
@@ -905,15 +1368,24 @@
             "units": {
               "special_security_forces": {
                 "quantity": 3000,
-                "roles": ["Special Operations", "Counter-terrorism"]
+                "roles": [
+                  "Special Operations",
+                  "Counter-terrorism"
+                ]
               },
               "navy_special_forces": {
                 "quantity": 1000,
-                "roles": ["Naval Special Operations", "Underwater Operations"]
+                "roles": [
+                  "Naval Special Operations",
+                  "Underwater Operations"
+                ]
               },
               "air_force_special_forces": {
                 "quantity": 1000,
-                "roles": ["Air Force Special Operations", "Forward Air Control"]
+                "roles": [
+                  "Air Force Special Operations",
+                  "Forward Air Control"
+                ]
               }
             }
           }
@@ -932,68 +1404,115 @@
               "officers": {
                 "general": {
                   "quantity": 30,
-                  "roles": ["Chief of Staff", "Deputy Chiefs", "Corps Commanders"]
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 400,
-                  "roles": ["Division Commanders", "Brigade Commanders"]
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 1600,
-                  "roles": ["Brigade Commanders", "Regiment Commanders"]
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
                 },
                 "major": {
                   "quantity": 4000,
-                  "roles": ["Battalion Commanders", "Staff Officers"]
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 10000,
-                  "roles": ["Company Commanders", "Staff Officers"]
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 20000,
-                  "roles": ["Platoon Leaders", "Staff Officers"]
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "sergeant_major": {
                   "quantity": 8000,
-                  "roles": ["Senior NCOs", "Training Instructors"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
                 },
                 "master_sergeant": {
                   "quantity": 20000,
-                  "roles": ["Platoon Sergeants", "Section Leaders"]
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
                 },
                 "sergeant": {
                   "quantity": 50000,
-                  "roles": ["Squad Leaders", "Team Leaders"]
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
                 },
                 "corporal": {
                   "quantity": 80000,
-                  "roles": ["Team Leaders", "Specialists"]
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
                 },
                 "private": {
                   "quantity": 150000,
-                  "roles": ["Infantry", "Combat Support", "Combat Service Support"]
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
                 }
               }
             },
             "special_units": {
               "armored": {
                 "quantity": 30000,
-                "roles": ["Tank Operations", "Mechanized Infantry"]
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
               },
               "artillery": {
                 "quantity": 25000,
-                "roles": ["Indirect Fire Support", "Air Defense"]
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
               },
               "engineering": {
                 "quantity": 20000,
-                "roles": ["Combat Engineering", "Construction"]
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
               },
               "airborne": {
                 "quantity": 15000,
-                "roles": ["Airborne Operations", "Special Missions"]
+                "roles": [
+                  "Airborne Operations",
+                  "Special Missions"
+                ]
               }
             }
           },
@@ -1004,41 +1523,68 @@
               "officers": {
                 "general": {
                   "quantity": 8,
-                  "roles": ["Air Force Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "colonel": {
                   "quantity": 100,
-                  "roles": ["Wing Commanders", "Squadron Leaders"]
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
                 },
                 "lieutenant_colonel": {
                   "quantity": 400,
-                  "roles": ["Squadron Leaders", "Staff Officers"]
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "major": {
                   "quantity": 1000,
-                  "roles": ["Flight Leaders", "Staff Officers"]
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
                 },
                 "captain": {
                   "quantity": 2500,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 4000,
-                  "roles": ["Pilots", "Flight Officers"]
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "technical_sergeant": {
                   "quantity": 4000,
-                  "roles": ["Aircraft Maintenance", "Ground Support"]
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
                 },
                 "staff_sergeant": {
                   "quantity": 10000,
-                  "roles": ["Ground Crew", "Support Personnel"]
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
                 },
                 "airman": {
                   "quantity": 15000,
-                  "roles": ["Ground Support", "Administrative"]
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
                 }
               }
             },
@@ -1064,37 +1610,62 @@
               "officers": {
                 "admiral": {
                   "quantity": 4,
-                  "roles": ["Navy Commander", "Deputy Commanders"]
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
                 },
                 "captain": {
                   "quantity": 40,
-                  "roles": ["Ship Commanders", "Staff Officers"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
                 },
                 "commander": {
                   "quantity": 160,
-                  "roles": ["Ship Commanders", "Department Heads"]
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
                 },
                 "lieutenant_commander": {
                   "quantity": 320,
-                  "roles": ["Department Heads", "Watch Officers"]
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
                 },
                 "lieutenant": {
                   "quantity": 640,
-                  "roles": ["Watch Officers", "Division Officers"]
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
                 }
               },
               "enlisted": {
                 "chief_petty_officer": {
                   "quantity": 600,
-                  "roles": ["Senior NCOs", "Technical Specialists"]
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
                 },
                 "petty_officer": {
                   "quantity": 1200,
-                  "roles": ["Technical Specialists", "Team Leaders"]
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
                 },
                 "seaman": {
                   "quantity": 16000,
-                  "roles": ["Deck Crew", "Engineering", "Support"]
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
                 }
               }
             },
@@ -1123,19 +1694,1585 @@
             "units": {
               "thunderbolt_forces": {
                 "quantity": 20000,
-                "roles": ["Special Operations", "Counter-terrorism"]
+                "roles": [
+                  "Special Operations",
+                  "Counter-terrorism"
+                ]
               },
               "navy_seals": {
                 "quantity": 15000,
-                "roles": ["Naval Special Operations", "Underwater Operations"]
+                "roles": [
+                  "Naval Special Operations",
+                  "Underwater Operations"
+                ]
               },
               "air_force_special_forces": {
                 "quantity": 10000,
-                "roles": ["Air Force Special Operations", "Forward Air Control"]
+                "roles": [
+                  "Air Force Special Operations",
+                  "Forward Air Control"
+                ]
               },
               "rangers": {
                 "quantity": 35000,
-                "roles": ["Light Infantry", "Special Operations"]
+                "roles": [
+                  "Light Infantry",
+                  "Special Operations"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "iraq": {
+        "name": "Iraq",
+        "total_personnel": 193000,
+        "active_duty": 193000,
+        "reserves": 550000,
+        "branches": {
+          "ground_forces": {
+            "name": "Iraqi Ground Forces",
+            "personnel": 150000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 12,
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 144,
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 600,
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
+                },
+                "major": {
+                  "quantity": 1800,
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 4800,
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 9600,
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "sergeant_major": {
+                  "quantity": 2400,
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
+                },
+                "master_sergeant": {
+                  "quantity": 7200,
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
+                },
+                "sergeant": {
+                  "quantity": 18000,
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
+                },
+                "corporal": {
+                  "quantity": 30000,
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
+                },
+                "private": {
+                  "quantity": 60000,
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
+                }
+              }
+            },
+            "special_units": {
+              "armored": {
+                "quantity": 12000,
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
+              },
+              "artillery": {
+                "quantity": 10000,
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
+              },
+              "engineering": {
+                "quantity": 8000,
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
+              },
+              "counter_terrorism": {
+                "quantity": 10000,
+                "roles": [
+                  "Counter-terrorism",
+                  "Urban Combat"
+                ]
+              }
+            }
+          },
+          "air_force": {
+            "name": "Iraqi Air Force",
+            "personnel": 15000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 2,
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 28,
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 105,
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "major": {
+                  "quantity": 280,
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 700,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 1050,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "technical_sergeant": {
+                  "quantity": 1050,
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
+                },
+                "staff_sergeant": {
+                  "quantity": 2800,
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
+                },
+                "airman": {
+                  "quantity": 4200,
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
+                }
+              }
+            },
+            "aircraft": {
+              "fighters": {
+                "quantity": 34,
+                "pilots": 80
+              },
+              "transport": {
+                "quantity": 20,
+                "pilots": 40
+              },
+              "helicopters": {
+                "quantity": 80,
+                "pilots": 160
+              }
+            }
+          },
+          "navy": {
+            "name": "Iraqi Navy",
+            "personnel": 3000,
+            "ranks": {
+              "officers": {
+                "admiral": {
+                  "quantity": 1,
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "captain": {
+                  "quantity": 8,
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "commander": {
+                  "quantity": 24,
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
+                },
+                "lieutenant_commander": {
+                  "quantity": 48,
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 100,
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "chief_petty_officer": {
+                  "quantity": 80,
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
+                },
+                "petty_officer": {
+                  "quantity": 200,
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
+                },
+                "seaman": {
+                  "quantity": 1600,
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
+                }
+              }
+            },
+            "vessels": {
+              "patrol_boats": {
+                "quantity": 20,
+                "crew_per_vessel": 20
+              },
+              "corvettes": {
+                "quantity": 2,
+                "crew_per_vessel": 80
+              }
+            }
+          },
+          "special_forces": {
+            "name": "Special Forces",
+            "personnel": 25000,
+            "units": {
+              "cts_golden_division": {
+                "quantity": 10000,
+                "roles": [
+                  "Counter-terrorism",
+                  "Urban Assault"
+                ]
+              },
+              "special_operations": {
+                "quantity": 8000,
+                "roles": [
+                  "Special Operations",
+                  "Reconnaissance"
+                ]
+              },
+              "emergency_response": {
+                "quantity": 7000,
+                "roles": [
+                  "Rapid Response",
+                  "Internal Security"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "syria": {
+        "name": "Syria",
+        "total_personnel": 170000,
+        "active_duty": 170000,
+        "reserves": 250000,
+        "branches": {
+          "ground_forces": {
+            "name": "Syrian Arab Army",
+            "personnel": 130000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 10,
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 120,
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 500,
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
+                },
+                "major": {
+                  "quantity": 1500,
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 4000,
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 8000,
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "sergeant_major": {
+                  "quantity": 2000,
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
+                },
+                "master_sergeant": {
+                  "quantity": 6000,
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
+                },
+                "sergeant": {
+                  "quantity": 15000,
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
+                },
+                "corporal": {
+                  "quantity": 25000,
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
+                },
+                "private": {
+                  "quantity": 50000,
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
+                }
+              }
+            },
+            "special_units": {
+              "armored": {
+                "quantity": 15000,
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
+              },
+              "artillery": {
+                "quantity": 12000,
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
+              },
+              "republican_guard": {
+                "quantity": 15000,
+                "roles": [
+                  "Regime Defense",
+                  "Elite Infantry"
+                ]
+              },
+              "engineering": {
+                "quantity": 6000,
+                "roles": [
+                  "Combat Engineering",
+                  "Fortification"
+                ]
+              }
+            }
+          },
+          "air_force": {
+            "name": "Syrian Arab Air Force",
+            "personnel": 25000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 3,
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 36,
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 135,
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "major": {
+                  "quantity": 360,
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 900,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 1350,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "technical_sergeant": {
+                  "quantity": 1350,
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
+                },
+                "staff_sergeant": {
+                  "quantity": 3600,
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
+                },
+                "airman": {
+                  "quantity": 5400,
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
+                }
+              }
+            },
+            "aircraft": {
+              "fighters": {
+                "quantity": 120,
+                "pilots": 220
+              },
+              "transport": {
+                "quantity": 20,
+                "pilots": 40
+              },
+              "helicopters": {
+                "quantity": 50,
+                "pilots": 100
+              }
+            }
+          },
+          "navy": {
+            "name": "Syrian Arab Navy",
+            "personnel": 4000,
+            "ranks": {
+              "officers": {
+                "admiral": {
+                  "quantity": 1,
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "captain": {
+                  "quantity": 9,
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "commander": {
+                  "quantity": 27,
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
+                },
+                "lieutenant_commander": {
+                  "quantity": 54,
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 112,
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "chief_petty_officer": {
+                  "quantity": 90,
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
+                },
+                "petty_officer": {
+                  "quantity": 225,
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
+                },
+                "seaman": {
+                  "quantity": 1800,
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
+                }
+              }
+            },
+            "vessels": {
+              "patrol_boats": {
+                "quantity": 15,
+                "crew_per_vessel": 20
+              },
+              "missile_boats": {
+                "quantity": 8,
+                "crew_per_vessel": 30
+              }
+            }
+          },
+          "special_forces": {
+            "name": "Special Forces",
+            "personnel": 11000,
+            "units": {
+              "special_forces_command": {
+                "quantity": 6000,
+                "roles": [
+                  "Special Operations",
+                  "Mountain Warfare"
+                ]
+              },
+              "tiger_forces": {
+                "quantity": 5000,
+                "roles": [
+                  "Offensive Assault",
+                  "Urban Combat"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "lebanon": {
+        "name": "Lebanon",
+        "total_personnel": 80000,
+        "active_duty": 80000,
+        "reserves": 35000,
+        "branches": {
+          "ground_forces": {
+            "name": "Lebanese Army",
+            "personnel": 70000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 5,
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 66,
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 275,
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
+                },
+                "major": {
+                  "quantity": 825,
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 2200,
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 4400,
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "sergeant_major": {
+                  "quantity": 1100,
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
+                },
+                "master_sergeant": {
+                  "quantity": 3300,
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
+                },
+                "sergeant": {
+                  "quantity": 8250,
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
+                },
+                "corporal": {
+                  "quantity": 13750,
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
+                },
+                "private": {
+                  "quantity": 27500,
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
+                }
+              }
+            },
+            "special_units": {
+              "armored": {
+                "quantity": 3000,
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
+              },
+              "artillery": {
+                "quantity": 2500,
+                "roles": [
+                  "Indirect Fire Support"
+                ]
+              },
+              "airborne": {
+                "quantity": 2000,
+                "roles": [
+                  "Airborne Operations",
+                  "Rapid Response"
+                ]
+              },
+              "engineering": {
+                "quantity": 2000,
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
+              }
+            }
+          },
+          "air_force": {
+            "name": "Lebanese Air Force",
+            "personnel": 2500,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 1,
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 8,
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 30,
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "major": {
+                  "quantity": 80,
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 200,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 300,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "technical_sergeant": {
+                  "quantity": 300,
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
+                },
+                "staff_sergeant": {
+                  "quantity": 800,
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
+                },
+                "airman": {
+                  "quantity": 1200,
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
+                }
+              }
+            },
+            "aircraft": {
+              "fighters": {
+                "quantity": 0,
+                "pilots": 0
+              },
+              "transport": {
+                "quantity": 6,
+                "pilots": 12
+              },
+              "helicopters": {
+                "quantity": 25,
+                "pilots": 50
+              }
+            }
+          },
+          "navy": {
+            "name": "Lebanese Navy",
+            "personnel": 1800,
+            "ranks": {
+              "officers": {
+                "admiral": {
+                  "quantity": 1,
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "captain": {
+                  "quantity": 5,
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "commander": {
+                  "quantity": 15,
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
+                },
+                "lieutenant_commander": {
+                  "quantity": 30,
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 62,
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "chief_petty_officer": {
+                  "quantity": 50,
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
+                },
+                "petty_officer": {
+                  "quantity": 125,
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
+                },
+                "seaman": {
+                  "quantity": 1000,
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
+                }
+              }
+            },
+            "vessels": {
+              "patrol_boats": {
+                "quantity": 12,
+                "crew_per_vessel": 15
+              }
+            }
+          },
+          "special_forces": {
+            "name": "Special Forces",
+            "personnel": 5700,
+            "units": {
+              "maghaweer": {
+                "quantity": 2500,
+                "roles": [
+                  "Special Operations",
+                  "Counter-terrorism"
+                ]
+              },
+              "navy_commando": {
+                "quantity": 1200,
+                "roles": [
+                  "Naval Special Operations"
+                ]
+              },
+              "airborne_regiment": {
+                "quantity": 2000,
+                "roles": [
+                  "Airborne Assault",
+                  "Internal Security"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "jordan": {
+        "name": "Jordan",
+        "total_personnel": 100500,
+        "active_duty": 100500,
+        "reserves": 65000,
+        "branches": {
+          "ground_forces": {
+            "name": "Jordanian Armed Forces - Land",
+            "personnel": 85000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 7,
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 84,
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 350,
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
+                },
+                "major": {
+                  "quantity": 1050,
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 2800,
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 5600,
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "sergeant_major": {
+                  "quantity": 1400,
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
+                },
+                "master_sergeant": {
+                  "quantity": 4200,
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
+                },
+                "sergeant": {
+                  "quantity": 10500,
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
+                },
+                "corporal": {
+                  "quantity": 17500,
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
+                },
+                "private": {
+                  "quantity": 35000,
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
+                }
+              }
+            },
+            "special_units": {
+              "armored": {
+                "quantity": 10000,
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
+              },
+              "artillery": {
+                "quantity": 7000,
+                "roles": [
+                  "Indirect Fire Support",
+                  "Air Defense"
+                ]
+              },
+              "engineering": {
+                "quantity": 4000,
+                "roles": [
+                  "Combat Engineering",
+                  "Construction"
+                ]
+              },
+              "border_guard": {
+                "quantity": 8000,
+                "roles": [
+                  "Border Security",
+                  "Counter-infiltration"
+                ]
+              }
+            }
+          },
+          "air_force": {
+            "name": "Royal Jordanian Air Force",
+            "personnel": 12000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 2,
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 22,
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 82,
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "major": {
+                  "quantity": 220,
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 550,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 825,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "technical_sergeant": {
+                  "quantity": 825,
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
+                },
+                "staff_sergeant": {
+                  "quantity": 2200,
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
+                },
+                "airman": {
+                  "quantity": 3300,
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
+                }
+              }
+            },
+            "aircraft": {
+              "fighters": {
+                "quantity": 60,
+                "pilots": 120
+              },
+              "transport": {
+                "quantity": 20,
+                "pilots": 40
+              },
+              "helicopters": {
+                "quantity": 45,
+                "pilots": 90
+              }
+            }
+          },
+          "navy": {
+            "name": "Royal Naval Force",
+            "personnel": 1000,
+            "ranks": {
+              "officers": {
+                "admiral": {
+                  "quantity": 1,
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "captain": {
+                  "quantity": 3,
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "commander": {
+                  "quantity": 9,
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
+                },
+                "lieutenant_commander": {
+                  "quantity": 18,
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 37,
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "chief_petty_officer": {
+                  "quantity": 30,
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
+                },
+                "petty_officer": {
+                  "quantity": 75,
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
+                },
+                "seaman": {
+                  "quantity": 600,
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
+                }
+              }
+            },
+            "vessels": {
+              "patrol_boats": {
+                "quantity": 10,
+                "crew_per_vessel": 15
+              }
+            }
+          },
+          "special_forces": {
+            "name": "Special Forces",
+            "personnel": 2500,
+            "units": {
+              "special_operations_command": {
+                "quantity": 1500,
+                "roles": [
+                  "Special Operations",
+                  "Counter-terrorism"
+                ]
+              },
+              "royal_guard": {
+                "quantity": 1000,
+                "roles": [
+                  "VIP Protection",
+                  "Rapid Response"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "yemen": {
+        "name": "Yemen",
+        "total_personnel": 70000,
+        "active_duty": 70000,
+        "reserves": 40000,
+        "note": "Fragmented command after civil conflict; figures are approximate government-aligned totals",
+        "branches": {
+          "ground_forces": {
+            "name": "Yemeni Ground Forces",
+            "personnel": 55000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 4,
+                  "roles": [
+                    "Chief of Staff",
+                    "Deputy Chiefs",
+                    "Corps Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 54,
+                  "roles": [
+                    "Division Commanders",
+                    "Brigade Commanders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 225,
+                  "roles": [
+                    "Brigade Commanders",
+                    "Regiment Commanders"
+                  ]
+                },
+                "major": {
+                  "quantity": 675,
+                  "roles": [
+                    "Battalion Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 1800,
+                  "roles": [
+                    "Company Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 3600,
+                  "roles": [
+                    "Platoon Leaders",
+                    "Staff Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "sergeant_major": {
+                  "quantity": 900,
+                  "roles": [
+                    "Senior NCOs",
+                    "Training Instructors"
+                  ]
+                },
+                "master_sergeant": {
+                  "quantity": 2700,
+                  "roles": [
+                    "Platoon Sergeants",
+                    "Section Leaders"
+                  ]
+                },
+                "sergeant": {
+                  "quantity": 6750,
+                  "roles": [
+                    "Squad Leaders",
+                    "Team Leaders"
+                  ]
+                },
+                "corporal": {
+                  "quantity": 11250,
+                  "roles": [
+                    "Team Leaders",
+                    "Specialists"
+                  ]
+                },
+                "private": {
+                  "quantity": 22500,
+                  "roles": [
+                    "Infantry",
+                    "Combat Support",
+                    "Combat Service Support"
+                  ]
+                }
+              }
+            },
+            "special_units": {
+              "armored": {
+                "quantity": 4000,
+                "roles": [
+                  "Tank Operations",
+                  "Mechanized Infantry"
+                ]
+              },
+              "artillery": {
+                "quantity": 5000,
+                "roles": [
+                  "Indirect Fire Support"
+                ]
+              },
+              "tribal_militia_liaison": {
+                "quantity": 8000,
+                "roles": [
+                  "Irregular Coordination",
+                  "Local Defense"
+                ]
+              },
+              "engineering": {
+                "quantity": 2000,
+                "roles": [
+                  "Combat Engineering"
+                ]
+              }
+            }
+          },
+          "air_force": {
+            "name": "Yemeni Air Force",
+            "personnel": 5000,
+            "ranks": {
+              "officers": {
+                "general": {
+                  "quantity": 1,
+                  "roles": [
+                    "Air Force Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "colonel": {
+                  "quantity": 10,
+                  "roles": [
+                    "Wing Commanders",
+                    "Squadron Leaders"
+                  ]
+                },
+                "lieutenant_colonel": {
+                  "quantity": 37,
+                  "roles": [
+                    "Squadron Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "major": {
+                  "quantity": 100,
+                  "roles": [
+                    "Flight Leaders",
+                    "Staff Officers"
+                  ]
+                },
+                "captain": {
+                  "quantity": 250,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 375,
+                  "roles": [
+                    "Pilots",
+                    "Flight Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "technical_sergeant": {
+                  "quantity": 375,
+                  "roles": [
+                    "Aircraft Maintenance",
+                    "Ground Support"
+                  ]
+                },
+                "staff_sergeant": {
+                  "quantity": 1000,
+                  "roles": [
+                    "Ground Crew",
+                    "Support Personnel"
+                  ]
+                },
+                "airman": {
+                  "quantity": 1500,
+                  "roles": [
+                    "Ground Support",
+                    "Administrative"
+                  ]
+                }
+              }
+            },
+            "aircraft": {
+              "fighters": {
+                "quantity": 20,
+                "pilots": 40
+              },
+              "transport": {
+                "quantity": 8,
+                "pilots": 16
+              },
+              "helicopters": {
+                "quantity": 15,
+                "pilots": 30
+              }
+            }
+          },
+          "navy": {
+            "name": "Yemeni Navy",
+            "personnel": 2000,
+            "ranks": {
+              "officers": {
+                "admiral": {
+                  "quantity": 1,
+                  "roles": [
+                    "Navy Commander",
+                    "Deputy Commanders"
+                  ]
+                },
+                "captain": {
+                  "quantity": 4,
+                  "roles": [
+                    "Ship Commanders",
+                    "Staff Officers"
+                  ]
+                },
+                "commander": {
+                  "quantity": 12,
+                  "roles": [
+                    "Ship Commanders",
+                    "Department Heads"
+                  ]
+                },
+                "lieutenant_commander": {
+                  "quantity": 24,
+                  "roles": [
+                    "Department Heads",
+                    "Watch Officers"
+                  ]
+                },
+                "lieutenant": {
+                  "quantity": 50,
+                  "roles": [
+                    "Watch Officers",
+                    "Division Officers"
+                  ]
+                }
+              },
+              "enlisted": {
+                "chief_petty_officer": {
+                  "quantity": 40,
+                  "roles": [
+                    "Senior NCOs",
+                    "Technical Specialists"
+                  ]
+                },
+                "petty_officer": {
+                  "quantity": 100,
+                  "roles": [
+                    "Technical Specialists",
+                    "Team Leaders"
+                  ]
+                },
+                "seaman": {
+                  "quantity": 800,
+                  "roles": [
+                    "Deck Crew",
+                    "Engineering",
+                    "Support"
+                  ]
+                }
+              }
+            },
+            "vessels": {
+              "patrol_boats": {
+                "quantity": 10,
+                "crew_per_vessel": 15
+              }
+            }
+          },
+          "special_forces": {
+            "name": "Special Forces",
+            "personnel": 8000,
+            "units": {
+              "special_security": {
+                "quantity": 4000,
+                "roles": [
+                  "Counter-terrorism",
+                  "Internal Security"
+                ]
+              },
+              "coastal_defense": {
+                "quantity": 4000,
+                "roles": [
+                  "Littoral Defense",
+                  "Asymmetric Naval Ops"
+                ]
               }
             }
           }
@@ -1147,72 +3284,159 @@
     "officers": {
       "general": {
         "level": 1,
-        "responsibilities": ["Strategic Command", "Policy Making", "Resource Allocation"]
+        "responsibilities": [
+          "Strategic Command",
+          "Policy Making",
+          "Resource Allocation"
+        ]
       },
       "colonel": {
         "level": 2,
-        "responsibilities": ["Operational Command", "Division/Brigade Leadership"]
+        "responsibilities": [
+          "Operational Command",
+          "Division/Brigade Leadership"
+        ]
       },
       "lieutenant_colonel": {
         "level": 3,
-        "responsibilities": ["Tactical Command", "Battalion/Regiment Leadership"]
+        "responsibilities": [
+          "Tactical Command",
+          "Battalion/Regiment Leadership"
+        ]
       },
       "major": {
         "level": 4,
-        "responsibilities": ["Company Command", "Staff Coordination"]
+        "responsibilities": [
+          "Company Command",
+          "Staff Coordination"
+        ]
       },
       "captain": {
         "level": 5,
-        "responsibilities": ["Platoon Leadership", "Specialized Operations"]
+        "responsibilities": [
+          "Platoon Leadership",
+          "Specialized Operations"
+        ]
       },
       "lieutenant": {
         "level": 6,
-        "responsibilities": ["Platoon Leadership", "Section Command"]
+        "responsibilities": [
+          "Platoon Leadership",
+          "Section Command"
+        ]
       }
     },
     "enlisted": {
       "sergeant_major": {
         "level": 1,
-        "responsibilities": ["Senior NCO Leadership", "Training", "Discipline"]
+        "responsibilities": [
+          "Senior NCO Leadership",
+          "Training",
+          "Discipline"
+        ]
       },
       "master_sergeant": {
         "level": 2,
-        "responsibilities": ["Platoon Leadership", "Technical Expertise"]
+        "responsibilities": [
+          "Platoon Leadership",
+          "Technical Expertise"
+        ]
       },
       "sergeant": {
         "level": 3,
-        "responsibilities": ["Squad Leadership", "Team Coordination"]
+        "responsibilities": [
+          "Squad Leadership",
+          "Team Coordination"
+        ]
       },
       "corporal": {
         "level": 4,
-        "responsibilities": ["Team Leadership", "Specialized Skills"]
+        "responsibilities": [
+          "Team Leadership",
+          "Specialized Skills"
+        ]
       },
       "private": {
         "level": 5,
-        "responsibilities": ["Individual Combat", "Support Operations"]
+        "responsibilities": [
+          "Individual Combat",
+          "Support Operations"
+        ]
       }
     }
   },
   "branch_characteristics": {
     "ground_forces": {
-      "primary_roles": ["Land Combat", "Territory Control", "Infantry Operations"],
-      "key_capabilities": ["Maneuver Warfare", "Urban Combat", "Mountain Warfare"],
-      "victory_factors": ["Numbers", "Training", "Equipment", "Terrain Knowledge"]
+      "primary_roles": [
+        "Land Combat",
+        "Territory Control",
+        "Infantry Operations"
+      ],
+      "key_capabilities": [
+        "Maneuver Warfare",
+        "Urban Combat",
+        "Mountain Warfare"
+      ],
+      "victory_factors": [
+        "Numbers",
+        "Training",
+        "Equipment",
+        "Terrain Knowledge"
+      ]
     },
     "air_force": {
-      "primary_roles": ["Air Superiority", "Close Air Support", "Strategic Bombing"],
-      "key_capabilities": ["Air Combat", "Precision Strikes", "Reconnaissance"],
-      "victory_factors": ["Aircraft Quality", "Pilot Training", "Technology", "Air Defense"]
+      "primary_roles": [
+        "Air Superiority",
+        "Close Air Support",
+        "Strategic Bombing"
+      ],
+      "key_capabilities": [
+        "Air Combat",
+        "Precision Strikes",
+        "Reconnaissance"
+      ],
+      "victory_factors": [
+        "Aircraft Quality",
+        "Pilot Training",
+        "Technology",
+        "Air Defense"
+      ]
     },
     "navy": {
-      "primary_roles": ["Sea Control", "Amphibious Operations", "Maritime Security"],
-      "key_capabilities": ["Naval Combat", "Blockade Operations", "Power Projection"],
-      "victory_factors": ["Ship Quality", "Crew Training", "Technology", "Maritime Geography"]
+      "primary_roles": [
+        "Sea Control",
+        "Amphibious Operations",
+        "Maritime Security"
+      ],
+      "key_capabilities": [
+        "Naval Combat",
+        "Blockade Operations",
+        "Power Projection"
+      ],
+      "victory_factors": [
+        "Ship Quality",
+        "Crew Training",
+        "Technology",
+        "Maritime Geography"
+      ]
     },
     "special_forces": {
-      "primary_roles": ["Special Operations", "Counter-terrorism", "Reconnaissance"],
-      "key_capabilities": ["Unconventional Warfare", "Direct Action", "Special Reconnaissance"],
-      "victory_factors": ["Training Quality", "Equipment", "Experience", "Mission Planning"]
+      "primary_roles": [
+        "Special Operations",
+        "Counter-terrorism",
+        "Reconnaissance"
+      ],
+      "key_capabilities": [
+        "Unconventional Warfare",
+        "Direct Action",
+        "Special Reconnaissance"
+      ],
+      "victory_factors": [
+        "Training Quality",
+        "Equipment",
+        "Experience",
+        "Mission Planning"
+      ]
     }
   }
 }

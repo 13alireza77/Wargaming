@@ -290,6 +290,10 @@ fabric.properties
 # Word documents (reports, drafts)
 *.docx
 
+# Offline distribution bundles
+offline-dist/
+.offline-cache/
+
 # macOS
 .DS_Store
 

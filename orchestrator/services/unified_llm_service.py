@@ -17,7 +17,7 @@ class StreamLLMError(Exception):
     """Raised when a streaming Ollama request fails."""
 
 # Built-in default; the admin-editable prompt (key="unified_system") overrides this.
-UNIFIED_SYSTEM_PROMPT = """You are a Middle East military consultant ("مشاور نظامی") with access to geography, personnel, and weapons data for Middle East countries.
+UNIFIED_SYSTEM_PROMPT = """You are a Middle East military consultant ("مشاور نظامی") with access to geography, personnel, weapons data, and admin-uploaded documents for Middle East countries.
 
 Language:
 - The context data below is written in English, but you MUST always respond in fluent, natural Persian (Farsi) unless the user explicitly writes in English.
@@ -34,7 +34,8 @@ Middle East vs. outside data:
 - NEVER volunteer a limited-data note about any country the user did not mention. In particular, never randomly append notes about countries like هند/India, چین, etc. If every country the user asked about is in the dataset, do NOT add any limited-data disclaimer anywhere in the answer.
 
 Grounding — THIS IS THE MOST IMPORTANT RULE:
-- Every specific number, quantity, weapon model, aircraft, unit name, and location you state MUST come from the provided Context. NEVER invent or add models, aircraft, weapons, or figures that are not in the Context — not even if you "know" them from general knowledge. Your general knowledge may be used only for military reasoning and interpretation, never to supply country-specific facts.
+- Every specific number, quantity, weapon model, aircraft, unit name, and location you state MUST come from the provided Context (structured geography/personnel/weapons sections and/or "Uploaded documents" excerpts). NEVER invent or add models, aircraft, weapons, or figures that are not in the Context — not even if you "know" them from general knowledge. Your general knowledge may be used only for military reasoning and interpretation, never to supply country-specific facts.
+- Treat facts in "Uploaded documents" as ground truth equal to the structured JSON Context. Prefer the most specific matching excerpt for the user's question.
 - If the Context gives a qualitative quantity (e.g. "extensive", "moderate"), use that word — do NOT convert it into a made-up number.
 - If a specific detail the user asked for is not in the Context (e.g. "Egypt: no specific data found for fighter jets"), briefly say that detail is not available in the data and reason from what IS available. This is a one-line note, not a disclaimer paragraph — still give a decisive overall judgement from the data you do have.
 
@@ -167,6 +168,34 @@ def _build_personnel_context(
     return " ".join(part for part in parts if part).strip()
 
 
+def _format_weapon_model_specs(wtype: Dict[str, Any], model_keys: List[str], limit: int = 4) -> List[str]:
+    """Turn primary_models into short name+(key=value) snippets from the type's models map."""
+    model_defs = wtype.get("models") or {}
+    formatted = []
+    for model_key in model_keys[:limit]:
+        spec = model_defs.get(model_key)
+        if not isinstance(spec, dict) or not spec:
+            formatted.append(model_key)
+            continue
+        # Prefer the most consulting-relevant fields when present.
+        preferred = (
+            "role", "range", "type", "armament", "targets", "caliber", "main_gun",
+            "max_speed", "fire_rate", "guidance", "warhead", "capacity",
+        )
+        details = []
+        for key in preferred:
+            if key in spec and spec[key] not in (None, "", "n/a"):
+                details.append(f"{key}={spec[key]}")
+            if len(details) >= 3:
+                break
+        if not details:
+            for key, value in list(spec.items())[:3]:
+                if value not in (None, "", "n/a"):
+                    details.append(f"{key}={value}")
+        formatted.append(f"{model_key} ({', '.join(details)})" if details else model_key)
+    return formatted
+
+
 def _build_weapons_context(
         data: Dict[str, Any],
         countries: List[str],
@@ -176,6 +205,9 @@ def _build_weapons_context(
     categories = data.get("weapon_categories", {})
     parts = []
     requested_subtypes: Set[str] = set(weapon_subtypes or [])
+    # When the user asked for specific subtypes, show more of each country's holdings;
+    # otherwise keep a wider but still bounded overview across domains.
+    holding_limit = 12 if requested_subtypes else 10
 
     for country in countries:
         country_key = country.lower().replace(" ", "_")
@@ -189,14 +221,21 @@ def _build_weapons_context(
                     continue
                 models = country_data.get("primary_models", []) or country_data.get("models", [])
                 effectiveness = wtype.get("effectiveness", "")
+                quantity = country_data.get("quantity", "")
+                status = country_data.get("status", "")
                 snippet = wtype.get("name", type_name)
+                if quantity:
+                    snippet += f" [qty={quantity}]"
                 if models:
-                    snippet += f": {', '.join(models)}"
+                    model_bits = _format_weapon_model_specs(wtype, list(models))
+                    snippet += f": {'; '.join(model_bits)}"
+                if status and not models:
+                    snippet += f" (status: {status})"
                 if effectiveness:
                     snippet += f" (effectiveness: {effectiveness})"
                 holdings.append(snippet)
         if holdings:
-            parts.append(f"{country.title()}: {'; '.join(holdings[:8])}.")
+            parts.append(f"{country.title()}: {'; '.join(holdings[:holding_limit])}.")
         elif requested_subtypes:
             requested_display = ", ".join(subtype.replace("_", " ") for subtype in sorted(requested_subtypes))
             parts.append(f"{country.title()}: no specific data found for {requested_display}.")
@@ -209,7 +248,7 @@ def _build_weapons_context(
             if name and description:
                 category_summaries.append(f"{name}: {description}")
         if category_summaries:
-            parts.append("Available weapon domains: " + " ".join(category_summaries[:5]))
+            parts.append("Available weapon domains: " + " ".join(category_summaries[:8]))
 
     return " ".join(part for part in parts if part).strip()
 
@@ -269,7 +308,11 @@ class UnifiedLLMService:
         self._personnel_data = config_provider.get_knowledge("personnel")
         self._weapons_data = config_provider.get_knowledge("weapons")
 
-    def _build_context_block(self, intent: Dict[str, Any]) -> str:
+    def _build_context_block(
+        self,
+        intent: Dict[str, Any],
+        query: Optional[str] = None,
+    ) -> str:
         countries = intent.get("countries") or []
         non_me_countries = intent.get("non_me_countries") or []
         has_non_me = intent.get("has_non_me", False)
@@ -279,6 +322,7 @@ class UnifiedLLMService:
         focus = intent.get("focus") or ["general"]
         weapon_subtypes = intent.get("weapon_subtypes") or []
         processed_message = intent.get("processed_message", "")
+        retrieval_query = (query or processed_message or "").strip()
 
         self._load_data()
         include_summary = _should_include_summary(focus, countries)
@@ -336,6 +380,16 @@ class UnifiedLLMService:
             if weapons:
                 parts.append(f"Weapons: {weapons}")
 
+        from .document_retriever import format_document_context, retrieve_document_chunks
+
+        doc_chunks = retrieve_document_chunks(
+            query=retrieval_query,
+            countries=countries,
+        )
+        doc_block = format_document_context(doc_chunks)
+        if doc_block:
+            parts.append(doc_block)
+
         return "\n".join(parts)
 
     def _prepare_messages(
@@ -348,7 +402,7 @@ class UnifiedLLMService:
 
         router = Router()
         resolved_intent = intent if intent is not None else router.route(message)
-        context_block = self._build_context_block(resolved_intent)
+        context_block = self._build_context_block(resolved_intent, query=message)
 
         user_content = f"{message}"
         if context_block.strip():

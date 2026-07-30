@@ -43,6 +43,18 @@ class RouterTestCase(TestCase):
         self.assertEqual(intent["focus"], ["weapons"])
         self.assertEqual(intent["weapon_subtypes"], ["fighter_jets"])
 
+    def test_air_defense_question_detects_air_defense_subtype(self):
+        intent = self.router.route("Compare Iran and Israel air defense systems")
+
+        self.assertEqual(intent["focus"], ["weapons"])
+        self.assertIn("air_defense", intent["weapon_subtypes"])
+
+    def test_persian_air_defense_keyword_is_detected(self):
+        intent = self.router.route("پدافند هوایی ایران و اسرائیل را مقایسه کن")
+
+        self.assertIn("air_defense", intent["weapon_subtypes"])
+        self.assertEqual(intent["countries"], ["iran", "israel"])
+
 
 class UnifiedLLMContextTestCase(TestCase):
     def setUp(self):
@@ -101,6 +113,39 @@ class UnifiedLLMContextTestCase(TestCase):
         self.assertNotIn("Nerve Agents", context)
         self.assertNotIn("Fission Weapons", context)
 
+    def test_air_defense_context_includes_systems_and_specs(self):
+        context = self.service._build_context_block(
+            {
+                "countries": ["iran", "israel"],
+                "scenario": "conventional",
+                "message_type": "comparison",
+                "focus": ["weapons"],
+                "weapon_subtypes": ["air_defense"],
+                "processed_message": "Compare Iran and Israel air defense.",
+            }
+        )
+
+        self.assertIn("Air Defense Systems", context)
+        self.assertIn("iron_dome", context)
+        self.assertIn("bavar_373", context)
+        self.assertIn("range=", context)
+        self.assertNotIn("no specific data found for air defense", context.lower())
+
+    def test_personnel_context_covers_syria(self):
+        context = self.service._build_context_block(
+            {
+                "countries": ["syria"],
+                "scenario": "conventional",
+                "message_type": "question",
+                "focus": ["personnel"],
+                "processed_message": "Advise on Syria personnel.",
+            }
+        )
+
+        self.assertIn("Personnel:", context)
+        self.assertIn("Syria:", context)
+        self.assertIn("total", context)
+
     def test_generation_options_use_project_defaults(self):
         options = _generation_options_for_intent(
             {
@@ -148,3 +193,141 @@ class OrchestratorConversationContextTestCase(TestCase):
         self.assertEqual(len(context), 10)
         self.assertEqual(context[0]["content"], "message-2")
         self.assertEqual(context[-1]["content"], "message-11")
+
+
+class DocumentKnowledgeTestCase(TestCase):
+    def test_txt_extract_and_chunking(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        from orchestrator.models import KnowledgeDocument
+        from orchestrator.services.document_ingest import chunk_text, detect_file_type, ingest_document
+
+        self.assertEqual(detect_file_type("briefing.txt"), "txt")
+        with self.assertRaises(Exception):
+            detect_file_type("notes.xlsx")
+
+        long_body = ("Iran coastal defense note. " * 40) + "\n\n" + ("Israel air doctrine. " * 40)
+        chunks = chunk_text(long_body, chunk_size=200, overlap=40)
+        self.assertGreaterEqual(len(chunks), 2)
+        self.assertTrue(all(len(c) <= 240 for c in chunks))
+
+        upload = SimpleUploadedFile(
+            "iran_brief.txt",
+            b"Iran has 120 coastal patrol boats in this classified annex.",
+            content_type="text/plain",
+        )
+        doc = KnowledgeDocument.objects.create(
+            title="Iran brief",
+            file=upload,
+            file_type="txt",
+        )
+        ingest_document(doc)
+        doc.refresh_from_db()
+        self.assertEqual(doc.status, KnowledgeDocument.Status.READY)
+        self.assertGreater(doc.char_count, 0)
+        self.assertGreaterEqual(doc.chunk_count, 1)
+        self.assertIn("120 coastal patrol", doc.extracted_text)
+        self.assertEqual(doc.chunks.count(), doc.chunk_count)
+
+    def test_retriever_ranks_country_matching_chunk_higher(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        from orchestrator.models import KnowledgeDocument
+        from orchestrator.services.document_ingest import ingest_document
+        from orchestrator.services.document_retriever import retrieve_document_chunks
+
+        iran_upload = SimpleUploadedFile(
+            "iran.txt",
+            b"Iran operates the Fateh-110 ballistic missile with extended range variants.",
+            content_type="text/plain",
+        )
+        other_upload = SimpleUploadedFile(
+            "unrelated.txt",
+            b"Generic logistics checklist for warehouse inventory and packing labels.",
+            content_type="text/plain",
+        )
+        iran_doc = KnowledgeDocument.objects.create(title="Iran missiles", file=iran_upload, file_type="txt")
+        other_doc = KnowledgeDocument.objects.create(title="Logistics", file=other_upload, file_type="txt")
+        ingest_document(iran_doc)
+        ingest_document(other_doc)
+
+        results = retrieve_document_chunks(
+            query="What ballistic missiles does Iran have?",
+            countries=["iran"],
+            top_k=5,
+        )
+        self.assertTrue(results)
+        self.assertEqual(results[0]["title"], "Iran missiles")
+        self.assertIn("Fateh-110", results[0]["content"])
+
+    def test_context_block_includes_uploaded_document_excerpts(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        from orchestrator.models import KnowledgeDocument
+        from orchestrator.services.document_ingest import ingest_document
+        from orchestrator.services.unified_llm_service import UnifiedLLMService
+
+        upload = SimpleUploadedFile(
+            "syria_note.txt",
+            b"Syria maintains fortified positions along the Golan approaches with layered artillery.",
+            content_type="text/plain",
+        )
+        doc = KnowledgeDocument.objects.create(title="Syria Golan note", file=upload, file_type="txt")
+        ingest_document(doc)
+
+        service = UnifiedLLMService()
+        context = service._build_context_block(
+            {
+                "countries": ["syria"],
+                "scenario": "conventional",
+                "message_type": "question",
+                "focus": ["geography"],
+                "processed_message": "Describe Syria defenses near Golan.",
+            },
+            query="Describe Syria defenses near Golan.",
+        )
+        self.assertIn("Uploaded documents:", context)
+        self.assertIn("Syria Golan note", context)
+        self.assertIn("Golan", context)
+
+    def test_inactive_documents_are_not_retrieved(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        from orchestrator.models import KnowledgeDocument
+        from orchestrator.services.document_ingest import ingest_document
+        from orchestrator.services.document_retriever import retrieve_document_chunks
+
+        upload = SimpleUploadedFile(
+            "secret.txt",
+            b"Iran secret force multiplier XYZ-99 is mentioned only here.",
+            content_type="text/plain",
+        )
+        doc = KnowledgeDocument.objects.create(
+            title="Secret",
+            file=upload,
+            file_type="txt",
+            is_active=False,
+        )
+        ingest_document(doc)
+        results = retrieve_document_chunks(query="Iran XYZ-99", countries=["iran"])
+        self.assertEqual(results, [])
+
+    def test_delete_removes_uploaded_file_from_disk(self):
+        import os
+
+        from django.conf import settings
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        from orchestrator.models import KnowledgeDocument
+
+        upload = SimpleUploadedFile(
+            "delete_me.txt",
+            b"This file should be removed when the document is deleted.",
+            content_type="text/plain",
+        )
+        doc = KnowledgeDocument.objects.create(title="Delete me", file=upload, file_type="txt")
+        file_path = os.path.join(settings.MEDIA_ROOT, doc.file.name)
+        self.assertTrue(os.path.isfile(file_path))
+
+        KnowledgeDocument.objects.filter(pk=doc.pk).delete()
+        self.assertFalse(os.path.isfile(file_path))

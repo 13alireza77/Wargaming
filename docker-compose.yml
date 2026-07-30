@@ -1,0 +1,44 @@
+# =============================================================================
+# Wargaming — Docker Compose (app + Ollama)
+# =============================================================================
+services:
+  ollama:
+    image: ollama/ollama:latest
+    platform: linux/amd64
+    container_name: wargaming-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # For GPU support, uncomment:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  app:
+    build: .
+    image: wargaming-app:latest
+    platform: linux/amd64
+    container_name: wargaming-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ollama
+    environment:
+      - DJANGO_ALLOWED_HOSTS=*
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_WAIT_SECONDS=60
+    volumes:
+      - app_db:/app/db
+      - app_media:/app/media
+
+volumes:
+  ollama_data:
+  app_db:
+  app_media:

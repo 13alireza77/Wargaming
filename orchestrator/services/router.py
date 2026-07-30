@@ -191,7 +191,7 @@ WEAPON_SUBTYPE_KEYWORDS = {
         "برتری هوایی",
     ),
     "drones": ("drone", "drones", "uav", "uavs", "ucav", "ucavs", "پهپاد", "پهپادها", "پرنده بدون سرنشین"),
-    "tanks": ("tank", "tanks", "armor", "armored", "armour", "armoured", "تانک", "تانک‌ها", "زرهی", "نفربر"),
+    "tanks": ("tank", "tanks", "armor", "armored", "armour", "armoured", "تانک", "تانک‌ها", "زرهی"),
     "artillery": ("artillery", "howitzer", "rocket artillery", "mlrs", "توپخانه", "هویتزر", "راکت‌انداز", "خمپاره"),
     "assault_rifles": (
         "assault rifle", "assault rifles", "rifle", "rifles", "small arms",
@@ -203,7 +203,34 @@ WEAPON_SUBTYPE_KEYWORDS = {
     ),
     "air_defense": (
         "air defense", "air-defence", "anti air", "anti-air", "sam", "surface to air",
-        "پدافند", "پدافند هوایی", "ضدهوایی", "ضد هوایی", "سامانه پدافندی",
+        "iron dome", "patriot", "s-300", "s-400",
+        "پدافند", "پدافند هوایی", "ضدهوایی", "ضد هوایی", "سامانه پدافندی", "گنبد آهنین",
+    ),
+    "ballistic_missiles": (
+        "ballistic missile", "ballistic missiles", "ballistic", "mrbm", "srbm", "irbm",
+        "موشک بالستیک", "موشک‌های بالستیک", "بالستیک",
+    ),
+    "cruise_missiles": (
+        "cruise missile", "cruise missiles", "anti-ship missile", "anti ship missile",
+        "موشک کروز", "موشک‌های کروز", "کروز", "موشک ضدکشتی", "موشک ضد کشتی",
+    ),
+    "helicopters": (
+        "helicopter", "helicopters", "attack helicopter", "apache", "gunship",
+        "هلیکوپتر", "هلی‌کوپتر", "بالگرد", "بالگردها", "آپاچی",
+    ),
+    "naval_vessels": (
+        "navy", "naval", "warship", "warships", "frigate", "frigates", "corvette",
+        "submarine", "submarines", "fleet",
+        "نیروی دریایی", "ناوگان", "ناو", "ناوشکن", "ناوچه", "زیردریایی", "ناو جنگی",
+    ),
+    "apc_ifv": (
+        "apc", "ifv", "armored personnel carrier", "infantry fighting vehicle",
+        "personnel carrier", "mechanized infantry",
+        "نفربر", "نفربر زرهی", "خودرو زرهی", "پیاده‌نظام مکانیزه", "پیاده نظام مکانیزه",
+    ),
+    "anti_tank": (
+        "anti-tank", "anti tank", "atgm", "rpg", "javelin", "kornet", "tow missile",
+        "ضدتانک", "ضد تانک", "آرپی‌جی", "آر پی جی", "موشک ضدتانک", "موشک ضد تانک",
     ),
 }
 

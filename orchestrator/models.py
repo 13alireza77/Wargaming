@@ -126,6 +126,91 @@ class KnowledgeBase(models.Model):
         return self.get_kind_display()
 
 
+def knowledge_document_upload_to(instance, filename):
+    # Keep original basename; Django storage will uniquify on collision.
+    return f"knowledge_docs/{filename}"
+
+
+class KnowledgeDocument(models.Model):
+    """Admin-uploaded TXT/PDF/DOCX used as extra LLM grounding context."""
+
+    class FileType(models.TextChoices):
+        TXT = "txt", "Text"
+        PDF = "pdf", "PDF"
+        DOCX = "docx", "Word"
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        READY = "ready", "Ready"
+        ERROR = "error", "Error"
+
+    title = models.CharField(max_length=200)
+    file = models.FileField(
+        upload_to=knowledge_document_upload_to,
+        help_text="Allowed: .txt, .pdf, .docx (max 10 MB). Used automatically in chat answers.",
+    )
+    file_type = models.CharField(
+        max_length=10,
+        choices=FileType.choices,
+        blank=True,
+        default="",
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Inactive documents are kept but not used for answering questions.",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    error_message = models.TextField(blank=True, default="")
+    extracted_text = models.TextField(blank=True, default="")
+    char_count = models.PositiveIntegerField(default=0)
+    chunk_count = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-updated_at"]
+        verbose_name = "Knowledge document"
+        verbose_name_plural = "Knowledge documents"
+
+    def __str__(self):
+        return self.title
+
+
+class KnowledgeDocumentChunk(models.Model):
+    """Searchable text chunk derived from an uploaded knowledge document."""
+
+    document = models.ForeignKey(
+        KnowledgeDocument,
+        on_delete=models.CASCADE,
+        related_name="chunks",
+    )
+    chunk_index = models.PositiveIntegerField()
+    content = models.TextField()
+    token_hints = models.TextField(
+        blank=True,
+        default="",
+        help_text="Lowercased searchable form of the chunk.",
+    )
+
+    class Meta:
+        ordering = ["document_id", "chunk_index"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["document", "chunk_index"],
+                name="uniq_knowledge_document_chunk_index",
+            ),
+        ]
+        verbose_name = "Knowledge document chunk"
+        verbose_name_plural = "Knowledge document chunks"
+
+    def __str__(self):
+        return f"{self.document_id}#{self.chunk_index}"
+
+
 class Conversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)

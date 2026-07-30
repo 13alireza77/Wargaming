@@ -43,6 +43,24 @@
               "capacity": 20,
               "range": "500m",
               "fire_rate": "500-600rpm"
+            },
+            "tavor": {
+              "caliber": "5.56mm",
+              "capacity": 30,
+              "range": "550m",
+              "fire_rate": "750-950rpm"
+            },
+            "hk416": {
+              "caliber": "5.56mm",
+              "capacity": 30,
+              "range": "500m",
+              "fire_rate": "850rpm"
+            },
+            "car_816": {
+              "caliber": "5.56mm",
+              "capacity": 30,
+              "range": "500m",
+              "fire_rate": "700-950rpm"
             }
           },
           "countries": {
@@ -95,6 +113,35 @@
               "primary_models": [
                 "car_816",
                 "m4_carbine"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ak_47",
+                "m16",
+                "m4_carbine"
+              ]
+            },
+            "jordan": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m16",
+                "m4_carbine"
+              ]
+            },
+            "lebanon": {
+              "quantity": "moderate",
+              "primary_models": [
+                "m16",
+                "ak_47"
+              ]
+            },
+            "yemen": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ak_47",
+                "g3"
               ]
             }
           }
@@ -162,6 +209,182 @@
                 "m107_a1",
                 "psg-1"
               ]
+            },
+            "egypt": {
+              "quantity": "moderate",
+              "primary_models": [
+                "dragunov_svd",
+                "barrett_m82"
+              ]
+            },
+            "turkey": {
+              "quantity": "moderate",
+              "primary_models": [
+                "barrett_m82",
+                "psg-1"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "moderate",
+              "primary_models": [
+                "barrett_m82",
+                "m107_a1"
+              ]
+            },
+            "jordan": {
+              "quantity": "limited",
+              "primary_models": [
+                "barrett_m82"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": [
+                "dragunov_svd"
+              ]
+            },
+            "yemen": {
+              "quantity": "limited",
+              "primary_models": [
+                "dragunov_svd"
+              ]
+            }
+          }
+        },
+        "anti_tank": {
+          "name": "Anti-Tank Weapons",
+          "description": "Guided missiles and recoilless systems for defeating armored vehicles.",
+          "effectiveness": "very_high",
+          "range": "medium",
+          "accuracy": "very_high",
+          "mobility": "high",
+          "logistics": "moderate",
+          "cost": "high",
+          "models": {
+            "tow": {
+              "type": "atgm",
+              "range": "3750m",
+              "guidance": "wire"
+            },
+            "javelin": {
+              "type": "atgm",
+              "range": "2500m",
+              "guidance": "fire_and_forget_ir"
+            },
+            "kornet": {
+              "type": "atgm",
+              "range": "5500m",
+              "guidance": "laser"
+            },
+            "milan": {
+              "type": "atgm",
+              "range": "2000m",
+              "guidance": "wire"
+            },
+            "spike": {
+              "type": "atgm",
+              "range": "4000m+",
+              "guidance": "fiber_optic_or_fire_and_forget"
+            },
+            "rpg_7": {
+              "type": "rocket_launcher",
+              "range": "200-500m",
+              "guidance": "unguided"
+            },
+            "konkurs": {
+              "type": "atgm",
+              "range": "4000m",
+              "guidance": "wire"
+            },
+            "umtas": {
+              "type": "atgm",
+              "range": "8000m",
+              "guidance": "laser_ir"
+            }
+          },
+          "countries": {
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "spike",
+                "tow"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "tow",
+                "milan"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "umtas",
+                "milan",
+                "tow"
+              ]
+            },
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "tow",
+                "kornet",
+                "rpg_7"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "tow",
+                "javelin"
+              ]
+            },
+            "iraq": {
+              "quantity": "moderate",
+              "primary_models": [
+                "tow",
+                "kornet",
+                "rpg_7"
+              ]
+            },
+            "syria": {
+              "quantity": "moderate",
+              "primary_models": [
+                "kornet",
+                "konkurs",
+                "rpg_7"
+              ]
+            },
+            "jordan": {
+              "quantity": "moderate",
+              "primary_models": [
+                "tow",
+                "javelin"
+              ]
+            },
+            "lebanon": {
+              "quantity": "moderate",
+              "primary_models": [
+                "tow",
+                "milan",
+                "rpg_7"
+              ]
+            },
+            "yemen": {
+              "quantity": "extensive",
+              "primary_models": [
+                "rpg_7",
+                "kornet",
+                "tow"
+              ]
+            },
+            "uae": {
+              "quantity": "extensive",
+              "primary_models": [
+                "milan",
+                "javelin"
+              ]
             }
           }
         }
@@ -216,6 +439,30 @@
               "armor": "composite",
               "crew": 3,
               "speed": "70kmh"
+            },
+            "m60_patton": {
+              "main_gun": "105mm",
+              "armor": "steel",
+              "crew": 4,
+              "speed": "48kmh"
+            },
+            "m1a2_abrams": {
+              "main_gun": "120mm",
+              "armor": "chobham",
+              "crew": 4,
+              "speed": "67kmh"
+            },
+            "t90": {
+              "main_gun": "125mm",
+              "armor": "composite",
+              "crew": 3,
+              "speed": "65kmh"
+            },
+            "challenger_1": {
+              "main_gun": "120mm",
+              "armor": "chobham",
+              "crew": 4,
+              "speed": "56kmh"
             }
           },
           "countries": {
@@ -262,6 +509,34 @@
               "primary_models": [
                 "karrar",
                 "t72"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m1a1_abrams",
+                "m60_patton"
+              ]
+            },
+            "jordan": {
+              "quantity": "moderate",
+              "primary_models": [
+                "challenger_1",
+                "m60_patton"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": [
+                "m60_patton",
+                "t72"
+              ]
+            },
+            "yemen": {
+              "quantity": "limited",
+              "primary_models": [
+                "t72",
+                "m60_patton"
               ]
             }
           }
@@ -310,6 +585,41 @@
               "max_speed": "mach_2.2",
               "service_ceiling": "20km",
               "armament": "missiles, bombs"
+            },
+            "f-35_lightning_ii": {
+              "max_speed": "mach_1.6",
+              "service_ceiling": "15km",
+              "armament": "missiles, bombs, internal_bay"
+            },
+            "f-15sa": {
+              "max_speed": "mach_2.5",
+              "service_ceiling": "20km",
+              "armament": "missiles, bombs"
+            },
+            "rafale": {
+              "max_speed": "mach_1.8",
+              "service_ceiling": "15km",
+              "armament": "missiles, bombs"
+            },
+            "mirage_2000": {
+              "max_speed": "mach_2.2",
+              "service_ceiling": "18km",
+              "armament": "missiles, bombs"
+            },
+            "su-35": {
+              "max_speed": "mach_2.25",
+              "service_ceiling": "18km",
+              "armament": "missiles, bombs"
+            },
+            "mig-21": {
+              "max_speed": "mach_2",
+              "service_ceiling": "17km",
+              "armament": "missiles, cannon"
+            },
+            "f-16iq": {
+              "max_speed": "mach_2",
+              "service_ceiling": "15km",
+              "armament": "missiles, bombs"
             }
           },
           "countries": {
@@ -348,6 +658,581 @@
                 "f-15_eagle",
                 "panavia_tornado",
                 "eurofighter_typhoon"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "f-16_fighting_falcon",
+                "rafale",
+                "mirage_2000"
+              ]
+            },
+            "iraq": {
+              "quantity": "moderate",
+              "primary_models": [
+                "f-16iq"
+              ]
+            },
+            "jordan": {
+              "quantity": "moderate",
+              "primary_models": [
+                "f-16_fighting_falcon"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "yemen": {
+              "quantity": "limited",
+              "primary_models": [
+                "mig-29_fulcrum",
+                "mig-21"
+              ]
+            }
+          }
+        },
+        "air_defense": {
+          "name": "Air Defense Systems",
+          "description": "Surface-to-air missiles and integrated air-defense networks against aircraft, drones, and missiles.",
+          "effectiveness": "very_high",
+          "range": "short_to_very_long",
+          "accuracy": "high",
+          "mobility": "moderate",
+          "logistics": "very_high",
+          "cost": "extremely_high",
+          "models": {
+            "s-300": {
+              "role": "long_range_sam",
+              "range": "150-200km",
+              "targets": "aircraft, cruise_missiles"
+            },
+            "s-400": {
+              "role": "long_range_sam",
+              "range": "400km",
+              "targets": "aircraft, ballistic_missiles"
+            },
+            "bavar_373": {
+              "role": "long_range_sam",
+              "range": "200-300km",
+              "targets": "aircraft, missiles"
+            },
+            "iron_dome": {
+              "role": "short_range_c_ram",
+              "range": "4-70km",
+              "targets": "rockets, mortars, drones"
+            },
+            "davids_sling": {
+              "role": "medium_range_abm",
+              "range": "40-300km",
+              "targets": "rockets, cruise_missiles"
+            },
+            "arrow_3": {
+              "role": "exoatmospheric_abm",
+              "range": "strategic",
+              "targets": "ballistic_missiles"
+            },
+            "patriot_pac3": {
+              "role": "medium_long_range_sam",
+              "range": "20-160km",
+              "targets": "aircraft, ballistic_missiles"
+            },
+            "hisar_o": {
+              "role": "medium_range_sam",
+              "range": "25km",
+              "targets": "aircraft, drones"
+            },
+            "pantsir_s1": {
+              "role": "short_range_hybrid",
+              "range": "20km",
+              "targets": "aircraft, drones, munitions"
+            },
+            "hq_9": {
+              "role": "long_range_sam",
+              "range": "200km",
+              "targets": "aircraft, missiles"
+            },
+            "nasams": {
+              "role": "medium_range_sam",
+              "range": "40km",
+              "targets": "aircraft, cruise_missiles"
+            },
+            "spada": {
+              "role": "short_range_sam",
+              "range": "15km",
+              "targets": "aircraft"
+            }
+          },
+          "countries": {
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "iron_dome",
+                "davids_sling",
+                "arrow_3",
+                "patriot_pac3"
+              ]
+            },
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "s-300",
+                "bavar_373"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "s-400",
+                "hisar_o",
+                "nasams"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "patriot_pac3"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "s-300",
+                "pantsir_s1"
+              ]
+            },
+            "syria": {
+              "quantity": "moderate",
+              "primary_models": [
+                "s-300",
+                "pantsir_s1"
+              ]
+            },
+            "iraq": {
+              "quantity": "limited",
+              "primary_models": [
+                "nasams"
+              ]
+            },
+            "jordan": {
+              "quantity": "moderate",
+              "primary_models": [
+                "patriot_pac3"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "yemen": {
+              "quantity": "limited",
+              "primary_models": [
+                "spada"
+              ]
+            },
+            "uae": {
+              "quantity": "extensive",
+              "primary_models": [
+                "patriot_pac3",
+                "hq_9"
+              ]
+            }
+          }
+        },
+        "helicopters": {
+          "name": "Combat Helicopters",
+          "description": "Attack and multi-role helicopters for close air support, anti-armor, and transport assault.",
+          "effectiveness": "high",
+          "range": "medium",
+          "accuracy": "high",
+          "mobility": "very_high",
+          "logistics": "high",
+          "cost": "very_high",
+          "models": {
+            "ah_64_apache": {
+              "role": "attack",
+              "armament": "hellfire, rocket, 30mm_cannon"
+            },
+            "ah_1_cobra": {
+              "role": "attack",
+              "armament": "tow, rocket, cannon"
+            },
+            "mi_24_hind": {
+              "role": "attack_transport",
+              "armament": "rockets, atgm, cannon"
+            },
+            "mi_28": {
+              "role": "attack",
+              "armament": "atgm, rockets, cannon"
+            },
+            "t129_ataq": {
+              "role": "attack",
+              "armament": "umtas, rockets, cannon"
+            },
+            "ka_52": {
+              "role": "attack",
+              "armament": "atgm, rockets, cannon"
+            },
+            "ch_53": {
+              "role": "heavy_transport",
+              "armament": "defensive"
+            },
+            "uh_60_blackhawk": {
+              "role": "utility_assault",
+              "armament": "door_guns"
+            }
+          },
+          "countries": {
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ah_64_apache",
+                "ch_53",
+                "uh_60_blackhawk"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ah_64_apache",
+                "ah_1_cobra"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "t129_ataq",
+                "ah_1_cobra"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ah_64_apache"
+              ]
+            },
+            "iran": {
+              "quantity": "moderate",
+              "primary_models": [
+                "ah_1_cobra",
+                "mi_24_hind"
+              ]
+            },
+            "iraq": {
+              "quantity": "moderate",
+              "primary_models": [
+                "mi_28",
+                "mi_24_hind",
+                "uh_60_blackhawk"
+              ]
+            },
+            "syria": {
+              "quantity": "limited",
+              "primary_models": [
+                "mi_24_hind"
+              ]
+            },
+            "jordan": {
+              "quantity": "moderate",
+              "primary_models": [
+                "ah_1_cobra",
+                "uh_60_blackhawk"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": [
+                "uh_60_blackhawk"
+              ]
+            },
+            "yemen": {
+              "quantity": "limited",
+              "primary_models": [
+                "mi_24_hind"
+              ]
+            },
+            "uae": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ah_64_apache"
+              ]
+            }
+          }
+        },
+        "naval_vessels": {
+          "name": "Naval Vessels",
+          "description": "Surface combatants and submarines for sea control, blockade, and littoral operations.",
+          "effectiveness": "high",
+          "range": "theater",
+          "accuracy": "high",
+          "mobility": "high",
+          "logistics": "very_high",
+          "cost": "extremely_high",
+          "models": {
+            "saar_5": {
+              "type": "corvette",
+              "displacement": "1200t",
+              "armament": "harpoon, barak"
+            },
+            "saar_6": {
+              "type": "corvette",
+              "displacement": "1900t",
+              "armament": "barak_8, missiles"
+            },
+            "adolya_class": {
+              "type": "frigate",
+              "displacement": "3000t",
+              "armament": "missiles, guns"
+            },
+            "istanbul_class": {
+              "type": "frigate",
+              "displacement": "3000t",
+              "armament": "atmaca, hisar"
+            },
+            "al_riyadh_class": {
+              "type": "frigate",
+              "displacement": "4700t",
+              "armament": "aster, exocet"
+            },
+            "ghadir_class": {
+              "type": "midget_submarine",
+              "displacement": "120t",
+              "armament": "torpedoes, mines"
+            },
+            "kilo_class": {
+              "type": "submarine",
+              "displacement": "2300t",
+              "armament": "torpedoes, cruise_missiles"
+            },
+            "type_209": {
+              "type": "submarine",
+              "displacement": "1400t",
+              "armament": "torpedoes"
+            },
+            "oliver_hazard_perry": {
+              "type": "frigate",
+              "displacement": "4100t",
+              "armament": "harpoon, sm1"
+            },
+            "patrol_craft": {
+              "type": "patrol",
+              "displacement": "under_500t",
+              "armament": "guns, light_missiles"
+            },
+            "dolphin_class": {
+              "type": "submarine",
+              "displacement": "1900t",
+              "armament": "torpedoes, cruise_missiles"
+            }
+          },
+          "countries": {
+            "israel": {
+              "quantity": "moderate",
+              "primary_models": [
+                "saar_5",
+                "saar_6",
+                "dolphin_class"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "istanbul_class",
+                "adolya_class",
+                "type_209"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "oliver_hazard_perry",
+                "type_209",
+                "kilo_class"
+              ]
+            },
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "ghadir_class",
+                "kilo_class",
+                "patrol_craft"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "al_riyadh_class"
+              ]
+            },
+            "syria": {
+              "quantity": "limited",
+              "primary_models": [
+                "patrol_craft"
+              ]
+            },
+            "iraq": {
+              "quantity": "limited",
+              "primary_models": [
+                "patrol_craft"
+              ]
+            },
+            "jordan": {
+              "quantity": "limited",
+              "primary_models": [
+                "patrol_craft"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": [
+                "patrol_craft"
+              ]
+            },
+            "yemen": {
+              "quantity": "limited",
+              "primary_models": [
+                "patrol_craft"
+              ]
+            },
+            "uae": {
+              "quantity": "extensive",
+              "primary_models": [
+                "patrol_craft"
+              ]
+            }
+          }
+        },
+        "apc_ifv": {
+          "name": "APC / IFV",
+          "description": "Armored personnel carriers and infantry fighting vehicles for mechanized infantry mobility and fire support.",
+          "effectiveness": "high",
+          "range": "medium",
+          "accuracy": "moderate",
+          "mobility": "high",
+          "logistics": "high",
+          "cost": "high",
+          "models": {
+            "m113": {
+              "type": "apc",
+              "crew_troops": "2+11",
+              "armament": "machine_gun"
+            },
+            "bmp_1": {
+              "type": "ifv",
+              "crew_troops": "3+8",
+              "armament": "73mm, atgm"
+            },
+            "bmp_2": {
+              "type": "ifv",
+              "crew_troops": "3+7",
+              "armament": "30mm, atgm"
+            },
+            "namer": {
+              "type": "heavy_apc",
+              "crew_troops": "3+9",
+              "armament": "machine_gun, rws"
+            },
+            "stryker": {
+              "type": "apc_ifv",
+              "crew_troops": "2+9",
+              "armament": "machine_gun_or_cannon"
+            },
+            "btr_80": {
+              "type": "apc",
+              "crew_troops": "3+7",
+              "armament": "machine_gun"
+            },
+            "fnss_pars": {
+              "type": "apc_ifv",
+              "crew_troops": "3+8",
+              "armament": "cannon_or_mg"
+            },
+            "yavuz": {
+              "type": "apc",
+              "crew_troops": "2+10",
+              "armament": "machine_gun"
+            },
+            "bmp_3": {
+              "type": "ifv",
+              "crew_troops": "3+7",
+              "armament": "100mm, 30mm, atgm"
+            }
+          },
+          "countries": {
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "namer",
+                "m113"
+              ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m113",
+                "yavuz"
+              ]
+            },
+            "turkey": {
+              "quantity": "extensive",
+              "primary_models": [
+                "fnss_pars",
+                "m113"
+              ]
+            },
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "bmp_2",
+                "btr_80",
+                "m113"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m113"
+              ]
+            },
+            "iraq": {
+              "quantity": "moderate",
+              "primary_models": [
+                "m113",
+                "bmp_1"
+              ]
+            },
+            "syria": {
+              "quantity": "moderate",
+              "primary_models": [
+                "bmp_1",
+                "bmp_2",
+                "btr_80"
+              ]
+            },
+            "jordan": {
+              "quantity": "moderate",
+              "primary_models": [
+                "m113"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": [
+                "m113"
+              ]
+            },
+            "yemen": {
+              "quantity": "limited",
+              "primary_models": [
+                "bmp_1",
+                "btr_80"
+              ]
+            },
+            "uae": {
+              "quantity": "extensive",
+              "primary_models": [
+                "bmp_3"
               ]
             }
           }
@@ -407,6 +1292,31 @@
               "role": "jet-engine_ucav",
               "range": "n/a",
               "armament": "n/a"
+            },
+            "shahed_136": {
+              "role": "loitering_munition",
+              "range": "2000km",
+              "armament": "warhead"
+            },
+            "akinci": {
+              "role": "strike, reconnaissance",
+              "range": "6000km",
+              "armament": "bombs, missiles"
+            },
+            "wing_loong_ii": {
+              "role": "strike, reconnaissance",
+              "range": "4000km",
+              "armament": "bombs, missiles"
+            },
+            "orbiter": {
+              "role": "tactical_isr",
+              "range": "100km",
+              "armament": "none"
+            },
+            "ch_4": {
+              "role": "strike, reconnaissance",
+              "range": "3500km",
+              "armament": "bombs, missiles"
             }
           },
           "countries": {
@@ -438,6 +1348,43 @@
               "quantity": "moderate",
               "primary_models": [
                 "wing_loong_ii"
+              ]
+            },
+            "egypt": {
+              "quantity": "moderate",
+              "primary_models": [
+                "wing_loong_ii",
+                "ch_4"
+              ]
+            },
+            "iraq": {
+              "quantity": "moderate",
+              "primary_models": [
+                "ch_4"
+              ]
+            },
+            "syria": {
+              "quantity": "limited",
+              "primary_models": [
+                "orbiter"
+              ]
+            },
+            "jordan": {
+              "quantity": "limited",
+              "primary_models": [
+                "orbiter"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": [
+                "orbiter"
+              ]
+            },
+            "yemen": {
+              "quantity": "moderate",
+              "primary_models": [
+                "shahed_136"
               ]
             }
           }
@@ -492,6 +1439,21 @@
               "caliber": "127mm",
               "range": "90km",
               "type": "multiple_rocket_launcher"
+            },
+            "firtina_howitzer": {
+              "caliber": "155mm",
+              "range": "40km",
+              "type": "self-propelled"
+            },
+            "caesar_spg": {
+              "caliber": "155mm",
+              "range": "42km",
+              "type": "self-propelled"
+            },
+            "m270_mlrs": {
+              "caliber": "227mm",
+              "range": "70km",
+              "type": "multiple_rocket_launcher"
             }
           },
           "countries": {
@@ -538,6 +1500,273 @@
                 "himars",
                 "g6_howitzer"
               ]
+            },
+            "egypt": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m109_howitzer",
+                "bm-21_grad"
+              ]
+            },
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "m109_howitzer",
+                "m270_mlrs"
+              ]
+            },
+            "jordan": {
+              "quantity": "moderate",
+              "primary_models": [
+                "m109_howitzer"
+              ]
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": [
+                "m109_howitzer",
+                "d-30_howitzer"
+              ]
+            },
+            "yemen": {
+              "quantity": "moderate",
+              "primary_models": [
+                "bm-21_grad",
+                "d-30_howitzer"
+              ]
+            }
+          }
+        },
+        "ballistic_missiles": {
+          "name": "Ballistic Missiles",
+          "description": "Surface-to-surface ballistic missiles for theater and strategic strike.",
+          "effectiveness": "very_high",
+          "range": "theater_to_strategic",
+          "accuracy": "moderate_to_high",
+          "mobility": "moderate",
+          "logistics": "high",
+          "cost": "very_high",
+          "models": {
+            "shahab_3": {
+              "range": "1300-2000km",
+              "type": "mrbm",
+              "warhead": "conventional_or_wmd_capable"
+            },
+            "emad": {
+              "range": "1700km",
+              "type": "mrbm",
+              "warhead": "conventional"
+            },
+            "fateh_110": {
+              "range": "300km",
+              "type": "srbm",
+              "warhead": "conventional"
+            },
+            "sejjil": {
+              "range": "2000km",
+              "type": "mrbm",
+              "warhead": "conventional"
+            },
+            "jericho_2": {
+              "range": "1500-3500km",
+              "type": "irbm",
+              "warhead": "nuclear_capable"
+            },
+            "jericho_3": {
+              "range": "4800-6500km",
+              "type": "icbm_class",
+              "warhead": "nuclear_capable"
+            },
+            "badr_1": {
+              "range": "150km",
+              "type": "srbm",
+              "warhead": "conventional"
+            },
+            "scud_b": {
+              "range": "300km",
+              "type": "srbm",
+              "warhead": "conventional"
+            },
+            "scud_c": {
+              "range": "500km",
+              "type": "srbm",
+              "warhead": "conventional"
+            },
+            "df_15": {
+              "range": "600km",
+              "type": "srbm",
+              "warhead": "conventional"
+            }
+          },
+          "countries": {
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "shahab_3",
+                "emad",
+                "fateh_110",
+                "sejjil"
+              ]
+            },
+            "israel": {
+              "quantity": "undisclosed",
+              "primary_models": [
+                "jericho_2",
+                "jericho_3"
+              ]
+            },
+            "syria": {
+              "quantity": "moderate",
+              "primary_models": [
+                "scud_b",
+                "scud_c",
+                "fateh_110"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "moderate",
+              "primary_models": [
+                "df_15"
+              ]
+            },
+            "egypt": {
+              "quantity": "limited",
+              "primary_models": [
+                "scud_b"
+              ]
+            },
+            "yemen": {
+              "quantity": "moderate",
+              "primary_models": [
+                "badr_1",
+                "scud_b"
+              ]
+            },
+            "turkey": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "iraq": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "jordan": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": []
+            }
+          }
+        },
+        "cruise_missiles": {
+          "name": "Cruise Missiles",
+          "description": "Low-flying guided missiles for precision strike against land and sea targets.",
+          "effectiveness": "very_high",
+          "range": "medium_to_long",
+          "accuracy": "very_high",
+          "mobility": "high",
+          "logistics": "high",
+          "cost": "very_high",
+          "models": {
+            "soumar": {
+              "range": "700-2000km",
+              "type": "land_attack",
+              "guidance": "terrain_following"
+            },
+            "ya_ali": {
+              "range": "700km",
+              "type": "land_attack",
+              "guidance": "ins_gps"
+            },
+            "popeye": {
+              "range": "78-350km",
+              "type": "air_launched",
+              "guidance": "electro_optical"
+            },
+            "delilah": {
+              "range": "250km",
+              "type": "loitering_cruise",
+              "guidance": "electro_optical"
+            },
+            "atmaca": {
+              "range": "220km",
+              "type": "anti_ship",
+              "guidance": "ins_gps_radar"
+            },
+            "exocet": {
+              "range": "40-180km",
+              "type": "anti_ship",
+              "guidance": "active_radar"
+            },
+            "harpoon": {
+              "range": "124km",
+              "type": "anti_ship",
+              "guidance": "active_radar"
+            },
+            "quds_1": {
+              "range": "700-1000km",
+              "type": "land_attack",
+              "guidance": "ins"
+            }
+          },
+          "countries": {
+            "iran": {
+              "quantity": "extensive",
+              "primary_models": [
+                "soumar",
+                "ya_ali"
+              ]
+            },
+            "israel": {
+              "quantity": "extensive",
+              "primary_models": [
+                "popeye",
+                "delilah",
+                "harpoon"
+              ]
+            },
+            "turkey": {
+              "quantity": "moderate",
+              "primary_models": [
+                "atmaca"
+              ]
+            },
+            "egypt": {
+              "quantity": "moderate",
+              "primary_models": [
+                "exocet",
+                "harpoon"
+              ]
+            },
+            "saudi_arabia": {
+              "quantity": "moderate",
+              "primary_models": [
+                "harpoon"
+              ]
+            },
+            "yemen": {
+              "quantity": "moderate",
+              "primary_models": [
+                "quds_1"
+              ]
+            },
+            "syria": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "iraq": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "jordan": {
+              "quantity": "limited",
+              "primary_models": []
+            },
+            "lebanon": {
+              "quantity": "limited",
+              "primary_models": []
             }
           }
         }
@@ -576,6 +1805,25 @@
               "primary_models": [
                 "vehicle_borne_ied",
                 "personnel_borne_ied"
+              ]
+            },
+            "yemen": {
+              "quantity": "extensive",
+              "primary_models": [
+                "vehicle_borne_ied",
+                "personnel_borne_ied"
+              ]
+            },
+            "lebanon": {
+              "quantity": "moderate",
+              "primary_models": [
+                "personnel_borne_ied"
+              ]
+            },
+            "egypt": {
+              "quantity": "moderate",
+              "primary_models": [
+                "vehicle_borne_ied"
               ]
             }
           }

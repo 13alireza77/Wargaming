@@ -1,11 +1,21 @@
+import os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATABASE_PATH = PROJECT_ROOT / "db.sqlite3"
+DATABASE_PATH = Path(os.environ.get("DATABASE_PATH", str(PROJECT_ROOT / "db.sqlite3")))
 
-DJANGO_SECRET_KEY = "django-insecure--6)*6ro84fslumlt5y96hsxj1$jnukfz#y=sva&czjf)f0dm=a"
-DJANGO_DEBUG = False
-DJANGO_ALLOWED_HOSTS = ["85.208.254.201", "localhost", "127.0.0.1"]
+DJANGO_SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure--6)*6ro84fslumlt5y96hsxj1$jnukfz#y=sva&czjf)f0dm=a",
+)
+DJANGO_DEBUG = os.environ.get("DJANGO_DEBUG", "0").lower() in {"1", "true", "yes"}
+_DEFAULT_ALLOWED_HOSTS = ["85.208.254.201", "localhost", "127.0.0.1"]
+_ENV_ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
+DJANGO_ALLOWED_HOSTS = _ENV_ALLOWED_HOSTS or _DEFAULT_ALLOWED_HOSTS
 
 DJANGO_INSTALLED_APPS = [
     # Unfold admin theme must come before django.contrib.admin.
@@ -38,6 +48,8 @@ DJANGO_TEMPLATE_DIRS = []
 DJANGO_LANGUAGE_CODE = "fa"
 DJANGO_TIME_ZONE = "UTC"
 DJANGO_STATIC_URL = "static/"
+DJANGO_MEDIA_URL = "media/"
+DJANGO_MEDIA_ROOT = PROJECT_ROOT / "media"
 DJANGO_DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DATA_DIR = PROJECT_ROOT / "data"
@@ -45,16 +57,28 @@ GEOGRAPHY_DATA_FILE = DATA_DIR / "geography" / "middle_east_geography.json"
 PERSONNEL_DATA_FILE = DATA_DIR / "personnel" / "middle_east_personnel.json"
 WEAPONS_DATA_FILE = DATA_DIR / "weapons" / "middle_east_weapons.json"
 
+# Uploaded knowledge documents (TXT/PDF/DOCX) → chunk → retrieve into Context.
+DOCUMENT_KNOWLEDGE_CONFIG = {
+    "max_upload_bytes": 10 * 1024 * 1024,  # 10 MB
+    "allowed_extensions": (".txt", ".pdf", ".docx"),
+    "chunk_size": 900,
+    "chunk_overlap": 150,
+    "retrieve_top_k": 5,
+    "max_context_chars": 3500,
+    "preview_chars": 4000,
+}
+
 CHAT_API_URL = "http://localhost:8000/chat/api/chat/"
 
-LLM_PROVIDER_NAME = "ollama"
+LLM_PROVIDER_NAME = os.environ.get("LLM_PROVIDER_NAME", "ollama")
+OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 
 LLM_PROVIDER_CONFIG = {
     "provider": LLM_PROVIDER_NAME,
     "ollama": {
-        "base_url": "http://localhost:11434",
-        "default_model": "gemma3:12b",
-        "wargaming_model": "wargaming:unified",
+        "base_url": OLLAMA_BASE_URL,
+        "default_model": os.environ.get("OLLAMA_BASE_MODEL", "gemma3:12b"),
+        "wargaming_model": os.environ.get("OLLAMA_WARGAMING_MODEL", "wargaming:unified"),
         "timeout": 60,
     },
     "citome": {
@@ -93,10 +117,10 @@ UNIFIED_LLM_GENERATION_CONFIG = {
 }
 
 UNIFIED_LLM_TRAINING_CONFIG = {
-    "custom_model_name": "wargaming:unified",
+    "custom_model_name": os.environ.get("OLLAMA_WARGAMING_MODEL", "wargaming:unified"),
     # gemma3:12b: strong multilingual/Persian on Gemma, fits RTX 3090 (~7–12GB VRAM).
-    "default_base_model": "gemma3:12b",
-    "base_url": "http://localhost:11434",
+    "default_base_model": os.environ.get("OLLAMA_BASE_MODEL", "gemma3:12b"),
+    "base_url": OLLAMA_BASE_URL,
     "ollama_healthcheck_timeout_seconds": 10,
     "ollama_pull_timeout_seconds": 600,
     "ollama_create_timeout_seconds": 600,

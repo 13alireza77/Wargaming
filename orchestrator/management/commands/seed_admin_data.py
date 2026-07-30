@@ -52,10 +52,23 @@ class Command(BaseCommand):
             action="store_true",
             help="Update only Prompt rows (skip LLM config and knowledge datasets).",
         )
+        parser.add_argument(
+            "--knowledge-only",
+            action="store_true",
+            help="Update only KnowledgeBase rows from the JSON files (skip LLM config and prompts).",
+        )
 
     def handle(self, *args, **options):
         force = options["force"]
         prompts_only = options["prompts_only"]
+        knowledge_only = options["knowledge_only"]
+        if prompts_only and knowledge_only:
+            self.stderr.write(self.style.ERROR("Use only one of --prompts-only or --knowledge-only."))
+            return
+        if knowledge_only:
+            self._seed_knowledge(force)
+            self.stdout.write(self.style.SUCCESS("Knowledge seeding complete."))
+            return
         if not prompts_only:
             self._seed_config(force)
         self._seed_prompts(force)
