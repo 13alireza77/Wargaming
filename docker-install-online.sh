@@ -131,6 +131,55 @@ ensure_docker() {
   log "Docker ready: $(docker --version)"
 }
 
+  # Dead helper removed — ensure_nvidia_for_docker owns GPU checks.
+  [[ "$ENABLE_GPU" -eq 1 ]] || return 0
+
+  if ! have nvidia-smi; then
+    err "Host NVIDIA driver missing (nvidia-smi not found). Install the GPU driver first, then re-run with --gpu.
+Example (Ubuntu):
+  sudo apt update
+  sudo ubuntu-drivers autoinstall
+  sudo reboot
+Then:
+  nvidia-smi"
+  fi
+
+  log "Host GPU: $(nvidia-smi --query-gpu=name,driver_version --format=csv,noheader 2>/dev/null | head -1 || echo detected)"
+
+  # Already configured?
+  if docker info 2>/dev/null | grep -qiE 'Runtimes:.*\bnvidia\b|nvidia-container-runtime'; then
+    log "NVIDIA Docker runtime already configured."
+    return 0
+  fi
+
+  have apt-get || err "Cannot auto-install NVIDIA Container Toolkit without apt-get. Install nvidia-container-toolkit manually, then:
+  sudo nvidia-ctk runtime configure --runtime=docker
+  sudo systemctl restart docker"
+
+  log "Installing NVIDIA Container Toolkit (required for --gpu)..."
+  curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
+    | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+  curl -fsSL https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
+    | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' \
+    | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list >/dev/null
+  apt-get update -y
+  apt-get install -y nvidia-container-toolkit
+  nvidia-ctk runtime configure --runtime=docker
+  systemctl restart docker
+  sleep 2
+  docker info >/dev/null 2>&1 || err "Docker did not come back after NVIDIA runtime configure"
+
+  if ! docker info 2>/dev/null | grep -qiE 'Runtimes:.*\bnvidia\b|nvidia-container-runtime'; then
+    err "NVIDIA runtime still not registered with Docker.
+Fix:
+  sudo nvidia-ctk runtime configure --runtime=docker
+  sudo systemctl restart docker
+  docker info | grep -i runtime
+Then re-run this script with --gpu."
+  fi
+  log "NVIDIA Container Toolkit ready."
+}
+
 # Resolve project root: existing checkout, or download into INSTALL_DIR.
 resolve_project() {
   local src="${BASH_SOURCE[0]:-}" script_dir=""
@@ -314,6 +363,7 @@ done
 ensure_root
 ensure_curl
 ensure_docker
+ensure_nvidia_for_docker
 
 if [[ -z "$ALLOWED_HOSTS" ]]; then
   DETECTED_IP="$(detect_server_ip)"
